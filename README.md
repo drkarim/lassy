@@ -6,9 +6,7 @@ It is being currently developed for computing the complexity of scar in [Re-entr
 
 
 ## Usage
-There are several tools within the library. 
-
-The tool can be used to interrogate late gadolinium enhancement CMR images of the ventricular myocardium. 
+It contains a tool that can be used to interrogate late gadolinium enhancement CMR images of the ventricular myocardium. 
 
 It takes input parameters such as:  
 
