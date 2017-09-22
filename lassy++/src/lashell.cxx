@@ -1,9 +1,4 @@
 #define HAS_VTK 1
-#include <vtkPointData.h>
-#include <vtkPolyData.h>
-#include <vtkFloatArray.h>
-#include <vtkSmartPointer.h>
-#include <vtkPolyDataReader.h>
 
 /* The Circle class (All source codes in one file) (CircleAIO.cpp) */
 #include <iostream>    // using IO functions
@@ -12,20 +7,40 @@
 using namespace std;
 
 
-Circle::Circle(double r = 1.0, string c = "red") {
-		radius = r;
-		color = c;
-	}
+LAtrium::LAtrium(const char* vtk_fn)
+{
 
-	double Circle::getRadius() {  // Member function (Getter)
-		return radius;
-	}
+	// Read from file 
+	vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New(); 
+	reader->SetFileName(vtk_fn); 
+	reader->Update(); 
 
-	string Circle::getColor() {   // Member function (Getter)
-		return color;
-	}
+	_mesh_3d = vtkSmartPointer<vtkPolyData>::New(); 
+	_mesh_3d->DeepCopy(reader->GetOutput());
 
-	double Circle::getArea() {    // Member function
-		return radius*radius*3.1416;
+}
+
+vector<double> LAtrium::GetMeshVertexValues()
+{
+	vtkSmartPointer<vtkFloatArray> scalar_array = vtkSmartPointer<vtkFloatArray>::New();
+	
+
+	if (_mesh_3d->GetPointData()->GetNumberOfArrays() > 0)
+	{
+		scalar_array = vtkFloatArray::SafeDownCast(_mesh_3d->GetPointData()->GetScalars());
+		for (vtkIdType i = 0; i < _mesh_3d->GetNumberOfPoints(); ++i) {
+
+			double this_scalar = scalar_array->GetTuple1(i);
+			_mesh_vertex_values.push_back(this_scalar);
+		}
 	}
+	return _mesh_vertex_values; 
+}
+
+
+void LAtrium::GetMesh3D(vtkPolyData* mesh_output) {  // Member function (Getter)
+	mesh_output->DeepCopy(_mesh_3d);
+}
+
+
 
