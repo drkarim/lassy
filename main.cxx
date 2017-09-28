@@ -1,5 +1,6 @@
 #define HAS_VTK 1
-#include "lashell.h"
+#include "LaShell.h"
+
 #include <numeric> 
 
 int main(int argc, char * argv[])
@@ -32,19 +33,35 @@ int main(int argc, char * argv[])
 
 	if (!(foundArgs1 ))
 	{
-		cerr << "Cheeck your parameters\n\nUsage: \n\t-i <file_with_filenmes.txt>" << endl;
+		cerr << "Cheeck your parameters\n\nUsage: \n\t-i <file_with_filenmes.txt> \n\t-o <output file> \n\t-m <which method>" << endl;
 		exit(1);
 	}
 
 
-	if (method >= 0)
+	if (method == 1)
 	{
-		LAtrium* la = new LAtrium(input_f); 
+		LaShell* la = new LaShell(input_f);
 		vector<double> v = la->GetMeshVertexValues(); 
 
 		float average = accumulate(v.begin(), v.end(), 0.0) / v.size();
 		cout << "Mean vertex scalar = " << average << endl; 
 		
 
+	}
+	else if (method == 2)
+	{
+		LaImage *la = new LaImage(input_f);
+
+		la->PixelToFile(output_f);
+
+	}
+
+	else if (method == 3) {
+		
+		LaImage *la_img = new LaImage(input_f);
+		
+		LaShell* la_mesh = new LaShell();
+		la_mesh->ConvertMaskToMesh(la_img, 0.5);
+		la_mesh->ExportVTK(output_f);
 	}
 }

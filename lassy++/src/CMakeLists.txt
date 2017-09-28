@@ -1,9 +1,11 @@
 SET(LASSY_INCLUDES
-	"../include/lashell.h"
+	"../include/LaShell.h"
+	"../include/LaImage.h"
 )
 
 SET(LASSY_SRCS 
-	lashell.cxx
+	LaShell.cxx
+	LaImage.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})
