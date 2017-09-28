@@ -14,6 +14,8 @@
 #include <vtkStructuredPoints.h>
 #include <vtkStructuredPointsReader.h>
 #include <vtkPolyDataWriter.h>
+#include <vtkFloatArray.h>
+#include <vtkCellData.h>
 #include <string>
 #include "LaImage.h"
 
@@ -35,7 +37,7 @@ public:
 
 	void ExportVTK(char* vtk_fn);
 	void ConvertMaskToMesh(LaImage *la_mask, double);
-	
+	void SurfaceProjection(LaImage* la_mask);
 
 	vector<double> GetMeshVertexValues();
 	

@@ -7,6 +7,10 @@
 #include "itkImage.h"
 
 
+// Lassy++ includes 
+#include "MathBox.h"
+
+
 #include <string>
 
 /*
@@ -21,6 +25,7 @@
 */
 
 using namespace std;
+
 
 class LaImage {
 private:
@@ -59,6 +64,13 @@ public:
 	void PixelToFile(const char* output_fn); 
 	void ConvertToVTKImage(const char* vtk_fn); 
 
-
+	bool GetIntensityAt(int x, int  y, int z, short& pixelValue);
+	bool GetImageSize(int& x, int& y, int& z);
 	
+	void WorldToImage(double &x, double &y, double &z); 
+	void ImageToWorld(float &x, float &y, float &z);
+
+	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal);
+	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
 };
+

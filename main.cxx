@@ -5,7 +5,7 @@
 
 int main(int argc, char * argv[])
 {
-	char* input_f, *output_f, *output_poly_fn, *output_txt_fn;
+	char* input_f, *input_f2, *output_f, *output_poly_fn, *output_txt_fn;
 	bool foundArgs1=false, foundArgs2=false; 
 	int method=0; 
 
@@ -15,6 +15,10 @@ int main(int argc, char * argv[])
 			if (i + 1 != argc) {
 				if (string(argv[i]) == "-i") {
 					input_f = argv[i + 1];
+					foundArgs1 = true;
+				}
+				else if (string(argv[i]) == "-i2") {
+					input_f2 = argv[i + 1];
 					foundArgs1 = true;
 				}
 				else if (string(argv[i]) == "-m")
@@ -29,7 +33,7 @@ int main(int argc, char * argv[])
 
 			}
 		}
-	}
+	}                                                                            
 
 	if (!(foundArgs1 ))
 	{
@@ -51,17 +55,39 @@ int main(int argc, char * argv[])
 	else if (method == 2)
 	{
 		LaImage *la = new LaImage(input_f);
+		ofstream out; 
+		out.open(output_f); 
+		short pixelValue; 
 
-		la->PixelToFile(output_f);
+		//la->PixelToFile(output_f);
+		int maxX, maxY, maxZ; 
+		la->GetImageSize(maxX, maxY, maxZ); 
+		for (int i = 0; i < maxX; i++)
+		{
+			for (int j = 0; j < maxY; j++) {
+				for (int k = 0; k < maxZ; k++)
+				{
+					la->GetIntensityAt(i, j, k, pixelValue); 
+					//out << pixelValue << ",";
+				}
+				out << endl; 
+			}
+			out << endl; 
+		}
+		out.close(); 
 
 	}
 
-	else if (method == 3) {
+	else if (method == 3) 
+	{
 		
 		LaImage *la_img = new LaImage(input_f);
+		LaImage *lge_img = new LaImage(input_f2); 
 		
 		LaShell* la_mesh = new LaShell();
 		la_mesh->ConvertMaskToMesh(la_img, 0.5);
+		
+		la_mesh->SurfaceProjection(lge_img); 
 		la_mesh->ExportVTK(output_f);
 	}
 }
