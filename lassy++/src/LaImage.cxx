@@ -119,10 +119,10 @@ bool LaImage::GetIntensityAt(int x, int  y, int z, short& pixelValue)
 
 void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal)
 {
-	double scar_step_min=-3.0, scar_step_max=3.0, scar_step_size=0.5; 
+	double scar_step_min=-4, scar_step_max=4, scar_step_size=1; 
 
 	int size = 0, j = 0, indexOfPointInArray = -1, currIndex = 0, a, b, c;
-	double insty = 0, x = 0, y = 0, z = 0, rounded_x, rounded_y, rounded_z;
+	double insty = 0, x = 0, y = 0, z = 0;
 	typedef itk::Image< unsigned short, 3 >  ImageType;
 	ImageType::PointType point;
 
@@ -150,13 +150,13 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 			}
 		}
 	}
-
-
 	
-		this->GetStatisticalMeasure(pointsOnAndAroundNormal, 1, insty);			// statistical measure 2 returns max 
-		insty = insty / 100;
 	
 
+	this->GetStatisticalMeasure(pointsOnAndAroundNormal, 1, insty);			// statistical measure 2 returns max 
+	insty = insty / 100;
+		
+	pointsOnAndAroundNormal.clear();
 
 	returnVal = insty;
 	
@@ -165,9 +165,9 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 
 void LaImage::GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal)
 {
-	double sum = 0, max = -1, greyVal, visitedStatus;
+	double sum = 0, max = -1; 
+	//double visitedStatus;
 	int size = vals.size();
-	int maxIndex;
 	short pixelValue; 
 
 	if (measure == 1)			// reutrn mean 

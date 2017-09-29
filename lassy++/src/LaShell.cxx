@@ -109,9 +109,23 @@ void LaShell::SurfaceProjection(LaImage* intensity_img)
 	double cX = 0, cY = 0, cZ = 0, max_scalar = -1, min_scalar = 1E10;
 	int num_points = 0; 
 	vtkIdType num_cell_points;
+
+	vtkSmartPointer<vtkFileOutputWindow> fileOutputWindow = vtkSmartPointer<vtkFileOutputWindow>::New();
+	fileOutputWindow->SetFileName("vtkLog.txt");
+	vtkOutputWindow* outputWindow = vtkOutputWindow::GetInstance();
+	if (outputWindow)
+	{
+		outputWindow->SetInstance(fileOutputWindow);
+	}
+
 	vtkSmartPointer<vtkIdList> cell_points = vtkSmartPointer<vtkIdList>::New();
 
 	vtkSmartPointer<vtkFloatArray> cellNormals = vtkFloatArray::SafeDownCast(_mesh_3d->GetCellData()->GetNormals());
+
+	vtkSmartPointer<vtkFloatArray> scalars = vtkSmartPointer<vtkFloatArray>::New();		// the scalar at each polygon 
+	vtkSmartPointer<vtkFloatArray> scalars_onlystdev = vtkSmartPointer<vtkFloatArray>::New();
+	vtkSmartPointer<vtkFloatArray> scalars_onlymultiplier = vtkSmartPointer<vtkFloatArray>::New();
+	vtkSmartPointer<vtkFloatArray> scalars_onlyintensity = vtkSmartPointer<vtkFloatArray>::New();
 	
 	for (int i = 0; i<_mesh_3d->GetNumberOfCells(); i++)			// running through each polygon 
 	{
@@ -144,6 +158,7 @@ void LaShell::SurfaceProjection(LaImage* intensity_img)
 		//getIntensityAlongNormal(pN[0], pN[1], pN[2], cX, cY, cZ, normal_band, scalar);
 		double scalar = 0, mean = 0, var = 1;
 		intensity_img->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar); 
+		//scalar = 0;
 		
 
 		double sdev, sratio, sintensity;
@@ -157,10 +172,7 @@ void LaShell::SurfaceProjection(LaImage* intensity_img)
 		sratio = scalar / mean;
 
 
-		vtkSmartPointer<vtkFloatArray> scalars = vtkSmartPointer<vtkFloatArray>::New();		// the scalar at each polygon 
-		vtkSmartPointer<vtkFloatArray> scalars_onlystdev = vtkSmartPointer<vtkFloatArray>::New();
-		vtkSmartPointer<vtkFloatArray> scalars_onlymultiplier = vtkSmartPointer<vtkFloatArray>::New();
-		vtkSmartPointer<vtkFloatArray> scalars_onlyintensity = vtkSmartPointer<vtkFloatArray>::New();
+		
 		scalars_onlystdev->InsertTuple1(i, sdev);
 		scalars_onlyintensity->InsertTuple1(i, scalar);
 		scalars_onlymultiplier->InsertTuple1(i, sratio);
@@ -174,11 +186,9 @@ void LaShell::SurfaceProjection(LaImage* intensity_img)
 		
 		scalars->InsertTuple1(i, scalarToPlot);
 		
-		_mesh_3d->GetCellData()->SetScalars(scalars);
-		
-
+	
 
 	}	// end for 
-
+	_mesh_3d->GetCellData()->SetScalars(scalars);
 }
 

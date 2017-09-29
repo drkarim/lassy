@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
 				}
 				else if (string(argv[i]) == "-i2") {
 					input_f2 = argv[i + 1];
-					foundArgs1 = true;
+					
 				}
 				else if (string(argv[i]) == "-m")
 				{
