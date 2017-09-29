@@ -86,7 +86,7 @@ void LaShell::ConvertMaskToMesh(LaImage *la_mask, double threshold)
 	vtkSmartPointer<vtkSmoothPolyDataFilter> smoother = vtkSmartPointer<vtkSmoothPolyDataFilter>::New();
 	vtkSmartPointer<vtkDecimatePro> deci = vtkSmartPointer<vtkDecimatePro>::New();
 
-	smoother->SetNumberOfIterations(10);
+	smoother->SetNumberOfIterations(1000);
 	smoother->SetInputConnection(surface->GetOutputPort()); 
 	smoother->Update();
 	
