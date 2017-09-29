@@ -17,7 +17,7 @@ It takes input parameters such as:
 ```-i``` Ventricular myocardial shell in VTK format 
 
 
-<img src="https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/images/3/36/Lassy_preview.PNG" width="50">
+<img src="https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/images/3/36/Lassy_preview.PNG" width="200">
 
 ## Author 
 
