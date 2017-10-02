@@ -129,6 +129,9 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 
 	vector<Point3> pointsOnAndAroundNormal;
 
+	std::ofstream ofs;
+	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
+
 	int MaxX, MaxY, MaxZ; 
 	this->GetImageSize(MaxX, MaxY, MaxZ);
 
@@ -157,19 +160,30 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 
 		}
 
+		
 		for (a = -1; a <= 1; a++) {
 			for (b = -1; b <= 1; b++) {
 				for (c = -1; c <= 1; c++) {
 					if (x + a >= 0 && x + a<MaxX && y + b >= 0 && y + b<MaxY && z + c >= 0 && z + c<MaxZ) {
-						if (isExplore) 
+						if (isExplore) {
 							pointsOnAndAroundNormal.push_back(Point3(x + a, y + b, z + c));
+
+						}
 					}
 				}
 			}
 		}
+
+		// Some intensity logging to CSV file 
+		if (isExplore) {
+			short pixelValue;
+			this->GetIntensityAt(x, y, z, pixelValue);
+			ofs << x << "," << y << "," << z << "," << pixelValue << endl;
+		}
+
 	}
 	
-	
+	ofs.close(); 
 
 	this->GetStatisticalMeasure(pointsOnAndAroundNormal, 1, insty);			// statistical measure 2 returns max 
 	insty = insty / 100;

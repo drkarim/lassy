@@ -118,6 +118,11 @@ void LaShell::SurfaceProjection(LaImage* intensity_img, LaImage* mask_img)
 		outputWindow->SetInstance(fileOutputWindow);
 	}
 
+	// clear intensity log file 
+	std::ofstream ofs;
+	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::trunc);
+	ofs.close();
+
 	vtkSmartPointer<vtkIdList> cell_points = vtkSmartPointer<vtkIdList>::New();
 
 	vtkSmartPointer<vtkFloatArray> cellNormals = vtkFloatArray::SafeDownCast(_mesh_3d->GetCellData()->GetNormals());
