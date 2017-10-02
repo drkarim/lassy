@@ -185,9 +185,13 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 	
 	ofs.close(); 
 
-	this->GetStatisticalMeasure(pointsOnAndAroundNormal, 1, insty);			// statistical measure 2 returns max 
-	insty = insty / 100;
-		
+	if (pointsOnAndAroundNormal.size() > 0) {
+		this->GetStatisticalMeasure(pointsOnAndAroundNormal, 1, insty);			// statistical measure 2 returns max 
+		insty = insty / 100;
+	}
+	else  {
+		insty=0;
+	}
 	pointsOnAndAroundNormal.clear();
 
 	returnVal = insty;
