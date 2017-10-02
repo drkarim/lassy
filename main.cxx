@@ -5,7 +5,7 @@
 
 int main(int argc, char * argv[])
 {
-	char* input_f, *input_f2, *output_f, *output_poly_fn, *output_txt_fn;
+	char* input_f, *input_f2, *input_f3, *output_f, *output_poly_fn, *output_txt_fn;
 	bool foundArgs1=false, foundArgs2=false; 
 	int method=0; 
 
@@ -20,6 +20,10 @@ int main(int argc, char * argv[])
 				else if (string(argv[i]) == "-i2") {
 					input_f2 = argv[i + 1];
 					
+				}
+				else if (string(argv[i]) == "-i3") {
+					input_f3 = argv[i + 1];
+
 				}
 				else if (string(argv[i]) == "-m")
 				{
@@ -37,7 +41,16 @@ int main(int argc, char * argv[])
 
 	if (!(foundArgs1 ))
 	{
-		cerr << "Cheeck your parameters\n\nUsage: \n\t-i <file_with_filenmes.txt> \n\t-o <output file> \n\t-m <which method>" << endl;
+		cerr << "Cheeck your parameters\n\nUsage:"
+			"\n(Mandatory)\n\t-i <file_with_filenmes.txt> \n\t-m <which method>"
+			"\n\n(Optional)\n\t-i2 <second input>\n\t-i3 <third input>"
+			"\n\t-o <output file> \n\t-m <which method>" << endl;
+
+		cerr << "\nAvailable methods\n=================\n"
+			"\n1. Compute mean of mesh vertex scalars (m=1)\n\tinputs: \n\t-i - Mesh vtk"
+			"\n\n2. Pixel value at all image locations (m=2)\n\tinputs: \n\t-i - Input 3D image in NIFTII/NRRD/GIPL format\n\t-o - Output text file"
+			"\n\n3. Surface normal interrogation (scar3D) (m=3)\n\tinputs: \n\t-i - Input 3D binary mask\n\t-i2 - Input 3D MRI/CT image\n\t-o - Output VTK mesh"
+			"\n\n4. Surface normal interrogation within mask (m=4)\n\tinputs: \n\t-i - Input 3D binary mask\n\t-i2 - Input 3D MRI/CT image\n\t-i3 - Scar 3D mask image\n\t-o - Output VTK mesh" << endl;
 		exit(1);
 	}
 
@@ -78,7 +91,7 @@ int main(int argc, char * argv[])
 
 	}
 
-	else if (method == 3) 
+	else if (method == 3) // Mesh normal interrogating of image
 	{
 		
 		LaImage *la_img = new LaImage(input_f);
@@ -90,4 +103,17 @@ int main(int argc, char * argv[])
 		la_mesh->SurfaceProjection(lge_img); 
 		la_mesh->ExportVTK(output_f);
 	}
+	else if (method == 4)			// Mesh normal interrogating of image, with mask constraint 
+	{
+		LaImage *bp_mask_img = new LaImage(input_f);
+		LaImage *scar_mask_img = new LaImage(input_f2);
+		LaImage *lge_img = new LaImage(input_f3);
+
+		LaShell* la_mesh = new LaShell();
+		la_mesh->ConvertMaskToMesh(bp_mask_img, 0.5);
+
+		la_mesh->SurfaceProjection(lge_img, scar_mask_img);
+		la_mesh->ExportVTK(output_f);
+	}
+
 }

@@ -35,9 +35,27 @@ public:
 	
 	void GetMesh3D(vtkPolyData* mesh_output);
 
+	/*
+	*	Exports the VTK mesh to a file 
+	*/
 	void ExportVTK(char* vtk_fn);
-	void ConvertMaskToMesh(LaImage *la_mask, double);
-	void SurfaceProjection(LaImage* la_mask);
+
+	/*
+	*	Converts a binary 3D image to a smooth mesh. 
+	*	It takes a threshold value for the iso-surface
+	*	(Leave it to the default value for binary images provided background = 0)
+	*/
+	void ConvertMaskToMesh(LaImage *la_mask, double threshold=0.5);
+
+	/*
+	*	Interrogates a 3D image along the surface normals of a 3D surface mesh.
+	*	Projects the interrogated value to the mesh vertex 
+	*	Note that the interrogation is by default 4 pixels in both directions of the vector
+	*
+	*	There is an option to interrogate the image only in the region defined by the mask_img parameter
+	*/
+	void SurfaceProjection(LaImage* raw_img, LaImage* mask_img=NULL);
+	
 
 	vector<double> GetMeshVertexValues();
 	

@@ -62,15 +62,36 @@ public:
 
 	
 	void PixelToFile(const char* output_fn); 
-	void ConvertToVTKImage(const char* vtk_fn); 
 
+
+	// Returns the pixel value at an image location (x,y,z), returns false if position is out of bounds. 
 	bool GetIntensityAt(int x, int  y, int z, short& pixelValue);
+
+	// Returns the maximum size of a 3D image in every direction 
 	bool GetImageSize(int& x, int& y, int& z);
-	
+
+	/*
+	*	Converts to a VTK structured points 
+	*	This format can be processed by VTK algorithms such as Marching cubes 
+	*/
+	void ConvertToVTKImage(const char* vtk_fn);
+
+
+	/*
+	*	Transformations from World to image co-ordinate space 
+	*	It follows the ITK-VTK convention of how world co-ordinate is defined from image space. 
+	*	For more details please refer to: 
+	*	https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/index.php?title=World_to_image_cordinate_systems
+	*/
 	void WorldToImage(double &x, double &y, double &z); 
 	void ImageToWorld(float &x, float &y, float &z);
-
-	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal);
+	
+	/*
+	*	Interrogates a 3D image along a straigth line. The straight line is defined by the vector <n_x, n_y, n_z>, positioned at (centre_x, centre_y, centre_z)
+	*	Note that the interrogation is by default 4 pixels in both directions of the vector 
+	*	There is an option to interrogate the image only in the region defined by the mask_img parameter 
+	*/
+	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, LaImage* mask_img=NULL);
 	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
 };
 

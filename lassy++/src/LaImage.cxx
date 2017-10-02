@@ -117,9 +117,10 @@ bool LaImage::GetIntensityAt(int x, int  y, int z, short& pixelValue)
 	}
 }
 
-void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal)
+void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, LaImage* mask_img)
 {
 	double scar_step_min=-4, scar_step_max=4, scar_step_size=1; 
+	bool isExplore = true;	// by default look around a normal, except if there is a mask image involved
 
 	int size = 0, j = 0, indexOfPointInArray = -1, currIndex = 0, a, b, c;
 	double insty = 0, x = 0, y = 0, z = 0;
@@ -140,11 +141,28 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 		y = centre_y + (i*n_y);
 		z = centre_z + (i*n_z);
 		x = floor(x); y = floor(y); z = floor(z);
+
+		// by default look around a normal, except if there is a mask image involved
+		// Explore only inside mask 
+		if (mask_img != NULL)
+		{
+			short maskValue; 
+			isExplore = false; 
+
+			mask_img->GetIntensityAt(x, y, z, maskValue); 
+			if (maskValue > 0)
+			{
+				isExplore = true; 
+			}
+
+		}
+
 		for (a = -1; a <= 1; a++) {
 			for (b = -1; b <= 1; b++) {
 				for (c = -1; c <= 1; c++) {
 					if (x + a >= 0 && x + a<MaxX && y + b >= 0 && y + b<MaxY && z + c >= 0 && z + c<MaxZ) {
-						pointsOnAndAroundNormal.push_back(Point3(x + a, y + b, z + c));
+						if (isExplore) 
+							pointsOnAndAroundNormal.push_back(Point3(x + a, y + b, z + c));
 					}
 				}
 			}

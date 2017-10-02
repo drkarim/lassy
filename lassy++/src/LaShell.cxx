@@ -102,7 +102,7 @@ void LaShell::ConvertMaskToMesh(LaImage *la_mask, double threshold)
 }
 
 
-void LaShell::SurfaceProjection(LaImage* intensity_img)
+void LaShell::SurfaceProjection(LaImage* intensity_img, LaImage* mask_img)
 {
 	double pN[3]; 
 	double cP[3];
@@ -157,7 +157,7 @@ void LaShell::SurfaceProjection(LaImage* intensity_img)
 		
 		//getIntensityAlongNormal(pN[0], pN[1], pN[2], cX, cY, cZ, normal_band, scalar);
 		double scalar = 0, mean = 0, var = 1;
-		intensity_img->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar); 
+		intensity_img->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar, mask_img);
 		//scalar = 0;
 		
 
