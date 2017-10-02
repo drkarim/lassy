@@ -106,8 +106,8 @@ int main(int argc, char * argv[])
 	else if (method == 4)			// Mesh normal interrogating of image, with mask constraint 
 	{
 		LaImage *bp_mask_img = new LaImage(input_f);
-		LaImage *scar_mask_img = new LaImage(input_f2);
-		LaImage *lge_img = new LaImage(input_f3);
+		LaImage *lge_img = new LaImage(input_f2);
+		LaImage *scar_mask_img = new LaImage(input_f3);
 
 		LaShell* la_mesh = new LaShell();
 		la_mesh->ConvertMaskToMesh(bp_mask_img, 0.5);

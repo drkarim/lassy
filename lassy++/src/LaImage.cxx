@@ -176,7 +176,7 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 
 		// Some intensity logging to CSV file 
 		if (isExplore) {
-			short pixelValue;
+			short pixelValue=-1;
 			this->GetIntensityAt(x, y, z, pixelValue);
 			ofs << x << "," << y << "," << z << "," << pixelValue << endl;
 		}
