@@ -1,3 +1,16 @@
+/*
+*      Author:
+*      Dr. Rashed Karim
+*      Department of Biomedical Engineering, King's College London
+*      Email: rashed 'dot' karim @kcl.ac.uk
+*      Copyright (c) 2017
+*/
+
+/*
+*	The LaShell class encapsulates a 3D polygonal mesh that is read into memory as a VTK
+*	For more information: https://www.vtk.org/doc/nightly/html/classvtkPolyData.html
+*
+*/
 #define HAS_VTK 1
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
@@ -21,19 +34,7 @@
 
 using namespace std; 
 
-/*
-*      Author:
-*      Dr. Rashed Karim
-*      Department of Biomedical Engineering, King's College London
-*      Email: rashed 'dot' karim @kcl.ac.uk
-*      Copyright (c) 2017
-*/
 
-/*
-*	The LaShell class encapsulates a 3D polygonal mesh that is read into memory as a VTK 
-*	For more information: https://www.vtk.org/doc/nightly/html/classvtkPolyData.html
-*
-*/
 class LaShell {
 private:
 	vtkSmartPointer<vtkPolyData> _mesh_3d; 

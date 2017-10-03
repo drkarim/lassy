@@ -1,4 +1,17 @@
-#include "itkImageFileReader.h"
+/*
+*      Author:
+*      Dr. Rashed Karim
+*      Department of Biomedical Engineering, King's College London
+*      Email: rashed 'dot' karim @kcl.ac.uk
+*      Copyright (c) 2017
+*/
+
+/*
+*	The LaImage class encapsulates a 3D image that is read into memory as an ITK image
+*	For more information: https://itk.org/Doxygen43/html/classitk_1_1Image.html
+*
+*
+*/#include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include <itkImageIterator.h>
 #include "itkRescaleIntensityImageFilter.h"
@@ -12,20 +25,7 @@
 
 
 #include <string>
-/*
-*      Author:
-*      Dr. Rashed Karim
-*      Department of Biomedical Engineering, King's College London
-*      Email: rashed 'dot' karim @kcl.ac.uk
-*      Copyright (c) 2017
-*/
 
-/*
-*	The LaImage class encapsulates a 3D image that is read into memory as an ITK image 
-*	For more information: https://itk.org/Doxygen43/html/classitk_1_1Image.html
-*
-*	
-*/
 
 using namespace std;
 
