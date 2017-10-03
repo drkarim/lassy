@@ -12,16 +12,19 @@
 
 
 #include <string>
+/*
+*      Author:
+*      Dr. Rashed Karim
+*      Department of Biomedical Engineering, King's College London
+*      Email: rashed 'dot' karim @kcl.ac.uk
+*      Copyright (c) 2017
+*/
 
 /*
-*	Templates can be complex and here are some guides: 
-*	https://isocpp.org/wiki/faq/templates#separate-template-fn-defn-from-decl
-*	Stack: https://stackoverflow.com/questions/115703/storing-c-template-function-definitions-in-a-cpp-file
+*	The LaImage class encapsulates a 3D image that is read into memory as an ITK image 
+*	For more information: https://itk.org/Doxygen43/html/classitk_1_1Image.html
 *
-*	In order to avoid linker errors, I have physically moved the definition of the template functions into this .h file, 
-*	even if it is not an inline function. This solution may (or may not!) cause significant code bloat, 
-*	meaning the executable size may increase dramatically (or, if your compiler is smart enough, may not; try it and see)
-*
+*	
 */
 
 using namespace std;

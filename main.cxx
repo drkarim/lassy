@@ -3,6 +3,13 @@
 
 #include <numeric> 
 
+/*
+*      Author:
+*      Dr. Rashed Karim
+*      Department of Biomedical Engineering, King's College London
+*      Email: rashed 'dot' karim @kcl.ac.uk
+*      Copyright (c) 2017
+*/
 int main(int argc, char * argv[])
 {
 	char* input_f, *input_f2, *input_f3, *output_f, *output_poly_fn, *output_txt_fn;
