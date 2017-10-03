@@ -121,6 +121,7 @@ void LaShell::SurfaceProjection(LaImage* intensity_img, LaImage* mask_img)
 	// clear intensity log file 
 	std::ofstream ofs;
 	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::trunc);
+	ofs << "CellID,Normal index,Normal_Vec_X,Normal_Vec_Y,Normal_Vec_Z,Image intensity" << endl; 
 	ofs.close();
 
 	vtkSmartPointer<vtkIdList> cell_points = vtkSmartPointer<vtkIdList>::New();
@@ -162,7 +163,7 @@ void LaShell::SurfaceProjection(LaImage* intensity_img, LaImage* mask_img)
 		
 		//getIntensityAlongNormal(pN[0], pN[1], pN[2], cX, cY, cZ, normal_band, scalar);
 		double scalar = 0, mean = 0, var = 1;
-		intensity_img->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar, mask_img);
+		intensity_img->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar, i, mask_img);
 		//scalar = 0;
 		
 

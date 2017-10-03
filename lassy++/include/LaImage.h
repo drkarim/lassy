@@ -91,7 +91,7 @@ public:
 	*	Note that the interrogation is by default 4 pixels in both directions of the vector 
 	*	There is an option to interrogate the image only in the region defined by the mask_img parameter 
 	*/
-	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, LaImage* mask_img=NULL);
+	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, int CellID_ForLogging=0, LaImage* mask_img=NULL);
 	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
 };
 

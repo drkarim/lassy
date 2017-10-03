@@ -117,7 +117,7 @@ bool LaImage::GetIntensityAt(int x, int  y, int z, short& pixelValue)
 	}
 }
 
-void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, LaImage* mask_img)
+void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, int CellID, LaImage* mask_img)
 {
 	double scar_step_min=-4, scar_step_max=4, scar_step_size=1; 
 	bool isExplore = true;	// by default look around a normal, except if there is a mask image involved
@@ -131,7 +131,7 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 
 	std::ofstream ofs;
 	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
-
+	//ofs << "Normal," << n_x << "," << n_y << "," << n_z << endl;
 	int MaxX, MaxY, MaxZ; 
 	this->GetImageSize(MaxX, MaxY, MaxZ);
 
@@ -178,7 +178,7 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 		if (isExplore) {
 			short pixelValue=-1;
 			this->GetIntensityAt(x, y, z, pixelValue);
-			ofs << x << "," << y << "," << z << "," << pixelValue << endl;
+			ofs << CellID << "," << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
 		}
 
 	}
