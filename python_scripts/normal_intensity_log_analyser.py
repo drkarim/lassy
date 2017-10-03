@@ -16,7 +16,7 @@ This will read a CSV file which is output from the C++ programs
 Ensure that the first row contains a header 
 '''
 def Read_CSV_File(filename): 
-    return np.genfromtxt (filename, delimiter=",", skiprows=1)
+    return np.genfromtxt (filename, delimiter=",", skip_header=1)
     
 '''
 Standardises the intensity by computing its z-score from a distribution with mean and standard deviation 
