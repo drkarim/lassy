@@ -18,6 +18,7 @@
 #include <itkSmartPointer.h>
 #include "itkVTKImageIO.h"
 #include "itkImage.h"
+#include <itkMinimumMaximumImageCalculator.h>
 
 
 // Lassy++ includes 
@@ -81,6 +82,11 @@ public:
 
 
 	/*
+	*	Returns the minimum and maximum intensity in an image 
+	*/
+	void GetMinimumMaximum(short& min, short& max);
+
+	/*
 	*	Transformations from World to image co-ordinate space 
 	*	It follows the ITK-VTK convention of how world co-ordinate is defined from image space. 
 	*	For more details please refer to: 
@@ -94,7 +100,7 @@ public:
 	*	Note that the interrogation is by default 4 pixels in both directions of the vector 
 	*	There is an option to interrogate the image only in the region defined by the mask_img parameter 
 	*/
-	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, int CellID_ForLogging=0, LaImage* mask_img=NULL);
+	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, bool doLogging=false, int CellID_ForLogging=0, LaImage* mask_img=NULL);
 	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
 };
 

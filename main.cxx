@@ -1,6 +1,7 @@
 #define HAS_VTK 1
-#include "LaShell.h"
 
+#include "LaShell.h"
+#include "VizBox.h"
 #include <numeric> 
 
 /*
@@ -119,8 +120,18 @@ int main(int argc, char * argv[])
 		LaShell* la_mesh = new LaShell();
 		la_mesh->ConvertMaskToMesh(bp_mask_img, 0.5);
 
-		la_mesh->SurfaceProjection(lge_img, scar_mask_img);
+		bool doLogging = true; 
+		la_mesh->SurfaceProjection(lge_img, doLogging, scar_mask_img);
 		la_mesh->ExportVTK(output_f);
+	}
+	else if (method == 5)
+	{
+		LaImage *lge_img = new LaImage(input_f);
+
+		VizBox* visualiser = new VizBox(lge_img); 
+		visualiser->ConstructImageOrthogonalPlanes(); 
+		visualiser->ShowInit();
+
 	}
 
 }

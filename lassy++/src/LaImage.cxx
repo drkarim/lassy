@@ -117,7 +117,21 @@ bool LaImage::GetIntensityAt(int x, int  y, int z, short& pixelValue)
 	}
 }
 
-void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, int CellID, LaImage* mask_img)
+void LaImage::GetMinimumMaximum(short& min, short& max)
+{
+	typedef unsigned short PixelType;
+	typedef itk::Image< PixelType, 3 >  ImageType;
+	typedef itk::MinimumMaximumImageCalculator <ImageType> ImageCalculatorFilterType;
+
+	ImageCalculatorFilterType::Pointer imageCalculatorFilter = ImageCalculatorFilterType::New();
+	imageCalculatorFilter->SetImage(_image);
+	imageCalculatorFilter->Compute();
+
+	min = imageCalculatorFilter->GetMinimum(); 
+	max = imageCalculatorFilter->GetMaximum(); 
+}
+
+void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, bool doLogging, int CellID, LaImage* mask_img)
 {
 	double scar_step_min=-4, scar_step_max=4, scar_step_size=1; 
 	bool isExplore = true;	// by default look around a normal, except if there is a mask image involved
@@ -130,7 +144,8 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 	vector<Point3> pointsOnAndAroundNormal;
 
 	std::ofstream ofs;
-	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
+	if (doLogging) 
+		ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
 	//ofs << "Normal," << n_x << "," << n_y << "," << n_z << endl;
 	int MaxX, MaxY, MaxZ; 
 	this->GetImageSize(MaxX, MaxY, MaxZ);
@@ -175,9 +190,10 @@ void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre
 		}
 
 		// Some intensity logging to CSV file 
-		if (isExplore) {
+		if (isExplore && doLogging) {
 			short pixelValue=-1;
 			this->GetIntensityAt(x, y, z, pixelValue);
+			
 			ofs << CellID << "," << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
 		}
 

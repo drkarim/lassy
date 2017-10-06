@@ -2,12 +2,14 @@ SET(LASSY_INCLUDES
 	"../include/LaShell.h"
 	"../include/LaImage.h"
 	"../include/MathBox.h"
+	"../include/VizBox.h"
 )
 
 SET(LASSY_SRCS 
 	LaShell.cxx
 	LaImage.cxx
 	MathBox.cxx
+	VizBox.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})

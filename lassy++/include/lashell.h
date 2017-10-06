@@ -32,6 +32,7 @@
 #include <string>
 #include "LaImage.h"
 
+
 using namespace std; 
 
 
@@ -67,7 +68,7 @@ public:
 	*
 	*	There is an option to interrogate the image only in the region defined by the mask_img parameter
 	*/
-	void SurfaceProjection(LaImage* raw_img, LaImage* mask_img=NULL);
+	void SurfaceProjection(LaImage* raw_img, bool doLogging=false, LaImage* mask_img=NULL);
 	
 
 	vector<double> GetMeshVertexValues();

@@ -2,7 +2,10 @@
 
 using namespace std; 
 
+
 #include <math.h>
+
+
 class MathBox {
 private:
 	
