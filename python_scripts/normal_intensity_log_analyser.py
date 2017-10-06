@@ -38,15 +38,19 @@ def Show3DPlot(x,y,z):
 
     plt.show()
 
-
+'''
+For colormaps, refer to https://matplotlib.org/examples/color/colormaps_reference.html
+'''
 def Show2DPlot(x,y,t=0):
 
     fig_2d = plt.figure()
+    cm = plt.cm.get_cmap('bwr')     
     ax = fig_2d.add_subplot(111)
     if len(t) > 0: 
-        ax.scatter(x,y,c=t)
+        sc = ax.scatter(x,y,c=t,cmap=cm)
     else: 
-        ax.scatter(x,y)
+        sc = ax.scatter(x,y)
+    plt.colorbar(sc)
     ax.set_xlabel('Cell-id')
     ax.set_ylabel('Standardised intensity')
     
@@ -55,7 +59,6 @@ def Show2DPlot(x,y,t=0):
 '''
 Main program 
 '''
-
 try:   
    args = sys.argv[1:] 
    for arg in args:
@@ -70,7 +73,11 @@ bp = 293
 bp_std = 70
 
 csv = Read_CSV_File(csv_fn)
-intensity_z = Standardise_Intensity(csv[:,5], bp, bp_std)
+pixels = csv[:,5]
+cell_ids = csv[:,0]
+normal_dist = csv[:,1] 
+ 
+intensity_z = Standardise_Intensity(pixels, bp, bp_std)
 #Show3DPlot(csv[:,1], csv[:,0], intensity_z) 
 
-Show2DPlot(csv[:,0], intensity_z, csv[:,1])
+Show2DPlot(cell_ids, -normal_dist, intensity_z)
