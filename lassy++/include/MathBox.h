@@ -1,4 +1,5 @@
 #define HAS_VTK 1
+#pragma once
 
 using namespace std; 
 

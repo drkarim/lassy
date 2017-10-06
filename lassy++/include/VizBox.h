@@ -1,4 +1,6 @@
 #define HAS_VTK 1
+#pragma once
+
 #include <vtkStructuredPoints.h>
 #include <vtkStructuredPointsReader.h>
 #include <vtkSmartPointer.h>
@@ -7,6 +9,10 @@
 #include <vtkImageActor.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkImageMapper3D.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 
 using namespace std; 
 

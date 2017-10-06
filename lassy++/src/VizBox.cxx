@@ -65,20 +65,24 @@ void VizBox::ConstructImageOrthogonalPlanes()
 
 	sliceZColors->SetInputData(la_img_struct_pts);
 	sliceZColors->SetLookupTable(_bwLut);
-	this->_zSlice->SetInputData(sliceZColors->GetOutput());
-	this->_zSlice->SetDisplayExtent(0, maxX - 1, 0, maxY - 1, zPos, zPos);
+	//this->_zSlice->SetInputData(sliceZColors->GetOutput());
+	_zSlice->GetMapper()->SetInputConnection(sliceZColors->GetOutputPort());
+	_zSlice->SetDisplayExtent(0, maxX - 1, 0, maxY - 1, zPos, zPos);
 
 	// X Plane
 	sliceXColors->SetInputData(la_img_struct_pts);
 	sliceXColors->SetLookupTable(_bwLut);
-	this->_xSlice->SetInputData(sliceXColors->GetOutput());
-	this->_xSlice->SetDisplayExtent(xPos, xPos, 0, maxY - 1, 0, maxZ - 1);
+	//this->_xSlice->SetInputData(sliceXColors->GetOutput());
+	_xSlice->GetMapper()->SetInputConnection(sliceXColors->GetOutputPort());
+	_xSlice->SetDisplayExtent(xPos, xPos, 0, maxY - 1, 0, maxZ - 1);
 
 	// Y Plane
 	sliceYColors->SetInputData(la_img_struct_pts);
 	sliceYColors->SetLookupTable(_bwLut);
-	this->_ySlice->SetInputData(sliceYColors->GetOutput());
-	this->_ySlice->SetDisplayExtent(0, maxX - 1, yPos, yPos, 0, maxZ - 1);
+	_ySlice->GetMapper()->SetInputConnection(sliceYColors->GetOutputPort());
+	_ySlice->SetDisplayExtent(0, maxX - 1, yPos, yPos, 0, maxZ - 1);
+
+
 
 	_renderer->AddActor(_xSlice);
 	_renderer->AddActor(_ySlice);
@@ -90,4 +94,14 @@ void VizBox::ShowInit()
 {
 	_renWin->AddRenderer(_renderer);
 	_renWin->Render();
+	_renWin->SetSize(640, 480);
+	_renWin->SetWindowName("Lassy3D");
+
+	vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	vtkSmartPointer<vtkInteractorStyleImage> imagestyle = vtkSmartPointer<vtkInteractorStyleImage>::New();
+	vtkSmartPointer<vtkInteractorStyleTrackballCamera> camerastyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+	renderWindowInteractor->SetInteractorStyle(camerastyle);
+	renderWindowInteractor->SetRenderWindow(_renWin);
+	renderWindowInteractor->Initialize();
+	renderWindowInteractor->Start();
 }

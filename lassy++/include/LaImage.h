@@ -11,7 +11,10 @@
 *	For more information: https://itk.org/Doxygen43/html/classitk_1_1Image.html
 *
 *
-*/#include "itkImageFileReader.h"
+*/
+#pragma once
+
+#include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include <itkImageIterator.h>
 #include "itkRescaleIntensityImageFilter.h"
