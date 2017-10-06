@@ -14,6 +14,11 @@ SET(LASSY_INCLUDES
 
 add_subdirectory(lassy++/src) 
 include_directories(${LASSY_INCLUDES})
-add_executable(test_stub main.cxx)
+add_executable(lassy main.cxx)
 
-target_link_libraries(test_stub lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+
+target_link_libraries(lassy lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+
+if (UNIX)
+INSTALL(TARGETS lassy DESTINATION /usr/local/bin)
+endif (UNIX)
