@@ -1,3 +1,17 @@
+/*
+*      Author:
+*      Dr. Rashed Karim
+*      Department of Biomedical Engineering, King's College London
+*      Email: rashed 'dot' karim @kcl.ac.uk
+*      Copyright (c) 2017
+*/
+
+/*
+*	The VizBox class is a 3D visualiser for LaImage
+*	It uses 2D orthogonal planes to visualise the 3D data. This is essentially slicing 
+*	through the 3D data. 
+*
+*/
 #define HAS_VTK 1
 #pragma once
 
@@ -33,9 +47,22 @@ private:
 public:
 	// Constructor with default values for data members
 	VizBox(LaImage* la_img);
+
+	/*
+	*	This will create the 2D orthogonal planes by slicing through the data
+	*	and converting these 2D slices to VTK entites which can be visualised 
+	*/ 
 	void ConstructImageOrthogonalPlanes();
+
+	/*
+	*	A color lookup table for the drawing the 2D orthogonal slices 
+	*/
 	void SetLookupTable();
 
+	/*
+	*	Draws the visualisations created on the screen 
+	*	Also sets the window interactor 
+	*/
 	void ShowInit();
 	
 }; 
