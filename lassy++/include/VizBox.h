@@ -7,9 +7,9 @@
 */
 
 /*
-*	The VizBox class is a 3D visualiser for LaImage
+*	The VizBox class is a 3D visualiser for Lassy entities such as LaImage and LaShell  
 *	It uses 2D orthogonal planes to visualise the 3D data. This is essentially slicing 
-*	through the 3D data. 
+*	through the 3D data. It uses 3D surface rendering for visualising the mesh 
 *
 */
 #define HAS_VTK 1
@@ -27,17 +27,26 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkImageMapper3D.h>
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyData.h>
+#include <vtkActor.h>
 
 using namespace std; 
 
 #include "../include/LaImage.h"
+#include "../include/LaShell.h"
 
 class VizBox {
 private:
 	vtkSmartPointer<vtkImageActor> _xSlice; 
 	vtkSmartPointer<vtkImageActor> _ySlice;
 	vtkSmartPointer<vtkImageActor> _zSlice;
+
+	vtkSmartPointer<vtkActor> _mesh3DActor;
+
 	vtkSmartPointer<vtkLookupTable> _bwLut;
+	vtkSmartPointer<vtkLookupTable> _colLut;
+
 	LaImage* _la_img;
 
 	vtkSmartPointer<vtkRenderer> _renderer;
@@ -46,18 +55,21 @@ private:
 
 public:
 	// Constructor with default values for data members
-	VizBox(LaImage* la_img);
+	VizBox();
 
 	/*
 	*	This will create the 2D orthogonal planes by slicing through the data
 	*	and converting these 2D slices to VTK entites which can be visualised 
 	*/ 
-	void ConstructImageOrthogonalPlanes();
+	void ConstructImageOrthogonalPlanes(LaImage* img3d);
 
 	/*
-	*	A color lookup table for the drawing the 2D orthogonal slices 
+	*	A color lookup table for drawing the 3D images and mesh  
 	*/
-	void SetLookupTable();
+	void SetLookupTable_image3d(LaImage* img3d);
+	void SetLookupTable_mesh3d(LaShell* mesh3D);
+
+	void ConstructMeshVisualiser(LaShell* mesh3d);
 
 	/*
 	*	Draws the visualisations created on the screen 

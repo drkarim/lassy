@@ -10,24 +10,25 @@
 using namespace std;
 
 
-VizBox::VizBox(LaImage* la_img)
+VizBox::VizBox()
 {
 	_xSlice = vtkSmartPointer<vtkImageActor>::New();
 	_ySlice = vtkSmartPointer<vtkImageActor>::New();
 	_zSlice = vtkSmartPointer<vtkImageActor>::New();
+	_mesh3DActor = vtkSmartPointer<vtkActor>::New();
 	_renWin = vtkSmartPointer<vtkRenderWindow>::New();
 
 	_renderer = vtkSmartPointer<vtkRenderer>::New();
 	
-	_la_img = la_img; 
+	
 }
 
 
-void VizBox::SetLookupTable()
+void VizBox::SetLookupTable_image3d(LaImage* img3d)
 {
 	short min, max; 
 	cout << "Setting black-white lookup table ... ";
-	_la_img->GetMinimumMaximum(min, max);
+	img3d->GetMinimumMaximum(min, max);
 	_bwLut = vtkSmartPointer<vtkLookupTable>::New();
 
 	_bwLut->SetRange(0, max); // image intensity range
@@ -39,12 +40,30 @@ void VizBox::SetLookupTable()
 
 }
 
-void VizBox::ConstructImageOrthogonalPlanes()
+void VizBox::SetLookupTable_mesh3d(LaShell* mesh3d)
+{
+	double min, max; 
+	cout << "Setting colour lookup table ... ";
+	mesh3d->GetMinimumMaximum(min, max);
+	_colLut = vtkSmartPointer<vtkLookupTable>::New();
+
+
+	_colLut->SetNumberOfColors(256);
+	_colLut->SetTableRange(0,1);
+	_colLut->SetHueRange (0.6667, 0.0);
+	_colLut->SetSaturationRange (1.0, 1.0);
+	_colLut->SetValueRange (1.0, 1.0);
+	_colLut->Build();
+	cout << "completed! ";
+
+}
+
+void VizBox::ConstructImageOrthogonalPlanes(LaImage* img3d)
 {
 	
 	// Convert image to structured points 
 	char* temp_vtk_fn = "temp_123234.vtk";
-	_la_img->ConvertToVTKImage(temp_vtk_fn);
+	img3d->ConvertToVTKImage(temp_vtk_fn);
 	vtkSmartPointer<vtkStructuredPointsReader > reader = vtkSmartPointer<vtkStructuredPointsReader >::New();
 	reader->SetFileName(temp_vtk_fn);
 	reader->Update();
@@ -56,12 +75,11 @@ void VizBox::ConstructImageOrthogonalPlanes()
 	vtkSmartPointer<vtkImageMapToColors> sliceYColors = vtkSmartPointer<vtkImageMapToColors>::New();
 	vtkSmartPointer<vtkImageMapToColors> sliceZColors = vtkSmartPointer<vtkImageMapToColors>::New();
 
-	
 	int maxX, maxY, maxZ;
-	_la_img->GetImageSize(maxX, maxY, maxZ);
+	img3d->GetImageSize(maxX, maxY, maxZ);
 	int zPos = maxZ/2, yPos = maxY/2, xPos = maxX/2;
 
-	this->SetLookupTable();
+	this->SetLookupTable_image3d(img3d);
 
 	sliceZColors->SetInputData(la_img_struct_pts);
 	sliceZColors->SetLookupTable(_bwLut);
@@ -83,11 +101,26 @@ void VizBox::ConstructImageOrthogonalPlanes()
 	_ySlice->SetDisplayExtent(0, maxX - 1, yPos, yPos, 0, maxZ - 1);
 
 
-
 	_renderer->AddActor(_xSlice);
 	_renderer->AddActor(_ySlice);
 	_renderer->AddActor(_zSlice);
 
+}
+
+void VizBox::ConstructMeshVisualiser(LaShell* mesh3d)
+{
+	vtkSmartPointer<vtkPolyDataMapper> MeshMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	vtkSmartPointer<vtkPolyData> meshPolyData = vtkSmartPointer<vtkPolyData>::New();
+	mesh3d->GetMesh3D(meshPolyData);
+	MeshMapper->SetInputData(meshPolyData);
+	MeshMapper->SetColorModeToMapScalars();
+	MeshMapper->SetScalarRange(0,5);
+
+	this->SetLookupTable_mesh3d(mesh3d);
+	MeshMapper->SetLookupTable(_colLut);
+
+	_mesh3DActor->SetMapper(MeshMapper);
+	_renderer->AddActor(_mesh3DActor);
 }
 
 void VizBox::ShowInit()

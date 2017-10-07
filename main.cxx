@@ -126,12 +126,18 @@ int main(int argc, char * argv[])
 	}
 	else if (method == 5)
 	{
-		LaImage *lge_img = new LaImage(input_f);
+		LaImage *bp_mask_img = new LaImage(input_f);
+		LaImage *lge_img = new LaImage(input_f2);
+		
+		LaShell* la_mesh = new LaShell();
+		la_mesh->ConvertMaskToMesh(bp_mask_img, 0.5);
+		la_mesh->SurfaceProjection(lge_img); 
 
-		VizBox* visualiser = new VizBox(lge_img); 
-		visualiser->ConstructImageOrthogonalPlanes(); 
+		VizBox* visualiser = new VizBox(); 
+		visualiser->ConstructImageOrthogonalPlanes(lge_img); 
+		visualiser->ConstructMeshVisualiser(la_mesh);
 		visualiser->ShowInit();
-
 	}
+	
 
 }

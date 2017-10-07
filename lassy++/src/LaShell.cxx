@@ -55,6 +55,13 @@ void LaShell::ExportVTK(char* vtk_fn)
 	writer->Update();
 }
 
+void LaShell::GetMinimumMaximum(double& min, double& max)
+{
+	// Not yet implemented 
+	min=0; 
+	max=3;
+}
+
 
 void LaShell::ConvertMaskToMesh(LaImage *la_mask, double threshold)
 {

@@ -11,6 +11,7 @@
 *	For more information: https://www.vtk.org/doc/nightly/html/classvtkPolyData.html
 *
 */
+#pragma once
 #define HAS_VTK 1
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
@@ -48,7 +49,7 @@ public:
 	LaShell(const char* vtk_filename);
 	
 	void GetMesh3D(vtkPolyData* mesh_output);
-
+	void GetMinimumMaximum(double &min, double& max);		// not implemented yet!
 	/*
 	*	Exports the VTK mesh to a file 
 	*/
