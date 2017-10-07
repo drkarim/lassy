@@ -17,6 +17,9 @@ It takes input parameters such as:
 
 ```-i``` Ventricular myocardial shell in VTK format 
 
+## Platforms 
+Lassy has been tested on Windows 7 on Visual Studio 2015 and MacOS Sierra 10.12 running native g++ compilers. 
+
 ## Author 
 
 ```
