@@ -32,6 +32,7 @@
 #include <vtkActor.h>
 #include <vtkObjectFactory.h>
 #include <vtkCallbackCommand.h>
+#include <vtkProperty.h>
 
 using namespace std; 
 
@@ -55,7 +56,9 @@ private:
 	vtkSmartPointer<vtkRenderWindow> _renWin;
 
 	int _xPos, _yPos, _zPos; 
-	int _maxX, _maxY, _maxZ; 
+	int _maxX, _maxY, _maxZ;
+
+	double _mesh3DActor_opacity;
 	
 
 public:
@@ -81,6 +84,8 @@ public:
 	*	increment (or -ve for decrement)
 	*/
 	void MoveSlice(int slice_dir, int increment);
+
+	void ChangeMeshOpacity(double direction); 
 
 	/*
 	*	Draws the visualisations created on the screen 

@@ -28,6 +28,7 @@ VizBox::VizBox()
 	_maxY = 0; 
 	_maxZ = 0; 
 
+	_mesh3DActor_opacity = 1;		// when displayed the mesh is fully opaque 
 	
 }
 
@@ -85,6 +86,9 @@ void VizBox::ConstructImageOrthogonalPlanes(LaImage* img3d)
 
 	img3d->GetImageSize(_maxX, _maxY, _maxZ);
 	_zPos = _maxZ/2, _yPos = _maxY/2, _xPos = _maxX/2;
+
+	cout << "X = " << _maxX << " ," << "Y = " << _maxY << ", Z = " << _maxZ << endl;
+	cout << "xPos= " << _xPos << ", yPos=" << _yPos << ", zPos= " << _zPos << endl;
 
 	this->SetLookupTable_image3d(img3d);
 
@@ -145,6 +149,7 @@ void VizBox::ShowInit()
 
 	vtkSmartPointer<vtkCallbackCommand> keypressCallback = vtkSmartPointer<vtkCallbackCommand>::New();
   	keypressCallback->SetCallback( VizBox::KeypressCallbackFunction );
+	keypressCallback->SetClientData(this); 
   	renderWindowInteractor->AddObserver( vtkCommand::KeyPressEvent, keypressCallback );
 
 	renderWindowInteractor->SetInteractorStyle(camerastyle);
@@ -153,47 +158,101 @@ void VizBox::ShowInit()
 	renderWindowInteractor->Start();
 }
 
-void VizBox::KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData) )
+void VizBox::KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* clientData, void* vtkNotUsed(callData) )
 {
   std::cout << "Keypress callback" << std::endl;
  
-  vtkRenderWindowInteractor *iren = 
-    static_cast<vtkRenderWindowInteractor*>(caller);
+  vtkRenderWindowInteractor *iren =  static_cast<vtkRenderWindowInteractor*>(caller);
+  VizBox *vizbox = static_cast<VizBox*>(clientData); 
+  // std::cout << "Pressed: " << iren->GetKeySym() << std::endl;                                                    
+  char *key = iren->GetKeySym(); 
  
-  std::cout << "Pressed: " << iren->GetKeySym() << std::endl;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  switch (*key)
+  {
+	case 'X': 
+		vizbox->MoveSlice(1, 1);
+		break;
+
+	case 'x': 
+		vizbox->MoveSlice(1, -1);
+		break; 
+
+	case 'Y':
+		vizbox->MoveSlice(2, 1);
+		break;
+
+	case 'y':
+		vizbox->MoveSlice(2, -1);
+		break;
+
+	case 'Z':
+		vizbox->MoveSlice(3, 1);
+		break;
+
+	case 'z':
+		vizbox->MoveSlice(3, -1);
+		break;
+	
+	case 'o': 
+		vizbox->ChangeMeshOpacity(0.25);
+		break; 
+	
+	case 't':
+		vizbox->ChangeMeshOpacity(-0.25);
+		break;
+  }
+
+}
+
+void VizBox::ChangeMeshOpacity(double amount)
+{
+	double opac = _mesh3DActor_opacity; 
+	cout << "changing opacity, currently = " << opac; 
+	if (opac + amount > 0 && opac + amount <= 1)
+	{
+		_mesh3DActor_opacity += amount;
+		cout << ", changing to = " << _mesh3DActor_opacity << endl;
+		_mesh3DActor->GetProperty()->SetOpacity(_mesh3DActor_opacity);
+		_renWin->Render();
+	}
 }
 
 void VizBox::MoveSlice(int slice_dir, int increment)
 {	
 	vtkSmartPointer<vtkImageActor> slice;
+	cout << "Moving slice: direction = " << slice_dir << ", increment = " << increment; 
 	switch (slice_dir) {
-		case '1':
+		case 1:
 			slice = _xSlice;
-			_xPos = _xPos+increment;
+			
 			if (_xPos+increment > 0 && _xPos + increment < _maxX)
 			{
+				cout << ", x direction\n";
 				_xPos = _xPos+increment; 
+				slice->SetDisplayExtent(_xPos, _xPos, 0, _maxY - 1, 0, _maxZ - 1);
 			}
 
-			slice->SetDisplayExtent(_xPos,_xPos,0,_maxY-1,0,_maxZ-1);
+			
 		break; 
-		case '2': 
+		case 2: 
 			slice = _ySlice; 
-			_yPos = _yPos+increment; 
+			 
 			if (_yPos+increment > 0 && _yPos + increment < _maxY)
 			{
 				_yPos = _yPos+increment; 
+				slice->SetDisplayExtent(0, _maxX - 1, _yPos, _yPos, 0, _maxZ - 1);
 			}
-			slice->SetDisplayExtent(0, _maxX-1, _yPos,_yPos,0,_maxZ-1);
+			
 		break; 
-		case '3': 
+		case 3: 
 			slice = _zSlice; 
-			_zPos = _zPos+increment ;
+			
 			if (_zPos+increment > 0 && _zPos + increment < _maxZ)
 			{
 				_zPos = _zPos+increment; 
+				slice->SetDisplayExtent(0, _maxX - 1, 0, _maxY - 1, _zPos, _zPos);
 			}
-			slice->SetDisplayExtent(0, _maxX-1, 0,_maxY-1 ,_zPos,_zPos);
+			
 		break;
 
 	}

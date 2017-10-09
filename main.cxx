@@ -126,13 +126,12 @@ int main(int argc, char * argv[])
 	}
 	else if (method == 5)
 	{
-		LaImage *bp_mask_img = new LaImage(input_f);
+		cout << "\nMethod = " << method << ", Visualising a 3D mesh and its corresponding 3D image slices, from file" << endl;
+		//LaImage *bp_mask_img = new LaImage(input_f);
+		LaShell* la_mesh = new LaShell(input_f);
 		LaImage *lge_img = new LaImage(input_f2);
 		
-		LaShell* la_mesh = new LaShell();
-		la_mesh->ConvertMaskToMesh(bp_mask_img, 0.5);
-		la_mesh->SurfaceProjection(lge_img); 
-
+		
 		VizBox* visualiser = new VizBox(); 
 		visualiser->ConstructImageOrthogonalPlanes(lge_img); 
 		visualiser->ConstructMeshVisualiser(la_mesh);
