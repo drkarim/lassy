@@ -3,6 +3,7 @@
 Lassy is an C++ library with a visualisation framework for interogating a 3D image using a 2D polygonal mesh. The surface normals of the polygons in the mesh is used to interrograte the image intensities along the normal. 
 
 <img align="right" src="http://catlikecoding.com/unity/tutorials/noise-derivatives/05-mesh-normals.png" width="250">
+
 It was developed with specific scientific research applications in mind, and thus can only (currently) process 3D images and meshes stored in a certain format. The 3D images are expected to be in the medical image formats: NifTII, NRRD, Analyze and GIPL. The meshes can be in [VTK](https://www.vtk.org/) format. 
 
 It is being currently developed for visualising late enhancment MRI imaging in [cardiac imaging research](https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/index.php?title=Research_Wiki)  at King's Biomedical Engineering
