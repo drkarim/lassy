@@ -30,6 +30,8 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyData.h>
 #include <vtkActor.h>
+#include <vtkObjectFactory.h>
+#include <vtkCallbackCommand.h>
 
 using namespace std; 
 
@@ -51,6 +53,9 @@ private:
 
 	vtkSmartPointer<vtkRenderer> _renderer;
 	vtkSmartPointer<vtkRenderWindow> _renWin;
+
+	int _xPos, _yPos, _zPos; 
+	int _maxX, _maxY, _maxZ; 
 	
 
 public:
@@ -72,10 +77,67 @@ public:
 	void ConstructMeshVisualiser(LaShell* mesh3d);
 
 	/*
+	*	Moves a 3D slice forward or backward by a user-defined 
+	*	increment (or -ve for decrement)
+	*/
+	void MoveSlice(int slice_dir, int increment);
+
+	/*
 	*	Draws the visualisations created on the screen 
 	*	Also sets the window interactor 
 	*/
 	void ShowInit();
+
+	static void KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData) );
 	
 }; 
 
+
+/*
+class KeyPressInteractorStyle : public vtkInteractorStyleTrackballCamera
+{
+  public:
+    static KeyPressInteractorStyle* New();
+    vtkTypeMacro(KeyPressInteractorStyle, vtkInteractorStyleTrackballCamera);
+ 
+    virtual void OnKeyPress() 
+    {
+      // Get the keypress
+      vtkRenderWindowInteractor *rwi = this->Interactor;
+      std::string key = rwi->GetKeySym();
+ 
+      // Output the key that was pressed
+      std::cout << "Pressed " << key << std::endl;
+ 
+      // Handle an arrow key
+      if(key == "x")
+        {
+        std::cout << "The x key was pressed." << std::endl;
+        }
+
+		if(key == "X")
+        {
+        std::cout << "The X key was pressed." << std::endl;
+        }
+ 
+      // Handle a "normal" key
+      if(key == "y")
+        {
+        std::cout << "The y key was pressed." << std::endl;
+        }
+	
+	if(key == "z")
+        {
+        std::cout << "The z key was pressed." << std::endl;
+        }
+	
+	
+ 
+      // Forward events
+      vtkInteractorStyleTrackballCamera::OnKeyPress();
+    }
+ 
+};
+vtkStandardNewMacro(KeyPressInteractorStyle);
+
+*/

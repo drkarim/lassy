@@ -20,6 +20,14 @@ VizBox::VizBox()
 
 	_renderer = vtkSmartPointer<vtkRenderer>::New();
 	
+	_xPos = 0; 
+	_yPos = 0; 
+	_zPos = 0; 
+
+	_maxX = 0;
+	_maxY = 0; 
+	_maxZ = 0; 
+
 	
 }
 
@@ -75,9 +83,8 @@ void VizBox::ConstructImageOrthogonalPlanes(LaImage* img3d)
 	vtkSmartPointer<vtkImageMapToColors> sliceYColors = vtkSmartPointer<vtkImageMapToColors>::New();
 	vtkSmartPointer<vtkImageMapToColors> sliceZColors = vtkSmartPointer<vtkImageMapToColors>::New();
 
-	int maxX, maxY, maxZ;
-	img3d->GetImageSize(maxX, maxY, maxZ);
-	int zPos = maxZ/2, yPos = maxY/2, xPos = maxX/2;
+	img3d->GetImageSize(_maxX, _maxY, _maxZ);
+	_zPos = _maxZ/2, _yPos = _maxY/2, _xPos = _maxX/2;
 
 	this->SetLookupTable_image3d(img3d);
 
@@ -85,20 +92,20 @@ void VizBox::ConstructImageOrthogonalPlanes(LaImage* img3d)
 	sliceZColors->SetLookupTable(_bwLut);
 	//this->_zSlice->SetInputData(sliceZColors->GetOutput());
 	_zSlice->GetMapper()->SetInputConnection(sliceZColors->GetOutputPort());
-	_zSlice->SetDisplayExtent(0, maxX - 1, 0, maxY - 1, zPos, zPos);
+	_zSlice->SetDisplayExtent(0, _maxX - 1, 0, _maxY - 1, _zPos, _zPos);
 
 	// X Plane
 	sliceXColors->SetInputData(la_img_struct_pts);
 	sliceXColors->SetLookupTable(_bwLut);
 	//this->_xSlice->SetInputData(sliceXColors->GetOutput());
 	_xSlice->GetMapper()->SetInputConnection(sliceXColors->GetOutputPort());
-	_xSlice->SetDisplayExtent(xPos, xPos, 0, maxY - 1, 0, maxZ - 1);
+	_xSlice->SetDisplayExtent(_xPos, _xPos, 0, _maxY - 1, 0, _maxZ - 1);
 
 	// Y Plane
 	sliceYColors->SetInputData(la_img_struct_pts);
 	sliceYColors->SetLookupTable(_bwLut);
 	_ySlice->GetMapper()->SetInputConnection(sliceYColors->GetOutputPort());
-	_ySlice->SetDisplayExtent(0, maxX - 1, yPos, yPos, 0, maxZ - 1);
+	_ySlice->SetDisplayExtent(0, _maxX - 1, _yPos, _yPos, 0, _maxZ - 1);
 
 
 	_renderer->AddActor(_xSlice);
@@ -125,6 +132,7 @@ void VizBox::ConstructMeshVisualiser(LaShell* mesh3d)
 
 void VizBox::ShowInit()
 {
+	_renderer->SetBackground(1,1,1);
 	_renWin->AddRenderer(_renderer);
 	_renWin->Render();
 	_renWin->SetSize(640, 480);
@@ -133,8 +141,62 @@ void VizBox::ShowInit()
 	vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
 	vtkSmartPointer<vtkInteractorStyleImage> imagestyle = vtkSmartPointer<vtkInteractorStyleImage>::New();
 	vtkSmartPointer<vtkInteractorStyleTrackballCamera> camerastyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+	
+
+	vtkSmartPointer<vtkCallbackCommand> keypressCallback = vtkSmartPointer<vtkCallbackCommand>::New();
+  	keypressCallback->SetCallback( VizBox::KeypressCallbackFunction );
+  	renderWindowInteractor->AddObserver( vtkCommand::KeyPressEvent, keypressCallback );
+
 	renderWindowInteractor->SetInteractorStyle(camerastyle);
 	renderWindowInteractor->SetRenderWindow(_renWin);
 	renderWindowInteractor->Initialize();
 	renderWindowInteractor->Start();
+}
+
+void VizBox::KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData) )
+{
+  std::cout << "Keypress callback" << std::endl;
+ 
+  vtkRenderWindowInteractor *iren = 
+    static_cast<vtkRenderWindowInteractor*>(caller);
+ 
+  std::cout << "Pressed: " << iren->GetKeySym() << std::endl;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+}
+
+void VizBox::MoveSlice(int slice_dir, int increment)
+{	
+	vtkSmartPointer<vtkImageActor> slice;
+	switch (slice_dir) {
+		case '1':
+			slice = _xSlice;
+			_xPos = _xPos+increment;
+			if (_xPos+increment > 0 && _xPos + increment < _maxX)
+			{
+				_xPos = _xPos+increment; 
+			}
+
+			slice->SetDisplayExtent(_xPos,_xPos,0,_maxY-1,0,_maxZ-1);
+		break; 
+		case '2': 
+			slice = _ySlice; 
+			_yPos = _yPos+increment; 
+			if (_yPos+increment > 0 && _yPos + increment < _maxY)
+			{
+				_yPos = _yPos+increment; 
+			}
+			slice->SetDisplayExtent(0, _maxX-1, _yPos,_yPos,0,_maxZ-1);
+		break; 
+		case '3': 
+			slice = _zSlice; 
+			_zPos = _zPos+increment ;
+			if (_zPos+increment > 0 && _zPos + increment < _maxZ)
+			{
+				_zPos = _zPos+increment; 
+			}
+			slice->SetDisplayExtent(0, _maxX-1, 0,_maxY-1 ,_zPos,_zPos);
+		break;
+
+	}
+
+	_renWin->Render();
 }
