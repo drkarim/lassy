@@ -110,6 +110,7 @@ int main(int argc, char * argv[])
 		la_mesh->ConvertMaskToMesh(la_img, 0.5);
 		
 		la_mesh->SurfaceProjection(lge_img); 
+		la_mesh->ConvertToPointData();
 		la_mesh->ExportVTK(output_f);
 	}
 	else if (method == 4)			// Mesh normal interrogating of image, with mask constraint 

@@ -4,6 +4,7 @@
 #include <iostream>    // using IO functions
 #include <string>      // using string
 #include "../include/LaShell.h"
+#include "../include/ShellEntropy.h"
 using namespace std;
 
 
@@ -208,3 +209,16 @@ void LaShell::SurfaceProjection(LaImage* intensity_img, bool doLogging, LaImage*
 	_mesh_3d->GetCellData()->SetScalars(scalars);
 }
 
+void LaShell::ConvertToPointData()
+{
+	vtkSmartPointer<vtkCellDataToPointData> cell_to_point = vtkSmartPointer<vtkCellDataToPointData>::New(); 
+	cell_to_point->SetInputData(_mesh_3d); 
+	cell_to_point->PassCellDataOn(); 
+	cell_to_point->Update();
+	_mesh_3d->DeepCopy(cell_to_point->GetPolyDataOutput()); 
+}
+
+void LaShell::ComputeMeshNeighbourhoodTransform(vtkSmartPointer<vtkPolyData> mesh_output)
+{
+	ShellEntropy* entropy = new ShellEntropy(_mesh_3d);
+}

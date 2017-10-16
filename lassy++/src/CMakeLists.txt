@@ -3,6 +3,7 @@ SET(LASSY_INCLUDES
 	"../include/LaImage.h"
 	"../include/MathBox.h"
 	"../include/VizBox.h"
+	"../include/ShellEntropy.h"
 )
 
 SET(LASSY_SRCS 
@@ -10,6 +11,7 @@ SET(LASSY_SRCS
 	LaImage.cxx
 	MathBox.cxx
 	VizBox.cxx
+	ShellEntropy.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})

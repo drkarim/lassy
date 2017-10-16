@@ -19,17 +19,10 @@
 #include <vtkSmartPointer.h>
 #include <vtkDoubleArray.h>
 #include <vtkPolyDataReader.h>
-#include <vtkMarchingCubes.h>
-#include <vtkSmoothPolyDataFilter.h>
-#include <vtkDecimatePro.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkFileOutputWindow.h>
-#include <vtkStructuredPoints.h>
-#include <vtkStructuredPointsReader.h>
 #include <vtkPolyDataWriter.h>
-#include <vtkFloatArray.h>
 #include <vtkCellData.h>
+#include <vtkCellDataToPointData.h>
 #include <string>
 #include "LaImage.h"
 
@@ -43,6 +36,7 @@ private:
 	
 	vector<double> _mesh_vertex_values; 
 
+	
 public:
 	// Constructor with default values for data members
 	LaShell();
@@ -71,7 +65,11 @@ public:
 	*/
 	void SurfaceProjection(LaImage* raw_img, bool doLogging=false, LaImage* mask_img=NULL);
 	
+	void ConvertToPointData();
 
 	vector<double> GetMeshVertexValues();
+
+
+	void ComputeMeshNeighbourhoodTransform(vtkSmartPointer<vtkPolyData> new_mesh);
 	
 }; 
