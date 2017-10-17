@@ -2,6 +2,7 @@
 
 #include "LaShell.h"
 #include "VizBox.h"
+#include "ShellEntropy.h"
 #include <numeric> 
 
 /*
@@ -16,6 +17,7 @@ int main(int argc, char * argv[])
 	char* input_f, *input_f2, *input_f3, *output_f, *output_poly_fn, *output_txt_fn;
 	bool foundArgs1=false, foundArgs2=false; 
 	int method=0; 
+	float i_value=0;
 
 	if (argc >= 1)
 	{
@@ -36,6 +38,11 @@ int main(int argc, char * argv[])
 				else if (string(argv[i]) == "-m")
 				{
 					method = atoi(argv[i + 1]); 
+
+				}
+				else if (string(argv[i]) == "-v")
+				{
+					i_value = atof(argv[i + 1]);
 
 				}
 				else if (string(argv[i]) == "-o") {
@@ -59,7 +66,8 @@ int main(int argc, char * argv[])
 			"\n\n2. Pixel value at all image locations (m=2)\n\tinputs: \n\t-i - Input 3D image in NIFTII/NRRD/GIPL format\n\t-o - Output text file"
 			"\n\n3. Surface normal interrogation (scar3D) (m=3)\n\tinputs: \n\t-i - Input 3D binary mask\n\t-i2 - Input 3D MRI/CT image\n\t-o - Output VTK mesh"
 			"\n\n4. Surface normal interrogation within mask (m=4)\n\tinputs: \n\t-i - Input 3D binary mask\n\t-i2 - Input 3D MRI/CT image\n\t-i3 - Scar 3D mask image\n\t-o - Output VTK mesh" 
-			"\n\n5. Visualising a mesh and image from file (m=5)\n\tinputs: \n\t-i - VTK mesh\n\t-i2 - Input 3D MRI/CT image" << endl;
+			"\n\n5. Visualising a mesh and image from file (m=5)\n\tinputs: \n\t-i - VTK mesh\n\t-i2 - Input 3D MRI/CT image" 
+			"\n\n6. Entropy around a point (m=6)\n\tinputs: \n\t-i - VTK mesh\n\t-v - Point ID" << endl;
 		exit(1);
 	}
 
@@ -138,6 +146,15 @@ int main(int argc, char * argv[])
 		visualiser->ConstructImageOrthogonalPlanes(lge_img); 
 		visualiser->ConstructMeshVisualiser(la_mesh);
 		visualiser->ShowInit();
+	}
+	else if (method == 6)
+	{
+		cout << "\nMethod = " << method << ", Entropy of a mesh vertex around point with ID " << i_value << endl;
+		//LaShell* la_mesh = new LaShell(input_f);
+
+		ShellEntropy* entropy = new ShellEntropy(input_f); 
+		entropy->GetPointEntropy(i_value); 
+
 	}
 	
 

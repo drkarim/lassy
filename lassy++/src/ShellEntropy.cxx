@@ -16,6 +16,53 @@ ShellEntropy::ShellEntropy(vtkSmartPointer<vtkPolyData> mesh) {
 	_mesh_3d->DeepCopy(mesh);
 }
 
+ShellEntropy::ShellEntropy(LaShell* la_shell) {
+	
+	la_shell->GetMesh3D(_mesh_3d);
+	
+}
+
+
+ShellEntropy::ShellEntropy(const char* vtk_fn)
+{
+
+	// Read from file 
+	vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+	reader->SetFileName(vtk_fn);
+	reader->Update();
+
+	_mesh_3d = vtkSmartPointer<vtkPolyData>::New();
+	_mesh_3d->DeepCopy(reader->GetOutput());
+
+}
+
+
+
+void ShellEntropy::GetPointEntropy(int pointID)
+{
+	vector<int> pointNeighbours; 
+	int nhood = 9; 
+	cout << "\nGetting point neighbourhood information ... ";
+	GetNeighboursAroundPoint(pointID, pointNeighbours, nhood); 
+	cout << "completed! Now printing to file .... " << endl; 
+
+	ofstream out;
+	stringstream ss; 
+	ss << "pixels_around_" << pointID << "_nhood_" << nhood << ".csv"; 
+	out.open(ss.str().c_str());
+	
+	vtkSmartPointer<vtkFloatArray> scalar_array = vtkSmartPointer<vtkFloatArray>::New();
+	scalar_array = vtkFloatArray::SafeDownCast(_mesh_3d->GetPointData()->GetScalars());
+
+	for (int k = 0; k < pointNeighbours.size(); k++)
+	{
+		out << scalar_array->GetTuple1(k) << endl;
+	}
+
+	out.close(); 
+
+}
+
 bool ShellEntropy::InsertPointIntoVisitedList(vtkIdType id)
 {
 	for (int i=0;i<_visited_point_list.size();i++)

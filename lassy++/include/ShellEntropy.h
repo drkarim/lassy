@@ -19,6 +19,11 @@
 #include <vtkFloatArray.h>
 #include <vtkCellData.h>
 
+#include <string> 
+#include <sstream>
+#include <iostream>
+
+#include "../include/LaShell.h"
 
 using namespace std; 
 
@@ -32,12 +37,22 @@ private:
 
 public:
 	
+	/*
+	*	Constructors 
+	*/
 	ShellEntropy(vtkSmartPointer<vtkPolyData> mesh);
+	ShellEntropy(LaShell* shell);
+	ShellEntropy(const char* vtk_fn); 
+	/*
+	*	End constructors 
+	*/
 
 	void GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order);
 	int RecursivePointNeighbours(vtkIdType pointId, int order);
 	void GetConnectedVertices(vtkSmartPointer<vtkPolyData> mesh, int seed, vtkSmartPointer<vtkIdList> connectedVertices);
 	bool InsertPointIntoVisitedList(vtkIdType id);
+
+	void GetPointEntropy(int pointID); 
 
 }; 
 
