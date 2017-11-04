@@ -1,6 +1,6 @@
 # Lassy
 <p>
-Lassy is an C++ library with a visualisation framework for interogating a 3D image using surface normal analysis. 
+Lassy is a C++ library with a visualisation framework for interogating a 3D image using surface normal analysis. 
   
 The surface normals are derived from a polyognal mesh in the 3D image space. A simple example application would be to interrograte the image intensities along the surface normal of a 3D binary mask. 
 
