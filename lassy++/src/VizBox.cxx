@@ -18,6 +18,8 @@ VizBox::VizBox()
 	_mesh3DActor = vtkSmartPointer<vtkActor>::New();
 	_renWin = vtkSmartPointer<vtkRenderWindow>::New();
 
+	_meshPolyData = vtkSmartPointer<vtkPolyData>::New();
+
 	_renderer = vtkSmartPointer<vtkRenderer>::New();
 	
 	_xPos = 0; 
@@ -118,12 +120,54 @@ void VizBox::ConstructImageOrthogonalPlanes(LaImage* img3d)
 
 }
 
+void VizBox::CalculateContours(int direction, double slice)
+{
+	
+	double bounds[6];
+	
+	_meshPolyData->GetBounds(bounds); 
+
+	std::cout << "Bounds: "
+		<< bounds[0] << ", " << bounds[1] << " "
+		<< bounds[2] << ", " << bounds[3] << " "
+		<< bounds[4] << ", " << bounds[5] << std::endl;
+	
+	vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
+	plane->SetOrigin((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, slice);
+	plane->SetNormal(0, 0, 1);
+
+	// Create cutter
+	vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
+	cutter->SetInputData(_meshPolyData);
+	cutter->SetCutFunction(plane);
+
+	// Create cutter
+	double high = plane->EvaluateFunction((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, bounds[5]);
+	cutter->GenerateValues(10, .99, .99 * high);
+	// cutter->GenerateValues(1, bounds[4], bounds[5]);
+	
+
+	vtkSmartPointer<vtkPolyDataMapper> cutterMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	cutterMapper->SetInputConnection(cutter->GetOutputPort());
+	cutterMapper->ScalarVisibilityOff();
+
+	// Create cut actor
+	vtkSmartPointer<vtkActor> cutterActor = vtkSmartPointer<vtkActor>::New();
+	vtkSmartPointer<vtkNamedColors> colors = vtkSmartPointer<vtkNamedColors>::New();
+	cutterActor->GetProperty()->SetColor(colors->GetColor3d("Banana").GetData());
+	cutterActor->GetProperty()->SetLineWidth(4);
+	cutterActor->SetMapper(cutterMapper);
+
+	_renderer->AddActor(cutterActor);
+
+}
+
 void VizBox::ConstructMeshVisualiser(LaShell* mesh3d)
 {
 	vtkSmartPointer<vtkPolyDataMapper> MeshMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	vtkSmartPointer<vtkPolyData> meshPolyData = vtkSmartPointer<vtkPolyData>::New();
-	mesh3d->GetMesh3D(meshPolyData);
-	MeshMapper->SetInputData(meshPolyData);
+	
+	mesh3d->GetMesh3D(_meshPolyData);
+	MeshMapper->SetInputData(_meshPolyData);
 	MeshMapper->SetColorModeToMapScalars();
 	MeshMapper->SetScalarRange(0,5);
 
@@ -251,6 +295,8 @@ void VizBox::MoveSlice(int slice_dir, int increment)
 			{
 				_zPos = _zPos+increment; 
 				slice->SetDisplayExtent(0, _maxX - 1, 0, _maxY - 1, _zPos, _zPos);
+
+				CalculateContours(0, _zPos);
 			}
 			
 		break;

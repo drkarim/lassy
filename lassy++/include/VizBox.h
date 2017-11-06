@@ -33,6 +33,9 @@
 #include <vtkObjectFactory.h>
 #include <vtkCallbackCommand.h>
 #include <vtkProperty.h>
+#include <vtkCutter.h>
+#include <vtkPlane.h>
+#include <vtkNamedColors.h>
 
 using namespace std; 
 
@@ -45,12 +48,13 @@ private:
 	vtkSmartPointer<vtkImageActor> _ySlice;
 	vtkSmartPointer<vtkImageActor> _zSlice;
 
+	vtkSmartPointer<vtkPolyData> _meshPolyData;
 	vtkSmartPointer<vtkActor> _mesh3DActor;
+
 
 	vtkSmartPointer<vtkLookupTable> _bwLut;
 	vtkSmartPointer<vtkLookupTable> _colLut;
 
-	LaImage* _la_img;
 
 	vtkSmartPointer<vtkRenderer> _renderer;
 	vtkSmartPointer<vtkRenderWindow> _renWin;
@@ -92,6 +96,9 @@ public:
 	*	Also sets the window interactor 
 	*/
 	void ShowInit();
+
+
+	void CalculateContours(int direction, double slice);
 
 	static void KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData) );
 	
