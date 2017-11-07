@@ -158,7 +158,7 @@ void VizBox::CalculateContours(int direction)
 			break;
 		case 3:
 			_zSlice->GetBounds(bounds_of_slice_actor);
-			plane->SetOrigin((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, bounds_of_slice_actor[4]); /*bounds[4]+(slice*step_z)*/
+			plane->SetOrigin((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, bounds_of_slice_actor[4]); 
 			plane->SetNormal(0, 0, 1);
 			
 			break;
@@ -169,12 +169,8 @@ void VizBox::CalculateContours(int direction)
 	vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
 	cutter->SetInputData(_meshPolyData);
 	cutter->SetCutFunction(plane);
-
-	// Create cutter
-	double high = plane->EvaluateFunction((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, bounds[5]);
-	//cutter->GenerateValues(10, .99, .99 * high);
 	cutter->Update();
-	// cutter->GenerateValues(1, bounds[4], bounds[5]);
+	
 	
 	vtkSmartPointer<vtkPolyDataMapper> cutterMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	cutterMapper->SetInputConnection(cutter->GetOutputPort());
@@ -197,8 +193,6 @@ void VizBox::CalculateContours(int direction)
 		temp = _contourActor_Z;
 	}
 
-	
-	
 	temp->GetProperty()->SetColor(colors->GetColor3d("Banana").GetData());
 	temp->GetProperty()->SetLineWidth(4);
 	temp->SetMapper(cutterMapper);
