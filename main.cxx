@@ -67,7 +67,8 @@ int main(int argc, char * argv[])
 			"\n\n3. Surface normal interrogation (scar3D) (m=3)\n\tinputs: \n\t-i - Input 3D binary mask\n\t-i2 - Input 3D MRI/CT image\n\t-o - Output VTK mesh"
 			"\n\n4. Surface normal interrogation within mask (m=4)\n\tinputs: \n\t-i - Input 3D binary mask\n\t-i2 - Input 3D MRI/CT image\n\t-i3 - Scar 3D mask image\n\t-o - Output VTK mesh" 
 			"\n\n5. Visualising a mesh and image from file (m=5)\n\tinputs: \n\t-i - VTK mesh\n\t-i2 - Input 3D MRI/CT image" 
-			"\n\n6. Entropy around a point (m=6)\n\tinputs: \n\t-i - VTK mesh\n\t-v - Point ID" << endl;
+			"\n\n6. Entropy around a point (m=6)\n\tinputs: \n\t-i - VTK mesh\n\t-v - Point ID" 
+			"\n\n7. Display contours on mesh (m=7)\n\tinputs: \n\t-i - VTK mesh" << endl;
 		exit(1);
 	}
 
@@ -155,6 +156,13 @@ int main(int argc, char * argv[])
 		ShellEntropy* entropy = new ShellEntropy(input_f); 
 		entropy->GetPointEntropy(i_value); 
 
+	}
+	else if (method == 7)
+	{
+		LaShell* la_mesh = new LaShell(input_f);
+		VizBox* visualiser = new VizBox();
+		visualiser->ConstructMeshVisualiser(la_mesh);
+		visualiser->ShowInit();
 	}
 	
 

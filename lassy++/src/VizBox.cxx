@@ -16,7 +16,13 @@ VizBox::VizBox()
 	_ySlice = vtkSmartPointer<vtkImageActor>::New();
 	_zSlice = vtkSmartPointer<vtkImageActor>::New();
 	_mesh3DActor = vtkSmartPointer<vtkActor>::New();
+
+	_contourActor_X = vtkSmartPointer<vtkActor>::New();
+	_contourActor_Y = vtkSmartPointer<vtkActor>::New();
+	_contourActor_Z = vtkSmartPointer<vtkActor>::New();
+
 	_renWin = vtkSmartPointer<vtkRenderWindow>::New();
+	
 
 	_meshPolyData = vtkSmartPointer<vtkPolyData>::New();
 
@@ -120,21 +126,44 @@ void VizBox::ConstructImageOrthogonalPlanes(LaImage* img3d)
 
 }
 
-void VizBox::CalculateContours(int direction, double slice)
+void VizBox::CalculateContours(int direction)
 {
 	
 	double bounds[6];
 	
 	_meshPolyData->GetBounds(bounds); 
-
+	/*
 	std::cout << "Bounds: "
 		<< bounds[0] << ", " << bounds[1] << " "
 		<< bounds[2] << ", " << bounds[3] << " "
-		<< bounds[4] << ", " << bounds[5] << std::endl;
+		<< bounds[4] << ", " << bounds[5] << std::endl;*/
 	
 	vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
-	plane->SetOrigin((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, slice);
-	plane->SetNormal(0, 0, 1);
+
+	double bounds_of_slice_actor[6];
+
+	switch (direction) {
+
+		case 1:
+			_xSlice->GetBounds(bounds_of_slice_actor);
+			plane->SetOrigin(bounds_of_slice_actor[0], (bounds[3] + bounds[2]) / 2.0, (bounds[4] + bounds[5]) / 2.0);
+			plane->SetNormal(1, 0, 0);
+			
+			break;
+		case 2:
+			_ySlice->GetBounds(bounds_of_slice_actor);
+			plane->SetOrigin((bounds[1] + bounds[0]) / 2.0, bounds_of_slice_actor[2], (bounds[4] + bounds[5]) / 2.0);
+			plane->SetNormal(0, 1, 0);
+			
+			break;
+		case 3:
+			_zSlice->GetBounds(bounds_of_slice_actor);
+			plane->SetOrigin((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, bounds_of_slice_actor[4]); /*bounds[4]+(slice*step_z)*/
+			plane->SetNormal(0, 0, 1);
+			
+			break;
+	}
+	
 
 	// Create cutter
 	vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
@@ -143,22 +172,40 @@ void VizBox::CalculateContours(int direction, double slice)
 
 	// Create cutter
 	double high = plane->EvaluateFunction((bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, bounds[5]);
-	cutter->GenerateValues(10, .99, .99 * high);
+	//cutter->GenerateValues(10, .99, .99 * high);
+	cutter->Update();
 	// cutter->GenerateValues(1, bounds[4], bounds[5]);
 	
-
 	vtkSmartPointer<vtkPolyDataMapper> cutterMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	cutterMapper->SetInputConnection(cutter->GetOutputPort());
 	cutterMapper->ScalarVisibilityOff();
-
+	
 	// Create cut actor
-	vtkSmartPointer<vtkActor> cutterActor = vtkSmartPointer<vtkActor>::New();
+	vtkSmartPointer<vtkActor> temp = vtkSmartPointer<vtkActor>::New();
 	vtkSmartPointer<vtkNamedColors> colors = vtkSmartPointer<vtkNamedColors>::New();
-	cutterActor->GetProperty()->SetColor(colors->GetColor3d("Banana").GetData());
-	cutterActor->GetProperty()->SetLineWidth(4);
-	cutterActor->SetMapper(cutterMapper);
 
-	_renderer->AddActor(cutterActor);
+	if (direction == 1) {
+		_renderer->RemoveActor(_contourActor_X);
+		temp = _contourActor_X; 
+	}
+	else if (direction == 2) {
+		_renderer->RemoveActor(_contourActor_Y);
+		temp = _contourActor_Y;
+	}
+	else if (direction == 3) {
+		_renderer->RemoveActor(_contourActor_Z);
+		temp = _contourActor_Z;
+	}
+
+	
+	
+	temp->GetProperty()->SetColor(colors->GetColor3d("Banana").GetData());
+	temp->GetProperty()->SetLineWidth(4);
+	temp->SetMapper(cutterMapper);
+
+	_renderer->AddActor(temp);
+
+	_renWin->Render();		// remove line after testing 
 
 }
 
@@ -176,6 +223,7 @@ void VizBox::ConstructMeshVisualiser(LaShell* mesh3d)
 
 	_mesh3DActor->SetMapper(MeshMapper);
 	_renderer->AddActor(_mesh3DActor);
+	CalculateContours(0);
 }
 
 void VizBox::ShowInit()
@@ -244,6 +292,8 @@ void VizBox::KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkN
 	case 't':
 		vizbox->ChangeMeshOpacity(-0.25);
 		break;
+	
+	
   }
 
 }
@@ -252,7 +302,7 @@ void VizBox::ChangeMeshOpacity(double amount)
 {
 	double opac = _mesh3DActor_opacity; 
 	cout << "changing opacity, currently = " << opac; 
-	if (opac + amount > 0 && opac + amount <= 1)
+	if (opac + amount >= 0 && opac + amount <= 1)
 	{
 		_mesh3DActor_opacity += amount;
 		cout << ", changing to = " << _mesh3DActor_opacity << endl;
@@ -274,6 +324,7 @@ void VizBox::MoveSlice(int slice_dir, int increment)
 				cout << ", x direction\n";
 				_xPos = _xPos+increment; 
 				slice->SetDisplayExtent(_xPos, _xPos, 0, _maxY - 1, 0, _maxZ - 1);
+				CalculateContours(1);
 			}
 
 			
@@ -285,6 +336,7 @@ void VizBox::MoveSlice(int slice_dir, int increment)
 			{
 				_yPos = _yPos+increment; 
 				slice->SetDisplayExtent(0, _maxX - 1, _yPos, _yPos, 0, _maxZ - 1);
+				CalculateContours(2);
 			}
 			
 		break; 
@@ -296,7 +348,7 @@ void VizBox::MoveSlice(int slice_dir, int increment)
 				_zPos = _zPos+increment; 
 				slice->SetDisplayExtent(0, _maxX - 1, 0, _maxY - 1, _zPos, _zPos);
 
-				CalculateContours(0, _zPos);
+				CalculateContours(3);
 			}
 			
 		break;

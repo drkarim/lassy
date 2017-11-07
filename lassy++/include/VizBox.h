@@ -59,6 +59,10 @@ private:
 	vtkSmartPointer<vtkRenderer> _renderer;
 	vtkSmartPointer<vtkRenderWindow> _renWin;
 
+	vtkSmartPointer<vtkActor> _contourActor_X;
+	vtkSmartPointer<vtkActor> _contourActor_Y;
+	vtkSmartPointer<vtkActor> _contourActor_Z;
+
 	int _xPos, _yPos, _zPos; 
 	int _maxX, _maxY, _maxZ;
 
@@ -98,7 +102,7 @@ public:
 	void ShowInit();
 
 
-	void CalculateContours(int direction, double slice);
+	void CalculateContours(int direction);
 
 	static void KeypressCallbackFunction( vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData) );
 	

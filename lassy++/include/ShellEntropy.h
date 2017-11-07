@@ -35,6 +35,8 @@ private:
 	vtkSmartPointer<vtkPolyData> _mesh_3d; 
 	vector<int> _visited_point_list; 
 
+
+
 public:
 	
 	/*
