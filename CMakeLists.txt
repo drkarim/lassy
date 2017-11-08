@@ -15,10 +15,13 @@ SET(LASSY_INCLUDES
 add_subdirectory(lassy++/src) 
 include_directories(${LASSY_INCLUDES})
 add_executable(lassy main.cxx)
+add_executable(twall wallthickness.cxx)
 
 
 target_link_libraries(lassy lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+target_link_libraries(twall lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
 if (UNIX)
 INSTALL(TARGETS lassy DESTINATION /usr/local/bin)
+INSTALL(TARGETS twall DESTINATION /usr/local/bin)
 endif (UNIX)

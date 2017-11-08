@@ -42,6 +42,8 @@ public:
 	LaShell();
 	LaShell(const char* vtk_filename);
 	
+	void SetMesh3D(vtkPolyData* input);
+
 	void GetMesh3D(vtkPolyData* mesh_output);
 	void GetMinimumMaximum(double &min, double& max);		// not implemented yet!
 	/*
