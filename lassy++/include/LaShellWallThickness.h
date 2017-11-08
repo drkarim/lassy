@@ -7,7 +7,7 @@
 */
 
 /*
-*	The LaShell class encapsulates a 3D polygonal mesh that is read into memory as a VTK
+*	The LaShellWallThickness class computes the thickness between two shells indicated by source and target
 *	For more information: https://www.vtk.org/doc/nightly/html/classvtkPolyData.html
 *
 */
