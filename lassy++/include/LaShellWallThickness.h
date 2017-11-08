@@ -38,6 +38,9 @@ private:
 	LaShell* _target_la; 
 	LaShell* _output_la;
 
+	double GetEuclidean(double* p1, double* p2); 
+	void GetFiniteLine(double* start, double* direction, double max_distance, double* end);
+	
 	
 public:
 	LaShellWallThickness(); 
@@ -53,7 +56,5 @@ public:
 
 	LaShell* GetOutput();
 
-	double GetEuclidean(double* p1, double* p2); 
-	void GetFiniteLine(double* start, double* direction, double max_distance, double* end);
 	
 }; 
