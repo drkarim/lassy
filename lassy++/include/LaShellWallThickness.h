@@ -54,5 +54,6 @@ public:
 	LaShell* GetOutput();
 
 	double GetEuclidean(double* p1, double* p2); 
+	void GetFiniteLine(double* start, double* direction, double max_distance, double* end);
 	
 }; 

@@ -40,9 +40,19 @@ double LaShellWallThickness::GetEuclidean(double* p1, double* p2)
 	return sqrt(sum); 
 }
 
+void LaShellWallThickness::GetFiniteLine(double* start, double* direction, double max_distance, double* end)
+{
+
+	end[0] = start[0] - (max_distance*direction[0]); 
+	end[1] = start[1] - (max_distance*direction[1]);
+	end[2] = start[2] - (max_distance*direction[2]);
+
+}
+
+
 void LaShellWallThickness::Update()
 {
-	double pN[3], p[3], tolerance = .001;
+	double pN[3], pStart[3], pEnd[3], tolerance = .001, max_dist=1000;
 
 	// Outputs of vtkModifiedBSPTree 
 	double t; // Parametric coordinate of intersection (0 (corresponding to p1) to 1 (corresponding to p2))
@@ -88,13 +98,15 @@ void LaShellWallThickness::Update()
 	
 	for (vtkIdType i = 0; i < Source_Poly->GetNumberOfPoints(); ++i) {
 		
-		Source_Poly->GetPoint(i, p); 
+		Source_Poly->GetPoint(i, pStart); 
 		Source_pNormals->GetTuple(i, pN);
 
-		// find intersection with target 
-		vtkIdType iD = bspTree->IntersectWithLine(p, pN, tolerance, t, x, pcoords, subId);
+		GetFiniteLine(pStart, pN, max_dist, pEnd);
 
-		float distance_to_target = GetEuclidean(p, x); 
+		// find intersection with target 
+		vtkIdType iD = bspTree->IntersectWithLine(pStart, pEnd, tolerance, t, x, pcoords, subId);
+
+		float distance_to_target = GetEuclidean(pStart, x); 
 
 		Output_Poly_Scalar->InsertNextTuple1(distance_to_target);
 		//cout << i << ", distance = " << distance_to_target << endl; 
