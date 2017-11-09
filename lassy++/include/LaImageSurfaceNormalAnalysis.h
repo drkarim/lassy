@@ -12,7 +12,7 @@
 *
 */
 #pragma once
-
+#include "vtkIdList.h"
 
 #include "LaShell.h"
 #include "LaImage.h"
