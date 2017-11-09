@@ -18,7 +18,13 @@
 #include "LaImage.h"
 #include "LaImageShellAlgorithms.h"
 
-
+/*
+*	Interrogates a 3D image along the surface normals of a 3D surface mesh.
+*	Projects the interrogated value to the mesh vertex 
+*	Note that the interrogation is by default 4 pixels in both directions of the vector
+*
+*	There is an option to interrogate the image only in the region defined by the mask_img parameter
+*/
 class LaImageSurfaceNormalAnalysis : public LaImageShellAlgorithms {
 
 private: 

@@ -56,16 +56,10 @@ public:
 	*	It takes a threshold value for the iso-surface
 	*	(Leave it to the default value for binary images provided background = 0)
 	*/
-	void ConvertMaskToMesh(LaImage *la_mask, double threshold=0.5);
+	void BinaryImageToShell(LaImage *la_mask, double threshold=0.5);
 
-	/*
-	*	Interrogates a 3D image along the surface normals of a 3D surface mesh.
-	*	Projects the interrogated value to the mesh vertex 
-	*	Note that the interrogation is by default 4 pixels in both directions of the vector
-	*
-	*	There is an option to interrogate the image only in the region defined by the mask_img parameter
-	*/
-	void SurfaceProjection(LaImage* raw_img, bool doLogging=false, LaImage* mask_img=NULL);
+	
+	//void SurfaceProjection(LaImage* raw_img, bool doLogging=false, LaImage* mask_img=NULL);
 	
 	void ConvertToPointData();
 

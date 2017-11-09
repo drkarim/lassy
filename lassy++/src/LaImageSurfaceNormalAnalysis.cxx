@@ -149,7 +149,7 @@ void LaImageSurfaceNormalAnalysis::SetVTKLogging()
 void LaImageSurfaceNormalAnalysis::Update() {
 
 	if (_la_binary != NULL) {
-		_la_shell->ConvertMaskToMesh(_la_binary, 0.5);
+		_la_shell->BinaryImageToShell(_la_binary, 0.5);
 	}
 	
 	cout << "\nConverted mask to shell, now performing surface analysis  .. " << endl;
