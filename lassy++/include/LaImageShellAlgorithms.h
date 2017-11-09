@@ -7,7 +7,7 @@
 */
 
 /*
-*	The LaShellAlgorithms is a generalisation for algorithms that work on LaShell objects, i.e. meshes 
+*	The LaImgaeShellAlgorithms is a generalisation for algorithms that work on LaShell and LaImage objects
 *	For more information: https://www.vtk.org/doc/nightly/html/classvtkPolyData.html
 *
 */
@@ -23,8 +23,6 @@ class LaImageShellAlgorithms {
 
 	
 public:
-	// Constructor with default values for data members
-	/*static LaShellAlgorithms *New();*/
 	
 	virtual void SetInputDataShell(LaShell* shell); 
 	virtual void SetInputDataImage(LaImage* shell);
