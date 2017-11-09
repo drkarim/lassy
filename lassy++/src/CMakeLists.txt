@@ -6,6 +6,9 @@ SET(LASSY_INCLUDES
 	"../include/ShellEntropy.h"
 	"../include/LaShellAlgorithms.h"
 	"../include/LaShellWallThickness.h"
+	"../include/LaImageShellAlgorithms.h"
+	"../include/LaImageShellAlgorithms.h"
+	"../include/LaImageSurfaceNormalAnalysis.h"
 )
 
 SET(LASSY_SRCS 
@@ -16,6 +19,8 @@ SET(LASSY_SRCS
 	ShellEntropy.cxx
 	LaShellWallThickness.cxx 
 	LaShellAlgorithms.cxx 
+	LaImageShellAlgorithms.cxx 
+	LaImageSurfaceNormalAnalysis.cxx 
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})

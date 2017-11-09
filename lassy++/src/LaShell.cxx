@@ -67,7 +67,6 @@ void LaShell::GetMinimumMaximum(double& min, double& max)
 	max=3;
 }
 
-
 void LaShell::ConvertMaskToMesh(LaImage *la_mask, double threshold)
 {
 	char* temp_vtk_fn = "mask.vtk"; 
@@ -81,7 +80,6 @@ void LaShell::ConvertMaskToMesh(LaImage *la_mask, double threshold)
 	{
 		outputWindow->SetInstance(fileOutputWindow);
 	}
-
 
 	vtkSmartPointer<vtkStructuredPointsReader > reader = vtkSmartPointer<vtkStructuredPointsReader >::New();
 	reader->SetFileName(temp_vtk_fn);

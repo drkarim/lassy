@@ -1,6 +1,6 @@
 #define HAS_VTK 1
 
-#include "LaShellWallThickness.h"
+#include "LaImageSurfaceNormalAnalysis.h"
 #include <numeric> 
 
 /*
@@ -35,42 +35,35 @@ int main(int argc, char * argv[])
 				}
 
 			}
-			else if (string(argv[i]) == "--reverse") {
-				direction = -1;
-			}
+			
 		}
 	}
 
 	if (!(foundArgs1 || foundArgs2 || foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
-			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>" << endl; 
+			"\n(Mandatory)\n\t-i1 <3d image> \n\t-i2 <surface_mesh_vtk> \n\t-o <output_vtk>" << endl; 
 			
 
 		exit(1);
 	}
 	else
 	{
-		LaShell* la1 = new LaShell(input_f1);
-		LaShell* la2 = new LaShell(input_f2);
-		LaShell* la_out = new LaShell(input_f2);
+		LaImage* image = new LaImage(input_f1);
+		LaShell* mask = new LaShell(input_f2);
+		
+		LaShell* mesh_out = new LaShell();
 
-		LaShellWallThickness* wt = new LaShellWallThickness();
-		wt->SetInputData(la1); 
-		wt->SetInputData2(la2); 
+		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
+		algorithm->SetInputDataImage(image);
+		algorithm->SetInputDataShell(mask); 
 
-		if (direction < 0) {
-			cout << "\n\nImportant: Computing thickness in reverse direction to surface normals pointing outwards" << endl;
-			wt->SetDirectionToOppositeNormal();
-		}
-		else {
-			cout << "\n\nComputing thickness in surface normal direction (pointing outwards)" << endl; 
-		}
-		wt->Update(); 
-
-		la_out = wt->GetOutput(); 
-
-		la_out->ExportVTK(output_f);
+		
+		algorithm->Update();
+		
+		mesh_out = algorithm->GetOutput();
+		mesh_out->ConvertToPointData();
+		mesh_out->ExportVTK(output_f);
 	}
 
 }
