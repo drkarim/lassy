@@ -13,6 +13,7 @@
 int main(int argc, char * argv[])
 {
 	char* input_f1, *input_f2,  *output_f;
+	int direction = 1; 
 	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false; 
 	
 	if (argc >= 1)
@@ -27,7 +28,9 @@ int main(int argc, char * argv[])
 					input_f2 = argv[i + 1];
 					foundArgs2 = true;
 				}
-				
+				else if (string(argv[i]) == "--reverse") {
+					direction = -1;
+				}
 				else if (string(argv[i]) == "-o") {
 					output_f = argv[i + 1];
 					foundArgs3 = true; 
@@ -54,6 +57,8 @@ int main(int argc, char * argv[])
 		LaShellWallThickness* wt = new LaShellWallThickness();
 		wt->SetInputData(la1); 
 		wt->SetInputData2(la2); 
+		if (direction < 0)
+			wt->SetDirectionToOppositeNormal();
 		wt->Update(); 
 
 		la_out = wt->GetOutput(); 

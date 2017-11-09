@@ -37,6 +37,7 @@ private:
 	LaShell* _source_la; 
 	LaShell* _target_la; 
 	LaShell* _output_la;
+	double _which_direction; 
 
 	double GetEuclidean(double* p1, double* p2); 
 	void GetFiniteLine(double* start, double* direction, double max_distance, double* end);
@@ -51,6 +52,7 @@ public:
 	
 	void SetInputData(LaShell* shell);
 	void SetInputData2(LaShell* shell);
+	void SetDirectionToOppositeNormal();
 
 	void Update();
 
