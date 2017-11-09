@@ -131,9 +131,9 @@ void LaImage::GetMinimumMaximum(short& min, short& max)
 	max = imageCalculatorFilter->GetMaximum(); 
 }
 
-void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, bool doLogging, int CellID, LaImage* mask_img)
+void LaImage::InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, double steps, bool doLogging, int CellID, LaImage* mask_img)
 {
-	double scar_step_min=-4, scar_step_max=4, scar_step_size=1; 
+	double scar_step_min=-steps, scar_step_max=steps, scar_step_size=1; 
 	bool isExplore = true;	// by default look around a normal, except if there is a mask image involved
 
 	int size = 0, j = 0, indexOfPointInArray = -1, currIndex = 0, a, b, c;

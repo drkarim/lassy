@@ -57,7 +57,7 @@ int main(int argc, char * argv[])
 		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
 		algorithm->SetInputDataImage(image);
 		algorithm->SetInputDataBinary(bin_image); 
-
+		algorithm->SetStepSize(4.0);
 		
 		algorithm->Update();
 		

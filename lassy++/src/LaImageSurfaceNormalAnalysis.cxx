@@ -14,10 +14,16 @@ LaImageSurfaceNormalAnalysis::LaImageSurfaceNormalAnalysis()
 	_mesh_3d = vtkSmartPointer<vtkPolyData>::New(); 
 	_vtk_logging = false; 
 	_mask_image = NULL;
+	_step_size = 4; 
 }
 
 LaImageSurfaceNormalAnalysis::~LaImageSurfaceNormalAnalysis() {
 
+}
+
+void LaImageSurfaceNormalAnalysis::SetStepSize(double steps)
+{
+	_step_size = steps; 
 }
 
 void LaImageSurfaceNormalAnalysis::SetInputDataShell(LaShell* shell)
@@ -112,7 +118,7 @@ void LaImageSurfaceNormalAnalysis::SurfaceProjection(bool doLogging)
 
 		//getIntensityAlongNormal(pN[0], pN[1], pN[2], cX, cY, cZ, normal_band, scalar);
 		double scalar = 0, mean = 0, var = 1;
-		_la_image->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar, doLogging, i, _mask_image);
+		_la_image->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar, _step_size, doLogging, i, _mask_image);
 		//scalar = 0;
 
 

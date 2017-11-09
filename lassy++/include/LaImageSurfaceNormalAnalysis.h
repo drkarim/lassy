@@ -34,6 +34,8 @@ private:
 	LaImage* _mask_image;
 	bool _vtk_logging; 
 
+	double _step_size;
+
 	vtkSmartPointer<vtkPolyData> _mesh_3d; 
 	
 public:
@@ -44,6 +46,8 @@ public:
 	void SetInputDataImage(LaImage* img);
 	void SetInputDataBinary(LaImage* bin);
 	void SetInputDataImageMask(LaImage* mask);
+
+	void SetStepSize(double steps);		// defaults to 4 unless called to set 
 
 	void SetVTKLogging();
 
