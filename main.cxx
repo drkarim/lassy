@@ -3,6 +3,7 @@
 #include "LaShell.h"
 #include "VizBox.h"
 #include "ShellEntropy.h"
+#include "LaImageSurfaceNormalAnalysis.h"
 #include <numeric> 
 
 /*
@@ -114,26 +115,33 @@ int main(int argc, char * argv[])
 		
 		LaImage *la_img = new LaImage(input_f);
 		LaImage *lge_img = new LaImage(input_f2); 
+			
+		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
+		algorithm->SetInputDataImage(lge_img);
+		algorithm->SetInputDataBinary(la_img); 
+		algorithm->Update();
 		
-		LaShell* la_mesh = new LaShell();
-		la_mesh->ConvertMaskToMesh(la_img, 0.5);
-		
-		la_mesh->SurfaceProjection(lge_img); 
-		la_mesh->ConvertToPointData();
-		la_mesh->ExportVTK(output_f);
+		LaShell* mesh_out = new LaShell();	
+		mesh_out = algorithm->GetOutput();
+		mesh_out->ConvertToPointData();
+		mesh_out->ExportVTK(output_f);
 	}
 	else if (method == 4)			// Mesh normal interrogating of image, with mask constraint 
 	{
 		LaImage *bp_mask_img = new LaImage(input_f);
 		LaImage *lge_img = new LaImage(input_f2);
 		LaImage *scar_mask_img = new LaImage(input_f3);
+		
+		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
+		algorithm->SetInputDataImage(lge_img);
+		algorithm->SetInputDataBinary(bp_mask_img); 
+		algorithm->SetInputDataImageMask(scar_mask_img);
+		algorithm->Update();
 
-		LaShell* la_mesh = new LaShell();
-		la_mesh->ConvertMaskToMesh(bp_mask_img, 0.5);
-
-		bool doLogging = true; 
-		la_mesh->SurfaceProjection(lge_img, doLogging, scar_mask_img);
-		la_mesh->ExportVTK(output_f);
+		LaShell* mesh_out = new LaShell();
+		mesh_out = algorithm->GetOutput();
+		mesh_out->ConvertToPointData();
+		mesh_out->ExportVTK(output_f);
 	}
 	else if (method == 5)
 	{
