@@ -47,6 +47,8 @@ private:
 
 public:
 	// Constructor with default values for data members
+	LaImage() {}
+
 	LaImage(const char* img_fn)
 	{
 		typedef itk::ImageFileReader< InputImageType  >  ReaderType;
@@ -98,12 +100,7 @@ public:
 	void WorldToImage(double &x, double &y, double &z); 
 	void ImageToWorld(float &x, float &y, float &z);
 	
-	/*
-	*	Interrogates a 3D image along a straigth line. The straight line is defined by the vector <n_x, n_y, n_z>, positioned at (centre_x, centre_y, centre_z)
-	*	Note that the interrogation is by default 4 pixels in both directions of the vector 
-	*	There is an option to interrogate the image only in the region defined by the mask_img parameter 
-	*/
-	void InterrogateImage(double n_x, double n_y, double n_z, double centre_x, double centre_y, double centre_z, double& returnVal, double steps=4, bool doLogging=false, int CellID_ForLogging=0, LaImage* mask_img=NULL);
-	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
+
+	
 };
 

@@ -12,9 +12,9 @@
 */
 int main(int argc, char * argv[])
 {
-	char* input_f1, *input_f2,  *output_f;
+	char* input_f1, *input_f2, *input_f3,  *output_f;
 	int direction = 1; 
-	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false; 
+	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false; 
 	
 	if (argc >= 1)
 	{
@@ -28,10 +28,13 @@ int main(int argc, char * argv[])
 					input_f2 = argv[i + 1];
 					foundArgs2 = true;
 				}
-				
+				else if (string(argv[i]) == "-i3") {
+					input_f3 = argv[i + 1];
+					foundArgs3 = true;
+				}
 				else if (string(argv[i]) == "-o") {
 					output_f = argv[i + 1];
-					foundArgs3 = true; 
+					foundArgs4 = true; 
 				}
 
 			}
@@ -42,9 +45,8 @@ int main(int argc, char * argv[])
 	if (!(foundArgs1 || foundArgs2 || foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
-			"\n(Mandatory)\n\t-i1 <3d image> \n\t-i2 <bin mask image> \n\t-o <output_vtk>" << endl; 
+			"\n(Mandatory)\n\t-i1 <3d image> \n\t-i2 <bin mask image> \n\t-i3 <wall thickness map for normal>\n\t-o <output_vtk>" << endl; 
 			
-
 		exit(1);
 	}
 	else
@@ -52,17 +54,25 @@ int main(int argc, char * argv[])
 		LaImage* image = new LaImage(input_f1);
 		LaImage* bin_image = new LaImage(input_f2);
 		
+		LaShell* thickness_map;
+
 		LaShell* mesh_out = new LaShell();
 
 		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
 		algorithm->SetInputDataImage(image);
 		algorithm->SetInputDataBinary(bin_image); 
-		algorithm->SetStepSize(4.0);
-		
+				
+		if (foundArgs3) {
+			cout << "Note: Using wall thickness map for traversing normals .." << endl; 
+			thickness_map = new LaShell(input_f3);
+			algorithm->SetInputNormalStepShell(thickness_map);
+		}
+		else {
+			algorithm->SetStepSize(4.0);
+		}
+
 		algorithm->Update();
-		
 		mesh_out = algorithm->GetOutput();
-		mesh_out->ConvertToPointData();
 		mesh_out->ExportVTK(output_f);
 	}
 

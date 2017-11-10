@@ -17,6 +17,7 @@
 #include "LaShell.h"
 #include "LaImage.h"
 #include "LaImageShellAlgorithms.h"
+#include "LaImageNormalInterrogator.h"
 
 /*
 *	Interrogates a 3D image along the surface normals of a 3D surface mesh.
@@ -29,6 +30,7 @@ class LaImageSurfaceNormalAnalysis : public LaImageShellAlgorithms {
 
 private: 
 	LaShell* _la_shell;
+	LaShell* _normal_step_shell;	
 	LaImage* _la_binary;
 	LaImage* _la_image; 
 	LaImage* _mask_image;
@@ -37,15 +39,20 @@ private:
 	double _step_size;
 
 	vtkSmartPointer<vtkPolyData> _mesh_3d; 
+
+	LaImageNormalInterrogator* _normal_interrogate_algorithm;
 	
 public:
 	// Constructor with default values for data members
 	/*static LaShellAlgorithms *New();*/
 	
 	void SetInputDataShell(LaShell* shell); 
+	
 	void SetInputDataImage(LaImage* img);
 	void SetInputDataBinary(LaImage* bin);
 	void SetInputDataImageMask(LaImage* mask);
+
+	void SetInputNormalStepShell(LaShell* shell);
 
 	void SetStepSize(double steps);		// defaults to 4 unless called to set 
 
@@ -55,6 +62,7 @@ public:
 
 	LaShell* GetOutput(); 
 	void SurfaceProjection(bool doLogging = false); 
+	void SurfaceProjectionOnPoints(bool doLogging = false);
 
 
 	LaImageSurfaceNormalAnalysis();

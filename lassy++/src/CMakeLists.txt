@@ -5,10 +5,12 @@ SET(LASSY_INCLUDES
 	"../include/VizBox.h"
 	"../include/ShellEntropy.h"
 	"../include/LaShellAlgorithms.h"
+	"../include/LaImageAlgorithms.h"
 	"../include/LaShellWallThickness.h"
 	"../include/LaImageShellAlgorithms.h"
 	"../include/LaImageShellAlgorithms.h"
 	"../include/LaImageSurfaceNormalAnalysis.h"
+	"../include/LaImageNormalInterrogator.h"
 )
 
 SET(LASSY_SRCS 
@@ -19,8 +21,10 @@ SET(LASSY_SRCS
 	ShellEntropy.cxx
 	LaShellWallThickness.cxx 
 	LaShellAlgorithms.cxx 
+	LaImageAlgorithms.cxx 
 	LaImageShellAlgorithms.cxx 
 	LaImageSurfaceNormalAnalysis.cxx 
+	LaImageNormalInterrogator.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})

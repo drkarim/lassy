@@ -44,6 +44,8 @@ int main(int argc, char * argv[])
 	if (!(foundArgs1 || foundArgs2 || foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
+			"\nCalculates the thickness from the source to target"
+			"\nThe final thickness is mapped to the source"
 			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>" << endl; 
 			
 
@@ -51,13 +53,13 @@ int main(int argc, char * argv[])
 	}
 	else
 	{
-		LaShell* la1 = new LaShell(input_f1);
-		LaShell* la2 = new LaShell(input_f2);
+		LaShell* source = new LaShell(input_f1);
+		LaShell* target = new LaShell(input_f2);
 		LaShell* la_out = new LaShell(input_f2);
 
 		LaShellWallThickness* wt = new LaShellWallThickness();
-		wt->SetInputData(la1); 
-		wt->SetInputData2(la2); 
+		wt->SetInputData(source);
+		wt->SetInputData2(target); 
 
 		if (direction < 0) {
 			cout << "\n\nImportant: Computing thickness in reverse direction to surface normals pointing outwards" << endl;
