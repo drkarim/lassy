@@ -1,5 +1,6 @@
 #define HAS_VTK 1
 
+
 /* The Circle class (All source codes in one file) (CircleAIO.cpp) */
 #include <iostream>    // using IO functions
 #include <string>      // using string
@@ -273,4 +274,34 @@ void LaImageSurfaceNormalAnalysis::Update() {
 	SurfaceProjectionOnPoints(_vtk_logging);
 
 
+}
+
+void LaImageSurfaceNormalAnalysis::SetAggregationMethodToMax()
+{
+	_normal_interrogate_algorithm->SetAggregationMethodToMax();
+}
+
+void LaImageSurfaceNormalAnalysis::SetAggregationMethodToMean()
+{
+	_normal_interrogate_algorithm->SetAggregationMethodToMean();
+}
+
+void LaImageSurfaceNormalAnalysis::SetAggregationMethodToMedian()
+{
+	_normal_interrogate_algorithm->SetAggregationMethodToMedian();
+}
+
+void LaImageSurfaceNormalAnalysis::SetAggregationMethodToIntegral()
+{
+	_normal_interrogate_algorithm->SetAggregationMethodToIntegral();
+}
+
+void LaImageSurfaceNormalAnalysis::SetZScoreMean(double mean)
+{
+	_normal_interrogate_algorithm->SetZScoreMean(mean); 
+}
+
+void LaImageSurfaceNormalAnalysis::SetZScoreStd(double std)
+{
+	_normal_interrogate_algorithm->SetZScoreStd(std);
 }

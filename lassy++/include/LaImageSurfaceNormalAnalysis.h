@@ -12,6 +12,8 @@
 *
 */
 #pragma once
+
+
 #include "vtkIdList.h"
 
 #include "LaShell.h"
@@ -58,11 +60,21 @@ public:
 
 	void SetVTKLogging();
 
+	void SetAggregationMethodToMax();
+	void SetAggregationMethodToMean();
+	void SetAggregationMethodToMedian();
+	void SetAggregationMethodToIntegral();
+	void SetZScoreMean(double);
+	void SetZScoreStd(double);
+
+
 	void Update(); 
 
 	LaShell* GetOutput(); 
 	void SurfaceProjection(bool doLogging = false); 
 	void SurfaceProjectionOnPoints(bool doLogging = false);
+
+
 
 
 	LaImageSurfaceNormalAnalysis();

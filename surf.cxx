@@ -14,7 +14,8 @@ int main(int argc, char * argv[])
 {
 	char* input_f1, *input_f2, *input_f3,  *output_f;
 	int direction = 1; 
-	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false; 
+	double mean, std; 
+	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false, foundArgs5=false, foundArgs6=false;
 	
 	if (argc >= 1)
 	{
@@ -35,6 +36,14 @@ int main(int argc, char * argv[])
 				else if (string(argv[i]) == "-o") {
 					output_f = argv[i + 1];
 					foundArgs4 = true; 
+				}
+				else if (string(argv[i]) == "-m") {
+					mean = atof(argv[i + 1]);
+					foundArgs5 = true;
+				}
+				else if (string(argv[i]) == "-s") {
+					std = atof(argv[i + 1]);
+					foundArgs6 = true;
 				}
 
 			}
@@ -69,6 +78,14 @@ int main(int argc, char * argv[])
 		}
 		else {
 			algorithm->SetStepSize(4.0);
+		}
+
+		algorithm->SetAggregationMethodToMax();
+
+		if (foundArgs5 && foundArgs6)
+		{
+			algorithm->SetZScoreMean(mean);
+			algorithm->SetZScoreStd(std);
 		}
 
 		algorithm->Update();

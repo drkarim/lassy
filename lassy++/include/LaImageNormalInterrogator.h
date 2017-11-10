@@ -13,6 +13,10 @@
 */
 #pragma once
 
+#define MEAN 1 
+#define MEDIAN 2 
+#define MAX 3
+#define INTEGRAL 3
 
 #include "LaImage.h"
 #include "LaImageAlgorithms.h"
@@ -32,7 +36,13 @@ class LaImageNormalInterrogator : public LaImageAlgorithms {
 
 	bool _doLogging; 
 
+	int _aggregation_method; 
+
+	double _zscore_mean; 
+	double _zscore_std;
+
 	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
+	void ZScoreAggregator();
 	
 public:
 	// Constructor with default values for data members
@@ -47,11 +57,19 @@ public:
 	void SetDirectionVector(double*);
 	void SetInterrogationDirections(int*);
 	void SetStepSize(double);
+	
+	void SetZScoreMean(double); 
+	void SetZScoreStd(double);
 
 	void SetRecordLogs();
 
 	double GetIntensity();
 
+
+	void SetAggregationMethodToMax(); 
+	void SetAggregationMethodToMean(); 
+	void SetAggregationMethodToMedian();
+	void SetAggregationMethodToIntegral();
 
 	LaImageNormalInterrogator();
 	~LaImageNormalInterrogator();

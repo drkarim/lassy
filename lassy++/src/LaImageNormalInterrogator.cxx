@@ -23,6 +23,11 @@ LaImageNormalInterrogator::LaImageNormalInterrogator()
 
 	_aggregate_scalar = 0;
 
+	_aggregation_method = MAX;
+
+	_zscore_mean = 0; 
+	_zscore_std = 1; 
+
 }
 
 LaImageNormalInterrogator::~LaImageNormalInterrogator() {}
@@ -67,10 +72,49 @@ void LaImageNormalInterrogator::SetRecordLogs()
 	_doLogging = true; 
 }
 
+void LaImageNormalInterrogator::SetZScoreMean(double mean)
+{
+	_zscore_mean = mean; 
+}
+
+void LaImageNormalInterrogator::SetZScoreStd(double std)
+{
+	_zscore_std = std;
+}
+
+
+void LaImageNormalInterrogator::ZScoreAggregator()
+{
+	_aggregate_scalar = (_aggregate_scalar - _zscore_mean) / _zscore_std;
+	
+}
+
 double LaImageNormalInterrogator::GetIntensity()
 {
+	ZScoreAggregator();
 	return _aggregate_scalar; 
 }
+
+void LaImageNormalInterrogator::SetAggregationMethodToMean()
+{
+	_aggregation_method = MEAN;
+}
+
+void LaImageNormalInterrogator::SetAggregationMethodToMedian()
+{
+	_aggregation_method = MEDIAN;
+}
+
+void LaImageNormalInterrogator::SetAggregationMethodToMax()
+{
+	_aggregation_method = MAX;
+}
+
+void LaImageNormalInterrogator::SetAggregationMethodToIntegral()
+{
+	_aggregation_method = INTEGRAL;
+}
+
 
 void LaImageNormalInterrogator::Update() {
 
@@ -149,8 +193,7 @@ void LaImageNormalInterrogator::Update() {
 	ofs.close();
 
 	if (pointsOnAndAroundNormal.size() > 0) {
-		GetStatisticalMeasure(pointsOnAndAroundNormal, 1, insty);			// statistical measure 2 returns max 
-
+		GetStatisticalMeasure(pointsOnAndAroundNormal, _aggregation_method, insty);			// statistical measure 2 returns max 
 	}
 	else {
 		insty = 0;
@@ -169,7 +212,7 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 	int size = vals.size();
 	short pixelValue;
 
-	if (measure == 1)			// reutrn mean 
+	if (measure == MEAN)			// reutrn mean 
 	{
 		for (int i = 0; i<size; i++)
 		{
@@ -178,8 +221,22 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 		}
 		returnVal = sum / size;
 	}
-	else if (measure == 2)			// return max 
+	else if (measure == MAX)			// return max 
 	{
+
+		for (int i = 0; i < size; i++)
+		{
+			_image->GetIntensityAt(vals[i]._x, vals[i]._y, vals[i]._z, pixelValue);
+			if (pixelValue > max) {
+				max = pixelValue;
+			}
+		}
+		
+		if (max == -1)
+			returnVal = 0;
+		else {
+			returnVal = max;
+		}
 		/*
 		for (int i = 0; i<size; i++)
 		{
@@ -203,7 +260,7 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 		visited_im->Put(vals[maxIndex]->_x, vals[maxIndex]->_y, vals[maxIndex]->_z, 1);
 		}*/
 	}
-	else if (measure == 3)			// sum along the normal (integration)
+	else if (measure == INTEGRAL)			// sum along the normal (integration)
 	{
 		for (int i = 0; i<size; i++)
 		{
