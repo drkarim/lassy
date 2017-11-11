@@ -231,7 +231,9 @@ void LaImageSurfaceNormalAnalysis::SurfaceProjection(bool doLogging)
 
 		//getIntensityAlongNormal(pN[0], pN[1], pN[2], cX, cY, cZ, normal_band, scalar);
 		double scalar = 0, mean = 0, var = 1;
-		int* directions = new int[2]{ -1,1 };
+		int* directions = new int[2]; 
+		directions[0] = -1; 
+		directions[1] = 1;
 		//_la_image->InterrogateImage(pN[0], pN[1], pN[2], cX, cY, cZ, scalar, _step_size, directions, doLogging, i, _mask_image);
 
 		_normal_interrogate_algorithm->SetLineOrigin(cXYZ);
