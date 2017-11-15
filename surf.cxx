@@ -14,8 +14,9 @@ int main(int argc, char * argv[])
 {
 	char* input_f1, *input_f2, *input_f3,  *output_f;
 	int direction = 1; 
-	double mean, std; 
-	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false, foundArgs5=false, foundArgs6=false;
+	double mean, std, step_size=4.0; 
+	int aggregate_method=1; 
+	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false, foundArgs5=false, foundArgs6=false, foundArgs7=false;
 	
 	if (argc >= 1)
 	{
@@ -45,6 +46,14 @@ int main(int argc, char * argv[])
 					std = atof(argv[i + 1]);
 					foundArgs6 = true;
 				}
+				else if (string(argv[i]) == "-t") {
+					aggregate_method = atoi(argv[i + 1]);
+					foundArgs7 = true;
+				}
+				else if (string(argv[i]) == "-p") {
+					step_size = atof(argv[i + 1]);
+					
+				}
 
 			}
 			
@@ -53,8 +62,14 @@ int main(int argc, char * argv[])
 
 	if (!(foundArgs1 || foundArgs2 || foundArgs3))
 	{
-		cerr << "Cheeck your parameters\n\nUsage:"
-			"\n(Mandatory)\n\t-i1 <3d image> \n\t-i2 <bin mask image> \n\t-i3 <wall thickness map for normal>\n\t-o <output_vtk>" << endl; 
+		cerr << "Performs surface normal analysis\nCheeck your parameters\n\nUsage:"
+			"\n(Mandatory)\n\t-i1 <intensity image for intterogation> \n\t-i2 <binary image for surface>" 
+			"\n\t-o <output_vtk>"
+			"\n\n(Optional)"
+			"\n\t-i3 <surface depth map for normal extent>"
+			"\n\t-m <mean for z-scoring> \n\t-s <std for z-scoring>"
+			"\n\t-t <1-max, 2-integral>"
+			"\n\t-p <size of normal>\n" << endl; 
 			
 		exit(1);
 	}
@@ -77,10 +92,20 @@ int main(int argc, char * argv[])
 			algorithm->SetInputNormalStepShell(thickness_map);
 		}
 		else {
-			algorithm->SetStepSize(4.0);
+			cout << "\nUsing a constant normal size of: "  << step_size << endl;
+			algorithm->SetStepSize(step_size);
 		}
 
-		algorithm->SetAggregationMethodToMax();
+		if (aggregate_method == 1)
+		{
+			cout << "\nAggregate method: Max" << endl;
+			algorithm->SetAggregationMethodToMax();
+		}
+		else if (aggregate_method == 2)	
+		{
+			cout << "\nAggregate method: Integral" << endl;
+			algorithm->SetAggregationMethodToIntegral();
+		}
 
 		if (foundArgs5 && foundArgs6)
 		{

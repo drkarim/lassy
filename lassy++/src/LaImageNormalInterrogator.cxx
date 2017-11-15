@@ -10,10 +10,7 @@ using namespace std;
 
 LaImageNormalInterrogator::LaImageNormalInterrogator()
 {
-	_dirvec_line = new double[3]; 
-	_origin_line = new double[3]; 
 	
-	_direction = new int[2];
 	_direction[0] = -1; 
 	_direction[1] = 1; 
 
@@ -67,7 +64,7 @@ void LaImageNormalInterrogator::SetStepSize(double size)
 	_steps = size;
 }
 
-void LaImageNormalInterrogator::SetRecordLogs()
+void LaImageNormalInterrogator::SetLoggingToTrue()
 {
 	_doLogging = true; 
 }
@@ -134,9 +131,12 @@ void LaImageNormalInterrogator::Update() {
 	vector<Point3> pointsOnAndAroundNormal;
 
 	std::ofstream ofs;
-	if (_doLogging)
+	if (_doLogging) {
 		ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
-	//ofs << "Normal," << _dirvec_line[0] << "," << _dirvec_li`ne[1] << "," << _dirvec_line[2] << endl;
+
+		//ofs << "NormalStep,CentrePixel_X,CentrePixelY,CentrePixelZ,PixelVaue" << endl;
+		//ofs << "==========,=============,===========,=============,=========" << endl;
+	}
 	int MaxX, MaxY, MaxZ;
 	_image->GetImageSize(MaxX, MaxY, MaxZ);
 
@@ -166,18 +166,25 @@ void LaImageNormalInterrogator::Update() {
 
 		}
 
+		if (_aggregation_method != INTEGRAL)
+		{
+			for (a = -1; a <= 1; a++) {
+				for (b = -1; b <= 1; b++) {
+					for (c = -1; c <= 1; c++) {
+						if (x + a >= 0 && x + a<MaxX && y + b >= 0 && y + b<MaxY && z + c >= 0 && z + c<MaxZ) {
+							if (isExplore) {
+								pointsOnAndAroundNormal.push_back(Point3(x + a, y + b, z + c));
 
-		for (a = -1; a <= 1; a++) {
-			for (b = -1; b <= 1; b++) {
-				for (c = -1; c <= 1; c++) {
-					if (x + a >= 0 && x + a<MaxX && y + b >= 0 && y + b<MaxY && z + c >= 0 && z + c<MaxZ) {
-						if (isExplore) {
-							pointsOnAndAroundNormal.push_back(Point3(x + a, y + b, z + c));
-
+							}
 						}
 					}
 				}
 			}
+		}
+		else 
+		{	
+			// In integral, only consider points exactly on the normal
+			pointsOnAndAroundNormal.push_back(Point3(x, y, z));
 		}
 
 		// Some intensity logging to CSV file 
@@ -185,15 +192,18 @@ void LaImageNormalInterrogator::Update() {
 			short pixelValue = -1;
 			_image->GetIntensityAt(x, y, z, pixelValue);
 
-			ofs << "Point (xyz), pixelvalue= " << "," << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
+			ofs << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
 		}
 
-	}
-
-	ofs.close();
+	}		// end for 
+	
+	
 
 	if (pointsOnAndAroundNormal.size() > 0) {
 		GetStatisticalMeasure(pointsOnAndAroundNormal, _aggregation_method, insty);			// statistical measure 2 returns max 
+		if (_doLogging) {
+			ofs << ",,,aggregate=,"<<insty<<endl;
+		}
 	}
 	else {
 		insty = 0;
@@ -201,6 +211,10 @@ void LaImageNormalInterrogator::Update() {
 	pointsOnAndAroundNormal.clear();
 
 	_aggregate_scalar = insty;
+
+	if (_doLogging) {
+		ofs.close();
+	}
 }
 
 

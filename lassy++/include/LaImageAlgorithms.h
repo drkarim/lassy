@@ -21,7 +21,6 @@
 class LaImageAlgorithms {
 
 
-	
 public:
 	// Constructor with default values for data members
 	/*static LaShellAlgorithms *New();*/

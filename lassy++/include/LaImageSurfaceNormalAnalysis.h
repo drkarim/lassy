@@ -71,8 +71,8 @@ public:
 	void Update(); 
 
 	LaShell* GetOutput(); 
-	void SurfaceProjection(bool doLogging = false); 
-	void SurfaceProjectionOnPoints(bool doLogging = false);
+	
+	void SurfaceProjectionOnPoints();
 
 
 

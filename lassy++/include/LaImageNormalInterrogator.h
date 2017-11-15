@@ -25,14 +25,14 @@
 
 class LaImageNormalInterrogator : public LaImageAlgorithms {
 
-	double* _dirvec_line; 
-	double* _origin_line;	
+	double _dirvec_line[3]; 
+	double _origin_line[3];	
 	LaImage* _image; 
 	LaImage* _mask_image;
 	double _aggregate_scalar; 
 	double _steps; 
 	
-	int* _direction;
+	int _direction[2];
 
 	bool _doLogging; 
 
@@ -61,7 +61,7 @@ public:
 	void SetZScoreMean(double); 
 	void SetZScoreStd(double);
 
-	void SetRecordLogs();
+	void SetLoggingToTrue();
 
 	double GetIntensity();
 
