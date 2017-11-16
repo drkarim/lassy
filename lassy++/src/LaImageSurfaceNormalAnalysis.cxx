@@ -133,6 +133,7 @@ void LaImageSurfaceNormalAnalysis::SurfaceProjectionOnPoints()
 		_normal_interrogate_algorithm->SetLineOrigin(cP);
 		_normal_interrogate_algorithm->SetDirectionVector(pN);
 		_normal_interrogate_algorithm->SetInterrogationDirections(which_direction);
+		_normal_interrogate_algorithm->SetStepSize(_step_size); 
 		_normal_interrogate_algorithm->SetLoggingToTrue();
 		_normal_interrogate_algorithm->Update(); 
 

@@ -16,7 +16,7 @@
 #define MEAN 1 
 #define MEDIAN 2 
 #define MAX 3
-#define INTEGRAL 3
+#define INTEGRAL 4
 
 #include "LaImage.h"
 #include "LaImageAlgorithms.h"

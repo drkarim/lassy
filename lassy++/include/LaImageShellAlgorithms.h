@@ -14,6 +14,12 @@
 #pragma once
 
 
+#define ADD 1
+#define SUBTRACT 2
+#define MULTIPLY 3
+#define DIVIDE 4
+
+
 #include "LaShell.h"
 #include "LaImage.h"
 
