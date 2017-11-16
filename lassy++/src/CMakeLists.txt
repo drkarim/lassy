@@ -11,6 +11,7 @@ SET(LASSY_INCLUDES
 	"../include/LaImageShellAlgorithms.h"
 	"../include/LaImageSurfaceNormalAnalysis.h"
 	"../include/LaImageNormalInterrogator.h"
+	"../include/LaShellShellArithmetic.h"
 )
 
 SET(LASSY_SRCS 
@@ -23,6 +24,7 @@ SET(LASSY_SRCS
 	LaShellAlgorithms.cxx 
 	LaImageAlgorithms.cxx 
 	LaImageShellAlgorithms.cxx 
+	LaShellShellArithmetic.cxx
 	LaImageSurfaceNormalAnalysis.cxx 
 	LaImageNormalInterrogator.cxx
 ) 
