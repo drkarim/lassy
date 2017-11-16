@@ -1,8 +1,10 @@
 # Lassy
 <p>
-Lassy is a C++ library with a visualisation framework for interrogating a 3D image using surface normals. 
+Lassy is a C++ library useful for interrogating a 3D image using surface normals. 
   
-A 2D surface mesh is created in the 3D image. Surface normals of this 2D surface mesh are used for interrogating pixels and intensities of the 3D image. A simple example application of this library would be to interrograte the image intensities along the surface normal of a 3D binary mask. 
+In a typical use case, a 2D surface mesh is first generated witin the 3D image. Surface normals of this 2D surface mesh are then used for interrogating pixels and intensities of the 3D image. 
+
+A simple example application of this library would be to interrograte the image intensities along the surface normal of a 3D binary mask. Another application could be interrogating the MRI/CT scan of an organ based on some information about the structure of the organ. There are special applications in cardiac imaging for which this library was built. 
 
 <img align="right" src="http://catlikecoding.com/unity/tutorials/noise-derivatives/05-mesh-normals.png" width="250">
 
