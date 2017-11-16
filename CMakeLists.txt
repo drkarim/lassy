@@ -15,10 +15,10 @@ SET(LASSY_INCLUDES
 add_subdirectory(lassy++/src) 
 include_directories(${LASSY_INCLUDES})
 add_executable(lassy main.cxx)
-add_executable(twall wallthickness.cxx)
-add_executable(surf surf.cxx)
-add_executable(surfvtk surfvtk.cxx)
-add_executable(shellshell shellshell.cxx)
+add_executable(twall applications/wallthickness.cxx)
+add_executable(surf applications/surf.cxx)
+add_executable(surfvtk applications/surfvtk.cxx)
+add_executable(shellshell applications/shellshell.cxx)
 
 
 target_link_libraries(lassy lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
