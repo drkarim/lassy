@@ -46,7 +46,7 @@ int main(int argc, char * argv[])
 
 	if (!(foundArgs1 || foundArgs2 || foundArgs3))
 	{
-		cerr << "Performs performs simple arithmetic operations on scalars contained within two VTK meshes\nCheck your parameters\n\nUsage:"
+		cerr << "Performs simple arithmetic operations on scalars contained within two VTK meshes\nCheck your parameters\n\nUsage:"
 			"\n(Mandatory)\n\t-i1 <1st Mesh in VTK> \n\t-i2 <2nd Mesh in VTK>"
 			"\n\t-o <output_vtk>"
 			"\n\n(Optional)"
