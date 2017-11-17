@@ -12,65 +12,50 @@
 */
 int main(int argc, char * argv[])
 {
-	char* input_f1, *input_f2,  *output_f;
-	int direction = 1; 
-	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false; 
+	char* input_f1, *output_f;
+	
+	bool foundArgs1 = false, foundArgs2 = false;
 	
 	if (argc >= 1)
 	{
 		for (int i = 1; i < argc; i++) {
 			if (i + 1 != argc) {
-				if (string(argv[i]) == "-i1") {
+				if (string(argv[i]) == "-i") {
 					input_f1 = argv[i + 1];
 					foundArgs1 = true;
-				}
-				else if (string(argv[i]) == "-i2") {
-					input_f2 = argv[i + 1];
-					foundArgs2 = true;
 				}
 				
 				else if (string(argv[i]) == "-o") {
 					output_f = argv[i + 1];
-					foundArgs3 = true; 
+					foundArgs2 = true; 
 				}
 
 			}
-			else if (string(argv[i]) == "--reverse") {
-				direction = -1;
-			}
+			
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 || foundArgs3))
+	if (!(foundArgs1 || foundArgs2 ))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nCalculates the distance within the shell enclosure"
-			"\nThe final thickness is mapped to the source"
-			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>" << endl; 
+			"\nThe final enclosed thickness is mapped to the same shell structure"
+			"\n(Mandatory)\n\t-i <input_mesh_vtk> \n\t-o <output_vtk>" << endl; 
 			
-
 		exit(1);
 	}
 	else
 	{
 		LaShell* source = new LaShell(input_f1);
-		LaShell* target = new LaShell(input_f2);
-		LaShell* la_out = new LaShell(input_f2);
+		LaShell* la_out = new LaShell();
 
-		LaShellEnclosureDistance* wt = new LaShellEnclosureDistance();
-		wt->SetInputData(source);
+		LaShellEnclosureDistance* algorithm = new LaShellEnclosureDistance();
+		algorithm->SetLoggingToTrue();
+		algorithm->SetInputData(source); 
 		
+		algorithm->Update();
 
-		if (direction < 0) {
-			cout << "\n\nImportant: Computing thickness in reverse direction to surface normals pointing outwards" << endl;
-			wt->SetDirectionToOppositeNormal();
-		}
-		else {
-			cout << "\n\nComputing thickness in surface normal direction (pointing outwards)" << endl; 
-		}
-		wt->Update(); 
-
-		la_out = wt->GetOutput(); 
+		la_out = algorithm->GetOutput();
 
 		la_out->ExportVTK(output_f);
 	}

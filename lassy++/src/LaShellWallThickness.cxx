@@ -10,8 +10,9 @@ using namespace std;
 
 LaShellWallThickness::LaShellWallThickness()
 {
+	_which_direction = 1;
 	_output_la = new LaShell(); 
-	_which_direction = 1; 
+	
 }
 
 LaShellWallThickness::~LaShellWallThickness()
@@ -41,12 +42,12 @@ double LaShellWallThickness::GetEuclidean(double* p1, double* p2)
 	return sqrt(sum); 
 }
 
-void LaShellWallThickness::GetFiniteLine(double* start, double* direction_vec, double max_distance, double* end)
+void LaShellWallThickness::GetFiniteLine(double* start, double* direction_vec, double max_distance, double which_direction, double* end)
 {
 	
-	end[0] = start[0] + (_which_direction*max_distance*direction_vec[0]); 
-	end[1] = start[1] + (_which_direction*max_distance*direction_vec[1]);
-	end[2] = start[2] + (_which_direction*max_distance*direction_vec[2]);
+	end[0] = start[0] + (which_direction*max_distance*direction_vec[0]); 
+	end[1] = start[1] + (which_direction*max_distance*direction_vec[1]);
+	end[2] = start[2] + (which_direction*max_distance*direction_vec[2]);
 
 }
 
@@ -54,6 +55,8 @@ void LaShellWallThickness::SetDirectionToOppositeNormal()
 {
 	_which_direction = -1; 
 }
+
+
 
 
 void LaShellWallThickness::Update()
@@ -101,13 +104,14 @@ void LaShellWallThickness::Update()
 	Output_Poly->DeepCopy(Source_Poly);
 	
 	vtkSmartPointer<vtkFloatArray> Source_pNormals = vtkFloatArray::SafeDownCast(Source_Poly->GetPointData()->GetNormals());
+
 	
 	for (vtkIdType i = 0; i < Source_Poly->GetNumberOfPoints(); ++i) {
 		
 		Source_Poly->GetPoint(i, pStart); 
 		Source_pNormals->GetTuple(i, pN);
 
-		GetFiniteLine(pStart, pN, max_dist, pEnd);
+		GetFiniteLine(pStart, pN, max_dist, _which_direction, pEnd);
 
 		// find intersection with target 
 		vtkIdType iD = bspTree->IntersectWithLine(pStart, pEnd, tolerance, t, x, pcoords, subId);
