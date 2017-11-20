@@ -6,7 +6,7 @@ SET(LASSY_INCLUDES
 	"../include/ShellEntropy.h"
 	"../include/LaShellAlgorithms.h"
 	"../include/LaImageAlgorithms.h"
-	"../include/LaShellWallThickness.h"
+	"../include/LaShellShellIntersection.h"
 	"../include/LaImageShellAlgorithms.h"
 	"../include/LaImageShellAlgorithms.h"
 	"../include/LaImageSurfaceNormalAnalysis.h"
@@ -21,7 +21,7 @@ SET(LASSY_SRCS
 	MathBox.cxx
 	VizBox.cxx
 	ShellEntropy.cxx
-	LaShellWallThickness.cxx 
+	LaShellShellIntersection.cxx 
 	LaShellAlgorithms.cxx 
 	LaImageAlgorithms.cxx 
 	LaImageShellAlgorithms.cxx 

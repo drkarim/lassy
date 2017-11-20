@@ -3,46 +3,46 @@
 /* The Circle class (All source codes in one file) (CircleAIO.cpp) */
 #include <iostream>    // using IO functions
 #include <string>      // using string
-#include "../include/LaShellWallThickness.h"
+#include "../include/LaShellShellIntersection.h"
 
 using namespace std;
 
 
-LaShellWallThickness::LaShellWallThickness()
+LaShellShellIntersection::LaShellShellIntersection()
 {
 	_which_direction = 1;
 	_output_la = new LaShell(); 
 	
 }
 
-LaShellWallThickness::~LaShellWallThickness()
+LaShellShellIntersection::~LaShellShellIntersection()
 {
 
 }
 
-void LaShellWallThickness::SetInputData(LaShell* shell)
+void LaShellShellIntersection::SetInputData(LaShell* shell)
 {
 	_source_la = shell; 
 }
 
-void LaShellWallThickness::SetInputData2(LaShell* shell)
+void LaShellShellIntersection::SetInputData2(LaShell* shell)
 {
 	_target_la = shell; 
 }
 
-LaShell* LaShellWallThickness::GetOutput()
+LaShell* LaShellShellIntersection::GetOutput()
 {
 	return _output_la; 
 }
 
-double LaShellWallThickness::GetEuclidean(double* p1, double* p2)
+double LaShellShellIntersection::GetEuclidean(double* p1, double* p2)
 {
 	double sum; 
 	sum = ((p1[0] - p2[0])*(p1[0] - p2[0])) + ((p1[1] - p2[1])*(p1[1] - p2[1])) + ((p1[2] - p2[2])*(p1[2] - p2[2]));
 	return sqrt(sum); 
 }
 
-void LaShellWallThickness::GetFiniteLine(double* start, double* direction_vec, double max_distance, double which_direction, double* end)
+void LaShellShellIntersection::GetFiniteLine(double* start, double* direction_vec, double max_distance, double which_direction, double* end)
 {
 	
 	end[0] = start[0] + (which_direction*max_distance*direction_vec[0]); 
@@ -51,7 +51,7 @@ void LaShellWallThickness::GetFiniteLine(double* start, double* direction_vec, d
 
 }
 
-void LaShellWallThickness::SetDirectionToOppositeNormal()
+void LaShellShellIntersection::SetDirectionToOppositeNormal()
 {
 	_which_direction = -1; 
 }
@@ -59,7 +59,7 @@ void LaShellWallThickness::SetDirectionToOppositeNormal()
 
 
 
-void LaShellWallThickness::Update()
+void LaShellShellIntersection::Update()
 {
 	double pN[3], pStart[3], pEnd[3], tolerance = .001, max_dist=1000;
 

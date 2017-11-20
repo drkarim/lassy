@@ -27,11 +27,11 @@
 #include <string>
 
 
-#include "LaShellWallThickness.h"
+#include "LaShellShellIntersection.h"
 
 
 
-class LaShellEnclosureDistance : public LaShellWallThickness {
+class LaShellEnclosureDistance : public LaShellShellIntersection {
 
 private:
 	LaShell* _source_shell;

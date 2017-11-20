@@ -7,7 +7,7 @@
 */
 
 /*
-*	The LaShellWallThickness class computes the thickness between two shells indicated by source and target
+*	The LaShellShellIntersection class computes the thickness between two shells indicated by source and target
 *	For more information: https://www.vtk.org/doc/nightly/html/classvtkPolyData.html
 *
 */
@@ -32,7 +32,7 @@
 using namespace std; 
 
 
-class LaShellWallThickness : public LaShellAlgorithms {
+class LaShellShellIntersection : public LaShellAlgorithms {
 private:
 	LaShell* _source_la; 
 	LaShell* _target_la; 
@@ -47,11 +47,11 @@ protected:
 	
 public:
 	
-	LaShellWallThickness(); 
-	~LaShellWallThickness();
+	LaShellShellIntersection();
+	~LaShellShellIntersection();
 
 
-	static LaShellWallThickness *New(); 
+	static LaShellShellIntersection *New();
 	
 	void SetInputData(LaShell* shell);
 	void SetInputData2(LaShell* shell);

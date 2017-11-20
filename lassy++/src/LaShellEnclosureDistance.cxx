@@ -104,13 +104,13 @@ void LaShellEnclosureDistance::Update() {
 		MoveStartingPositionBy(pStart, -1, pN, move_distance, new_pStart);
 
 		
-		LaShellWallThickness::GetFiniteLine(new_pStart, pN, max_dist, _which_direction, pEnd);
+		LaShellShellIntersection::GetFiniteLine(new_pStart, pN, max_dist, _which_direction, pEnd);
 		
 
 		// find intersection with target, x is the new intersection
 		vtkIdType iD = bspTree->IntersectWithLine(new_pStart, pEnd, tolerance, t, x, pcoords, subId);
 		
-		float distance_to_target = LaShellWallThickness::GetEuclidean(pStart, x);
+		float distance_to_target = LaShellShellIntersection::GetEuclidean(pStart, x);
 
 		
 

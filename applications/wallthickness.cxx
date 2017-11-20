@@ -1,6 +1,6 @@
 #define HAS_VTK 1
 
-#include "LaShellWallThickness.h"
+#include "LaShellShellIntersection.h"
 #include <numeric> 
 
 /*
@@ -57,7 +57,7 @@ int main(int argc, char * argv[])
 		LaShell* target = new LaShell(input_f2);
 		LaShell* la_out = new LaShell(input_f2);
 
-		LaShellWallThickness* wt = new LaShellWallThickness();
+		LaShellShellIntersection* wt = new LaShellShellIntersection();
 		wt->SetInputData(source);
 		wt->SetInputData2(target); 
 
