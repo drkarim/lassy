@@ -9,6 +9,9 @@
 *      Department of Biomedical Engineering, King's College London
 *      Email: rashed 'dot' karim @kcl.ac.uk
 *      Copyright (c) 2017
+*
+*	   This application computes the thickness at each vertex of an enclosed mesh. 
+*	   The output is a mesh with the computed thickness at each vertex
 */
 int main(int argc, char * argv[])
 {

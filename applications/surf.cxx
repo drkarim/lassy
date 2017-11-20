@@ -9,6 +9,14 @@
 *      Department of Biomedical Engineering, King's College London
 *      Email: rashed 'dot' karim @kcl.ac.uk
 *      Copyright (c) 2017
+*
+*	   This application interrogates the intensities along the vertex normals of an object of interest (OFI)
+*	   The OFI is provided by the user as a binary mask image (0 outside/1 inside). 
+*	   The intensity image is also provided as a 3D image
+*	   There optional parameters such as mean and standard deviation, so the interrogated intensty can be z-scored 
+*	   The interrogated intensities are aggregated as either maximum intensity or integral sum (AIT)
+*	   The output mesh is the surface of the OFI with the AIT computed for each vertex
+*
 */
 int main(int argc, char * argv[])
 {
