@@ -9,6 +9,12 @@
 *      Department of Biomedical Engineering, King's College London
 *      Email: rashed 'dot' karim @kcl.ac.uk
 *      Copyright (c) 2017
+*
+*		This application computes the distance between the source and target meshes
+*		The distance is calculated from the vertex normal direction of the source mesh 
+*		The source and target meshes are not required to have to have the same toplogy 
+*		The output mesh is the same toplogy as the source mesh, and contains this computed distance at each vertex 
+*	
 */
 int main(int argc, char * argv[])
 {

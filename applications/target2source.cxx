@@ -11,8 +11,8 @@
 *      Copyright (c) 2017
 *
 *
-*	   target2source.cxx  - Intersection of vertex normals of source mesh with a target mesh. After intersection, copies the scalar values of the target to the source 
-*							The output is a mesh with same toplogy as the source but containing values from the intersection 
+*		Intersection of vertex normals of source mesh with a target mesh. After intersection, copies the scalar values of the target to the source 
+*		The output is a mesh with same toplogy as the source but containing values from the intersection 
 *
 */
 int main(int argc, char * argv[])

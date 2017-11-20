@@ -9,6 +9,11 @@
 *      Department of Biomedical Engineering, King's College London
 *      Email: rashed 'dot' karim @kcl.ac.uk
 *      Copyright (c) 2017
+*
+*	   This application performs simple arithmetic operation on the vertex scalars of two meshes 
+*	   The input are two meshes with the same topology or at least the exact same number of points 
+*	   The arthmetic operations are pre-defined as addition, subtraction, multiplication and division 
+*	   The output is a mesh with the resulting scalars from the pre-defined arithmetic operation
 */
 int main(int argc, char * argv[])
 {
