@@ -11,7 +11,9 @@ using namespace std;
 LaShellShellIntersection::LaShellShellIntersection()
 {
 	_which_direction = 1;
+	_which_mapping = MAPPING_METHOD_DISTANCE; 
 	_output_la = new LaShell(); 
+	_mapping_default_value = 0; 
 	
 }
 
@@ -57,6 +59,20 @@ void LaShellShellIntersection::SetDirectionToOppositeNormal()
 }
 
 
+void LaShellShellIntersection::SetMapIntersectionToDistance()
+{
+	_which_mapping = MAPPING_METHOD_DISTANCE;
+}
+
+void LaShellShellIntersection::SetMapIntersectionToCopyScalar()
+{
+	_which_mapping = MAPPING_METHOD_TRANSFER;
+}
+
+void LaShellShellIntersection::SetDefaultMappingValue(double v)
+{
+	_mapping_default_value = v; 
+}
 
 
 void LaShellShellIntersection::Update()
@@ -92,8 +108,17 @@ void LaShellShellIntersection::Update()
 	bspTree->SetDataSet(Target_Poly);
 	bspTree->BuildLocator();
 
+
+	vtkSmartPointer<vtkPointLocator> Target_Poly_PointLocator = vtkSmartPointer<vtkPointLocator>::New();
+	Target_Poly_PointLocator->SetDataSet(Target_Poly);
+	Target_Poly_PointLocator->AutomaticOn();
+	Target_Poly_PointLocator->BuildLocator();
+
 	vtkSmartPointer<vtkFloatArray> Output_Poly_Scalar = vtkSmartPointer<vtkFloatArray>::New();
 	Output_Poly_Scalar->SetNumberOfComponents(1);
+
+	vtkSmartPointer<vtkFloatArray> Target_Poly_Scalar = vtkSmartPointer<vtkFloatArray>::New();
+	Target_Poly_Scalar = vtkFloatArray::SafeDownCast(Target_Poly->GetPointData()->GetScalars());
 
 	vtkSmartPointer<vtkPolyDataNormals> Source_Poly_Normals = vtkSmartPointer<vtkPolyDataNormals>::New();
 	Source_Poly_Normals->ComputeCellNormalsOn();
@@ -101,7 +126,9 @@ void LaShellShellIntersection::Update()
 	Source_Poly_Normals->FlipNormalsOn();
 	Source_Poly_Normals->Update();
 
+	
 	Output_Poly->DeepCopy(Source_Poly);
+
 	
 	vtkSmartPointer<vtkFloatArray> Source_pNormals = vtkFloatArray::SafeDownCast(Source_Poly->GetPointData()->GetNormals());
 
@@ -116,18 +143,52 @@ void LaShellShellIntersection::Update()
 		// find intersection with target 
 		vtkIdType iD = bspTree->IntersectWithLine(pStart, pEnd, tolerance, t, x, pcoords, subId);
 
-		float distance_to_target = GetEuclidean(pStart, x); 
 
-		Output_Poly_Scalar->InsertNextTuple1(distance_to_target);
+		if (iD > 0)		 // there are intersections
+		{
+			float mapped_value = 0, distance_to_target = 0, target_scalar = 0;
+			switch (_which_mapping)
+			{
+				case MAPPING_METHOD_DISTANCE:
+					distance_to_target = GetEuclidean(pStart, x);
+					mapped_value = distance_to_target;
+					Output_Poly_Scalar->InsertNextTuple1(mapped_value);
+
+					break;
+
+				case MAPPING_METHOD_TRANSFER:
+					vtkIdType id_on_target = Target_Poly_PointLocator->FindClosestPoint(x);
+
+					if (id_on_target > 0)
+					{
+						target_scalar = Target_Poly_Scalar->GetTuple1(id_on_target);
+						mapped_value = target_scalar;
+					}
+					else {
+						mapped_value = _mapping_default_value;
+					}
+
+					Output_Poly_Scalar->InsertNextTuple1(mapped_value);
+
+					break;
+
+			} // end switch 
+
+		}
+		else {
+			
+			Output_Poly_Scalar->InsertNextTuple1(_mapping_default_value);
+		}
 		//cout << i << ", distance = " << distance_to_target << endl; 
 		//double this_scalar = Source_Poly_Scalar->GetTuple1(i);
 		//_mesh_vertex_values.push_back(this_scalar);
+		Output_Poly->GetPointData()->SetScalars(Output_Poly_Scalar);
+
+		_output_la->SetMesh3D(Output_Poly);	
+		
 	}
 	
-	Output_Poly->GetPointData()->SetScalars(Output_Poly_Scalar);
 	
-	_output_la->SetMesh3D(Output_Poly);
-
 }
 
 

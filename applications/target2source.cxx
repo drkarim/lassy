@@ -44,9 +44,8 @@ int main(int argc, char * argv[])
 	if (!(foundArgs1 || foundArgs2 || foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
-			"\nCalculates the thickness from the source to target"
-			"\nThe final thickness is mapped to the source"
-			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>" << endl; 
+			"\nCopies the target scalars to source\nbased on source vertex normal intersection with target\n\n"
+			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>\n====Optional======\n\n\t--reverse <reverse the direction of intersection search>" << endl; 
 			
 
 		exit(1);
@@ -60,15 +59,15 @@ int main(int argc, char * argv[])
 		LaShellShellIntersection* wt = new LaShellShellIntersection();
 		wt->SetInputData(source);
 		wt->SetInputData2(target); 
-		wt->SetMapIntersectionToDistance();
+		wt->SetMapIntersectionToCopyScalar();
 
 		if (direction < 0) {
-			cout << "\n\nImportant: Computing thickness in reverse direction to surface normals pointing outwards" << endl;
+			cout << "\n\nImportant: Computing intersection in the reverse direction to surface normals pointing outwards" << endl;
 			wt->SetDirectionToOppositeNormal();
 			
 		}
 		else {
-			cout << "\n\nComputing thickness in surface normal direction (pointing outwards)" << endl; 
+			cout << "\n\nComputing intersection in surface normal direction (pointing outwards)" << endl; 
 		}
 
 		
