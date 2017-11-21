@@ -22,9 +22,17 @@ This library has some dependencies as it requires to perform 3D medical image pr
 <p>
 <img align="right" src="https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/images/3/36/Lassy_preview.PNG" width="250">
 
-The ```applications``` folder contains several examples of this library 
+The ```applications``` folder contains several examples of command-line tools that utilise this library. 
 </p>
-
+<p>
+The list of applications continue to grow: 
+  
+  1. Image intensity interrogation around object of interest
+  2. Distance to an adjacent object using interrogating normals (INTERN)
+  3. Distance within a convex object using INTERNs 
+  4. Copying data from an adjcent object using INTERNs
+ 
+</p>
 
 ## Platforms 
 Lassy has been tested on Windows 7 on Visual Studio 2015 and MacOS Sierra 10.12 running native g++ compilers. 
