@@ -37,6 +37,9 @@ The list of applications continue to grow:
 ## Platforms 
 Lassy has been tested on Windows 7 on Visual Studio 2015 and MacOS Sierra 10.12 running native g++ compilers. 
 
+## License 
+The software has been released under the [Apache 2.0](https://en.wikipedia.org/wiki/Apache_License#Version_2.0) licensing terms. 
+
 ## Author 
 
 ```
