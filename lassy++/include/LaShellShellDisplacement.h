@@ -49,6 +49,7 @@ private:
 	int _num_targets;		
 	int _num_targets_read;
 	int _aggregate_method;		// default is median
+	int _total_targets; 
 
 	vtkSmartPointer<vtkPolyData> _SourcePolyData; 
 

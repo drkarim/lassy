@@ -12,10 +12,12 @@ LaShellShellDisplacement::LaShellShellDisplacement()
 {
 	_source_la = new LaShell();
 	_target_la = new LaShell();
+	_output_la = new LaShell();
 	_SourcePolyData = vtkSmartPointer<vtkPolyData>::New();
 	_num_targets = ONE_TARGET;
 	_num_targets_read = 0; 
 	_aggregate_method = AGGREGATE_MEDIAN;
+	_total_targets = 0;
 }
 
 LaShellShellDisplacement::~LaShellShellDisplacement() {
@@ -35,6 +37,7 @@ void LaShellShellDisplacement::SetInputMultipleTargets(char* name_list)
 void LaShellShellDisplacement::SetInputData(LaShell* shell) {
 	_source_la = shell;
 	_source_la->GetMesh3D(_SourcePolyData);
+	
 }
 
 void LaShellShellDisplacement::SetInputData2(LaShell* shell) {
@@ -70,6 +73,7 @@ bool LaShellShellDisplacement::ReadShellNameList(const char* fn)
 	ifstream infile(fn);
 	cout << "Reading mutliple target filename list .. \n";
 	std::string line;
+
 	while (getline(infile, line))
 	{
 		istringstream iss(line);
@@ -81,8 +85,9 @@ bool LaShellShellDisplacement::ReadShellNameList(const char* fn)
 		else {
 			cout << "Found " << filename << endl;
 			_filename_list.push_back(filename);
+			_total_targets++;
 		}
-
+		
 		// process pair (a,b)
 	}
 	return true;
@@ -105,6 +110,7 @@ void LaShellShellDisplacement::ReadShellComputeDisplacement(string poly_data_fn)
 	Target_Poly_PointLocator->AutomaticOn();
 	Target_Poly_PointLocator->BuildLocator();
 
+	_displacements.resize(_SourcePolyData->GetNumberOfPoints(), vector<double>(_total_targets));
 
 	double source_vertex[3], target_vertex[3];
 	
@@ -117,15 +123,11 @@ void LaShellShellDisplacement::ReadShellComputeDisplacement(string poly_data_fn)
 		TargetPolyData->GetPoint(id_on_target, target_vertex);
 		double displacement = GetEuclidean(source_vertex, target_vertex);
 
-		if (_num_targets_read > 0) 
+		if (i < _displacements.size() && _num_targets_read < _displacements[i].size())
 		{
-			_displacements[i].push_back(displacement);
+			_displacements[i][_num_targets_read] = displacement; 
 		}
-		else {
-			vector<double> temp; 
-			temp.push_back(displacement); 
-			_displacements.push_back(temp);
-		}
+		
 	}
 
 	_num_targets_read++; 
