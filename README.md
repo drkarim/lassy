@@ -22,11 +22,9 @@ This library has some dependencies as it requires to perform 3D medical image pr
 <p>
 <img align="right" src="https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/images/3/36/Lassy_preview.PNG" width="250">
 
-It contains a tool that can be used to interrogate late gadolinium enhancement CMR images of the ventricular myocardium. 
+The ```applications``` folder contains several examples of this library 
 </p>
-It takes input parameters such as:  
 
-```-i``` Ventricular myocardial shell in VTK format 
 
 ## Platforms 
 Lassy has been tested on Windows 7 on Visual Studio 2015 and MacOS Sierra 10.12 running native g++ compilers. 
