@@ -5,6 +5,8 @@ using namespace std;
 
 
 #include <math.h>
+#include <vector>
+#include <algorithm> 
 
 
 class MathBox {
@@ -12,7 +14,8 @@ private:
 	
 public:
 	static void normalizeVector(double &a, double &b, double &c);
-	
+	static double CalcMean(vector<double> d);
+	static double CalcMedian(vector<double> d);
 }; 
 
 
