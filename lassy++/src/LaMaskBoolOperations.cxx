@@ -4,6 +4,7 @@
 #include <iostream>    // using IO functions
 #include <string>      // using string
 #include "../include/LaMaskBoolOperations.h"
+#include "../include/LaImage.h"
 
 using namespace std;
 
@@ -70,12 +71,12 @@ void LaMaskBoolOperations::Update() {
 		switch (_which_operation)
 		{
 			case BOOL_AND: 
-				if (mask_img1_it.Get() == 0 && mask_img2_it.Get() > 0)
-					mask_img1_it.Set(0); 
-				else if (mask_img1_it.Get() > 0 && mask_img2_it.Get() == 0)
+				if (mask_img1_it.Get() > 0 && mask_img2_it.Get() == 0)
 					mask_img1_it.Set(0); 
 
-				
+				if (mask_img1_it.Get() > 0)
+					mask_img1_it.Set(1);			// mask it 
+
 				++mask_img1_it;
 				++mask_img2_it;
 			break; 
@@ -84,12 +85,15 @@ void LaMaskBoolOperations::Update() {
 				if (mask_img1_it.Get() == 0 && mask_img2_it.Get() > 0)
 					mask_img1_it.Set(1);
 				
+				if (mask_img1_it.Get() > 0)
+					mask_img1_it.Set(1);			// mask it 
+					
 				++mask_img1_it;
 				++mask_img2_it;
 			break; 
 		}
 	}
 
-	_output_img = _mask_img1;	
+	_mask_img1->DeepCopy(_output_img);
 
 }

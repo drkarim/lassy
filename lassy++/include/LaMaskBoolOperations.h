@@ -19,6 +19,7 @@
 
 
 
+
 class LaMaskBoolOperations : public LaImageAlgorithms {
 
 private: 

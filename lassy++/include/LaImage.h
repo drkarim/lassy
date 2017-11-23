@@ -47,7 +47,10 @@ private:
 
 public:
 	// Constructor with default values for data members
-	LaImage() {}
+	LaImage() {
+		_image = InputImageType::New();
+	}
+
 
 	LaImage(const char* img_fn)
 	{
@@ -100,6 +103,7 @@ public:
 	void WorldToImage(double &x, double &y, double &z); 
 	void ImageToWorld(float &x, float &y, float &z);
 	
+	void DeepCopy(LaImage* output_img);
 	void Export(const char* filename);
 	
 };

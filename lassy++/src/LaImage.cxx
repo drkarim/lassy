@@ -140,3 +140,24 @@ void LaImage::GetMinimumMaximum(short& min, short& max)
 	max = imageCalculatorFilter->GetMaximum(); 
 }
 
+
+void LaImage::DeepCopy(LaImage* output_img)
+{
+	typedef unsigned short PixelType;
+	typedef itk::Image< PixelType, 3 >  ImageType;
+	
+	ImageType::Pointer output = output_img->GetImage(); 
+
+	output->SetRegions(_image->GetLargestPossibleRegion());
+	output->Allocate();
+
+	itk::ImageRegionConstIterator<ImageType> inputIterator(_image, _image->GetLargestPossibleRegion());
+	itk::ImageRegionIterator<ImageType> outputIterator(output, output->GetLargestPossibleRegion());
+
+	while(!inputIterator.IsAtEnd())
+	{
+		outputIterator.Set(inputIterator.Get());
+		++inputIterator;
+		++outputIterator;
+	}
+}
