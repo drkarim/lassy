@@ -14,6 +14,7 @@ SET(LASSY_INCLUDES
 	"../include/LaShellShellArithmetic.h"
 	"../include/LaShellEnclosureDistance.h"
 	"../include/LaShellShellDisplacement.h"
+	"../include/LaMaskBoolOperations.h"
 )
 
 SET(LASSY_SRCS 
@@ -31,6 +32,7 @@ SET(LASSY_SRCS
 	LaImageNormalInterrogator.cxx
 	LaShellEnclosureDistance.cxx
 	LaShellShellDisplacement.cxx
+	LaMaskBoolOperations.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})

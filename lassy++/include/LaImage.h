@@ -100,7 +100,7 @@ public:
 	void WorldToImage(double &x, double &y, double &z); 
 	void ImageToWorld(float &x, float &y, float &z);
 	
-
+	void Export(const char* filename);
 	
 };
 

@@ -7,6 +7,15 @@
 using namespace std;
 
 
+void LaImage::Export(const char* output_fn)
+{
+	typedef itk::Image< unsigned short, 3 >    ImageType;
+	typedef  itk::ImageFileWriter< ImageType  > WriterType;
+	WriterType::Pointer writer = WriterType::New();
+	writer->SetFileName(output_fn);
+	writer->SetInput(_image);
+	writer->Update();
+}
 
 // Pixel iterator 
 void LaImage::PixelToFile(const char* output_fn)

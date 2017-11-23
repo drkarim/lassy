@@ -23,6 +23,7 @@ add_executable(shellenclosethickness applications/shellenclosethickness.cxx)
 add_executable(target2source applications/target2source.cxx)
 #add_executable(shell2csv applications/shell2csv.cxx)
 add_executable(displacement applications/displacement.cxx)
+add_executable(boolmask applications/boolmask.cxx)
 
 
 target_link_libraries(lassy lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
@@ -34,6 +35,7 @@ target_link_libraries(shellenclosethickness lassy++ ${ITK_LIBRARIES} ${VTK_LIBRA
 target_link_libraries(target2source lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 #target_link_libraries(shell2csv lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 target_link_libraries(displacement lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
+target_link_libraries(boolmask lassy++ ${ITK_LIBRARIES} ${VTK_LIBRARIES})
 
 if (UNIX)
 INSTALL(TARGETS lassy DESTINATION /usr/local/bin)
@@ -45,4 +47,5 @@ INSTALL(TARGETS shellenclosethickness DESTINATION /usr/local/bin)
 INSTALL(TARGETS target2source DESTINATION /usr/local/bin)
 #INSTALL(TARGETS shell2csv DESTINATION /usr/local/bin)
 INSTALL(TARGETS displacement DESTINATION /usr/local/bin)
+INSTALL(TARGETS boolmask DESTINATION /usr/local/bin)
 endif (UNIX)
