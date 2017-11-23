@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 || foundArgs3))
+	if (!(foundArgs1 && foundArgs2 && foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\n(Mandatory)\n\t-i1 <3d image> \n\t-i2 <surface_mesh_vtk> \n\t-o <output_vtk>" << endl; 

@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 ))
+	if (!(foundArgs1 && foundArgs2 ))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nCalculates the distance within the shell enclosure"

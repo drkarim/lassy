@@ -47,7 +47,7 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 || foundArgs3))
+	if (!(foundArgs1 && foundArgs2 && foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nCalculates the thickness from the source to target"

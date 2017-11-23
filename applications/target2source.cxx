@@ -46,7 +46,7 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 || foundArgs3))
+	if (!(foundArgs1 && foundArgs2 && foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nCopies the target scalars to source\nbased on source vertex normal intersection with target\n\n"
