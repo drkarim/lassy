@@ -66,7 +66,6 @@ void LaMaskBoolOperations::Update() {
 	IteratorType  mask_img1_it(mask1, mask1->GetRequestedRegion());
 	IteratorType  mask_img2_it(mask2, mask2->GetRequestedRegion());
 	IteratorType  output_it(output, output->GetRequestedRegion());
-	
 
 	mask_img1_it.GoToBegin();
 	mask_img2_it.GoToBegin();
@@ -80,9 +79,6 @@ void LaMaskBoolOperations::Update() {
 				if (mask_img1_it.Get() > 0 && mask_img2_it.Get() == 0)
 					output_it.Set(0);
 
-				if (mask_img1_it.Get() > 0)
-					output_it.Set(1);			// mask it 
-
 				++mask_img1_it;
 				++mask_img2_it;
 				++output_it;
@@ -91,17 +87,28 @@ void LaMaskBoolOperations::Update() {
 			case BOOL_OR: 
 				if (mask_img1_it.Get() == 0 && mask_img2_it.Get() > 0)
 					output_it.Set(1);
+				else if (mask_img1_it.Get() > 0)
+					output_it.Set(1);		// masks it 
 				
-				if (mask_img1_it.Get() > 0)
-					output_it.Set(1);			// mask it 
-					
 				++mask_img1_it;
 				++mask_img2_it;
 				++output_it; 
 			break; 
+
+			case BOOL_XOR:
+				if (mask_img1_it.Get() == 0 && mask_img2_it.Get() > 0)
+					output_it.Set(1);
+				else if (mask_img1_it.Get() > 0 && mask_img2_it.Get() > 0)
+					output_it.Set(0);
+				else if (mask_img1_it.Get() > 0 && mask_img2_it.Get() == 0)
+					output_it.Set(1);			// masks  it 
+
+				++mask_img1_it;
+				++mask_img2_it;
+				++output_it;
+			break;
 		}
 	}
-
 	
 
 }

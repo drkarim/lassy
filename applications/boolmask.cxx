@@ -53,11 +53,11 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 || foundArgs3))
+	if (!(foundArgs1 && foundArgs2 && foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nPerforms boolean operations on two masks"
-			"\n(Mandatory)\n\t-i1 <mask1> \n\t-i2 <mask2>\n\t-o <output filename>\n== Optional ==\n\t-m <which operation> (1=AND, 2=OR)" << endl; 
+			"\n(Mandatory)\n\t-i1 <mask1> \n\t-i2 <mask2>\n\t-o <output filename>\n== Optional ==\n\t-m <which operation> (1=AND, 2=OR, 3-XOR)" << endl; 
 			
 		exit(1);
 	}
