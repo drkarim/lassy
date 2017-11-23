@@ -22,7 +22,7 @@ int main(int argc, char * argv[])
 	
 	bool foundArgs1 = false, foundArgs2 = false, foundArgs3 = false;
 
-	int method = DO_AND; 
+	int method = DO_OR; 
 	
 	if (argc >= 1)
 	{

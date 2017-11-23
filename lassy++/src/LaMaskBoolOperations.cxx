@@ -57,14 +57,20 @@ void LaMaskBoolOperations::Update() {
 	typedef itk::Image< unsigned short, 3 >    InputImageType;
 	typedef itk::ImageRegionIterator<InputImageType>  IteratorType;
 
-	InputImageType::Pointer _mask1 = _mask_img1->GetImage(); 
-	InputImageType::Pointer _mask2 = _mask_img2->GetImage(); 
+	InputImageType::Pointer mask1 = _mask_img1->GetImage(); 
+	InputImageType::Pointer mask2 = _mask_img2->GetImage(); 
 
-	IteratorType  mask_img1_it(_mask1, _mask1->GetRequestedRegion());
-	IteratorType  mask_img2_it(_mask2, _mask2->GetRequestedRegion());
+	_mask_img1->DeepCopy(_output_img);
+	InputImageType::Pointer output = _output_img->GetImage();
+
+	IteratorType  mask_img1_it(mask1, mask1->GetRequestedRegion());
+	IteratorType  mask_img2_it(mask2, mask2->GetRequestedRegion());
+	IteratorType  output_it(output, output->GetRequestedRegion());
 	
+
 	mask_img1_it.GoToBegin();
 	mask_img2_it.GoToBegin();
+	output_it.GoToBegin();
 
 	while (!mask_img1_it.IsAtEnd())
 	{
@@ -72,28 +78,30 @@ void LaMaskBoolOperations::Update() {
 		{
 			case BOOL_AND: 
 				if (mask_img1_it.Get() > 0 && mask_img2_it.Get() == 0)
-					mask_img1_it.Set(0); 
+					output_it.Set(0);
 
 				if (mask_img1_it.Get() > 0)
-					mask_img1_it.Set(1);			// mask it 
+					output_it.Set(1);			// mask it 
 
 				++mask_img1_it;
 				++mask_img2_it;
+				++output_it;
 			break; 
 
 			case BOOL_OR: 
 				if (mask_img1_it.Get() == 0 && mask_img2_it.Get() > 0)
-					mask_img1_it.Set(1);
+					output_it.Set(1);
 				
 				if (mask_img1_it.Get() > 0)
-					mask_img1_it.Set(1);			// mask it 
+					output_it.Set(1);			// mask it 
 					
 				++mask_img1_it;
 				++mask_img2_it;
+				++output_it; 
 			break; 
 		}
 	}
 
-	_mask_img1->DeepCopy(_output_img);
+	
 
 }
