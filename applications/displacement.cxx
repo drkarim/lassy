@@ -52,7 +52,7 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 || foundArgs2 || foundArgs3))
+	if (!(foundArgs1 && foundArgs2 && foundArgs3))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nCalculates the displacement between a source and target shells. "
@@ -71,7 +71,17 @@ int main(int argc, char * argv[])
 		algorithm->SetInputData(source); 
 		algorithm->SetInputMultipleTargets(input_f2); 
 
-		algorithm->SetAggregateMethodToMedian(); 
+
+		switch (method)
+		{
+			case DO_MEDIAN: 
+				algorithm->SetAggregateMethodToMedian();
+				break; 
+
+			case DO_MEAN: 
+				algorithm->SetAggregateMethodToMean();
+				break; 
+		}
 
 		algorithm->Update();
 
