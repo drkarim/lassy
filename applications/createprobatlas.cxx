@@ -5,7 +5,7 @@
 #define DO_MEAN 2 
 
 
-#include "LaShellProbabilisticAtlas.h"
+#include "LaShellAtlas.h"
 #include <numeric> 
 
 /*
@@ -15,7 +15,7 @@
 *      Email: rashed 'dot' karim @kcl.ac.uk
 *      Copyright (c) 2017
 *
-*	   This application constructs a probabilistic atlas from a list of target shells, preferably with the same topology 
+*	   This application constructs an atlas from a list of target shells, preferably with the same topology 
 *	   The application requires two inputs, a source shell and a list of target shells. The target shells are used to 
 *	   construct the atlas based on the toplogy of the source shell. The aggregated data (median/mean) from target is used
 *	   to compute the value at each vertex of the atlas. 
@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
 		LaShell* source = new LaShell(input_f1);
 		LaShell* la_out = new LaShell();
 
-		LaShellProbabilisticAtlas* algorithm = new LaShellProbabilisticAtlas();
+		LaShellAtlas* algorithm = new LaShellAtlas();
 		algorithm->SetInputData(source);
 		algorithm->SetInputMultipleTargets(input_f2);
 

@@ -3,22 +3,22 @@
 /* The Circle class (All source codes in one file) (CircleAIO.cpp) */
 #include <iostream>    // using IO functions
 #include <string>      // using string
-#include "../include/LaShellProbabilisticAtlas.h"
+#include "../include/LaShellAtlas.h"
 
 using namespace std;
 
 
-void LaShellProbabilisticAtlas::SetAtlasConstructionToUseDirectCopy()
+void LaShellAtlas::SetAtlasConstructionToUseDirectCopy()
 {
 	_which_method = USE_DIRECT_COPY; 
 }
 
-void LaShellProbabilisticAtlas::SetAtlasConstructionToUseClosestPoint()
+void LaShellAtlas::SetAtlasConstructionToUseClosestPoint()
 {
 	_which_method = USE_CLOSEST_POINT; 
 }
 
-void LaShellProbabilisticAtlas::ReadShellComputeDisplacement(string poly_data_fn)
+void LaShellAtlas::ReadShellComputeDisplacement(string poly_data_fn)
 {
 	vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
 	reader1->SetFileName(poly_data_fn.c_str());
@@ -77,7 +77,7 @@ void LaShellProbabilisticAtlas::ReadShellComputeDisplacement(string poly_data_fn
 
 
 
-void LaShellProbabilisticAtlas::Update() {
+void LaShellAtlas::Update() {
 
 	// VTK error logging 
 	vtkSmartPointer<vtkFileOutputWindow> fileOutputWindow = vtkSmartPointer<vtkFileOutputWindow>::New();

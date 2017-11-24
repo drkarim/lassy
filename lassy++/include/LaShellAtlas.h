@@ -7,7 +7,8 @@
 */
 
 /*
-*	The LaShellShellDisplacement computes the displacement for each vertex between a source and target mesh 
+*	The LaShellAtlas can create an atlas from a list of target shells, preferably with the same topology
+*	The atlas aggregates (mean/median) the values stored at each vertex of the target shells 
 */
 #pragma once
 
@@ -35,7 +36,7 @@
 #include "LaShell.h"
 
 
-class LaShellProbabilisticAtlas : public LaShellShellDisplacement {
+class LaShellAtlas : public LaShellShellDisplacement {
 private: 
 	int _which_method;
 public:
