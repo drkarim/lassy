@@ -38,7 +38,7 @@
 
 class LaShellShellDisplacement : public LaShellAlgorithms {
 
-private: 
+protected: 
 	LaShell* _source_la;
 	LaShell* _target_la;
 	LaShell* _output_la;

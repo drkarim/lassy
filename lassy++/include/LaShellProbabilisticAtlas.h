@@ -11,10 +11,9 @@
 */
 #pragma once
 
-#define ONE_TARGET 1 
-#define MULTIPLE_TARGETS 2 
-#define AGGREGATE_MEAN 1 
-#define AGGREGATE_MEDIAN 2 
+#define USE_DIRECT_COPY 1
+#define USE_CLOSEST_POINT 2 
+
 
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
@@ -32,49 +31,20 @@
 #include <string>
 #include <sstream>
 
-#include "LaShellAlgorithms.h"
+#include "LaShellShellDisplacement.h"
 #include "LaShell.h"
 
 
-class LaShellShellDisplacement : public LaShellAlgorithms {
-
+class LaShellProbabilisticAtlas : public LaShellShellDisplacement {
 private: 
-	LaShell* _source_la;
-	LaShell* _target_la;
-	LaShell* _output_la;
-
-	string _multiple_target_fn; 
-	vector<string> _filename_list; 
-	vector<vector< double> > _displacements; 
-	int _num_targets;		
-	int _num_targets_read;
-	int _aggregate_method;		// default is median
-	int _total_targets; 
-
-	vtkSmartPointer<vtkPolyData> _SourcePolyData; 
-
-	double GetEuclidean(double*, double*);
-	bool ReadShellNameList(const char* fn);
-	void PrepareDisplacementContainer(string first_file, vector<vector< double> >& scalar_container);
-	void ReadShellComputeDisplacement(string); 
-	void AggregateAllDisplacements();
-
+	int _which_method;
 public:
-		
-	void SetInputData(LaShell* shell);
-	void SetInputData2(LaShell* shell);
-
-	void SetInputMultipleTargets(char* name_list); 
-
-	void SetAggregateMethodToMean(); 
-	void SetAggregateMethodToMedian();
+	void ReadShellComputeDisplacement(string poly_data_fn);
 	
+	void SetAtlasConstructionToUseDirectCopy();				// must ensure that all meshes have the same topology
+
+	void SetAtlasConstructionToUseClosestPoint();			// much slower but more accurate
+
+
 	void Update();
-
-	LaShell* GetOutput();
-
-
-	LaShellShellDisplacement();
-	~LaShellShellDisplacement();
-	
 }; 
