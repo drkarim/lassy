@@ -1,6 +1,6 @@
 # Lassy
 <p>
-Lassy is a C++ library useful for interrogating the image around an object of interest using a surface normal analysis. This is performed using point or vertex normal profiles of the surface mesh.
+Lassy is a C++ library useful for interrogating the image around an object of interest using surface normal analysis. This is performed using point or vertex normal profiles of the surface mesh.
   
 In a typical use case, a surface of the 3D object of interest is generated. The surface normal intensity profiles are then used for interrogating the 3D image around the object of interest. 
 
