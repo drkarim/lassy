@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 					method = atoi(argv[i + 1]);
 
 				}
-				else if (string(argv[i]) == "-t") {
+				else if (string(argv[i]) == "-e") {
 					is_topology_equal = atoi(argv[i + 1]);
 
 				}
@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
 			"\nNote that multiple target shells can be specified with their filenames as a list within a txt file"
 			"\nNote that by defalt the median displacement is computed\n"
 			"\n(Mandatory)\n\t-i <source_mesh_vtk> \n\t-t <target mesh filenames as list txt>\n\t-o <output file>\n== Optional ==\n\t-m (1=mean, 2=median)"
-			"\n-t (target shell topology: 1 - equal, 2 - not equal" << endl;
+			"\n\t-e (target shell topology: 1 - equal, 2 - not equal)" << endl;
 
 		exit(1);
 	}
