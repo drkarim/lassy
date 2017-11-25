@@ -16,6 +16,7 @@ public:
 	static void normalizeVector(double &a, double &b, double &c);
 	static double CalcMean(vector<double> d);
 	static double CalcMedian(vector<double> d);
+	static double CalcStd(vector<double> scores, double mean);
 }; 
 
 

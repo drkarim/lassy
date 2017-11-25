@@ -52,3 +52,19 @@ double MathBox::CalcMean(vector<double> scores)
 
 	return sum / n;
 }
+
+/*
+* Calculates Mean from a list of values
+*/
+double MathBox::CalcStd(vector<double> scores, double mean)
+{
+	double sum = 0; double n = 0;
+	for (int i = 0; i < scores.size(); i++)
+	{
+		sum += (mean-scores[i])*(mean - scores[i]); 
+		n++;
+	}
+
+	return sqrt(sum / n);
+}
+
