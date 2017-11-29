@@ -71,8 +71,8 @@ int main(int argc, char * argv[])
 
 		algorithm->Update();
         
-        cout << "\tMean=\t\t\t" << fixed <<  setprecision(2) << algorithm->GetOutputValue("mean") << ""
-        "\n\tMedian=\t\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("median") << "" 
+        cout << "\n\tMedian=\t\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("median") << "" 
+        "\tMean=\t\t\t" << fixed <<  setprecision(2) << algorithm->GetOutputValue("mean") << ""
         "\n\tStandard Dev.=\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("std") << endl; 
 	}
 
