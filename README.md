@@ -21,7 +21,7 @@ This library has some dependencies as it requires to perform 3D medical image pr
 ## Installation 
 The library currently has two dependencies: [ITK](https://itk.org/) and [VTK](https://www.vtk.org/). These need to be built from source first using [CMake](https://cmake.org/). There are Github repositories for [ITK](https://github.com/InsightSoftwareConsortium/ITK) and [VTK](https://github.com/Kitware/VTK)
 
-Once the ITK and VTK toolkits are built, this library can be built from source using CMake. Windows binaries will also be available soon and can be requested. 
+Once the ITK and VTK toolkits are built, this library can be built from source by running [CMake](https://cmake.org/) on the source files. Windows binaries will also be available soon and can be requested. 
 
 
 
