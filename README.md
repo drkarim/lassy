@@ -16,7 +16,7 @@ It is being currently developed for visualising pixel enhancments in MRI imaging
 </p>
 
 ## Dependencies 
-This library has some dependencies as it requires to perform 3D medical image processing and process 3D surface meshes. For these purposes, it depends on the [Image Registration Toolkit (ITK)](https://itk.org/) and the [Visulisation Toolkit](https://www.vtk.org/). Both are open-source and written in C++. VTK is released under the 3-Clause BSD license and ITK was released under the Apache 2.0 license. 
+This library has some dependencies as it requires to perform 3D medical image processing and process 3D surface meshes. For these purposes, it depends on the [Image Registration Toolkit (ITK)](https://itk.org/) and the [Visulisation Toolkit (VTK)](https://www.vtk.org/). Both are open-source and written in C++. VTK is released under the 3-Clause BSD license and ITK was released under the Apache 2.0 license. 
 
 ## Installation 
 The library currently has two dependencies: [ITK](https://itk.org/) and [VTK](https://www.vtk.org/). These need to be built from source first using [CMake](https://cmake.org/). There are Github repositories for [ITK](https://github.com/InsightSoftwareConsortium/ITK) and [VTK](https://github.com/Kitware/VTK)
