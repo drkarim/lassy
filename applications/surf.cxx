@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
 		}
 	}
 
-	if (!(foundArgs1 && foundArgs2 && foundArgs3))
+	if (!(foundArgs1 && foundArgs2 && foundArgs4))
 	{
 		cerr << "Performs surface normal analysis\nCheeck your parameters\n\nUsage:"
 			"\n(Mandatory)\n\t-i1 <intensity image for intterogation> \n\t-i2 <binary image for surface>" 
