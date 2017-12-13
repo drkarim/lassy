@@ -93,7 +93,39 @@ bool LaShellShellDisplacement::ReadShellNameList(const char* fn)
 	return true;
 }
 
+// take a small step inside shell, compare distance to test_point to small step outside shell 
+int LaShellShellDisplacement::IsPointOutsideOrInsideShell(vtkIdType shell_point, double* test_point)
+{
+	double normal_vec[3], shell_point_xyz[3]; 
+	double small_step = 0.1; 
 
+	_SourcePolyData->GetPoint(shell_point, shell_point_xyz);
+	_SourcePolyNormals->GetTuple(shell_point, normal_vec);
+
+	double small_step_inside_shell[3], small_step_outside_shell[3]; 
+
+	small_step_outside_shell[0] = shell_point_xyz[0] + (small_step*normal_vec[0]);
+	small_step_outside_shell[1] = shell_point_xyz[1] + (small_step*normal_vec[1]);
+	small_step_outside_shell[2] = shell_point_xyz[2] + (small_step*normal_vec[2]);
+
+	small_step_inside_shell[0] = shell_point_xyz[0] + (-1*small_step*normal_vec[0]);
+	small_step_inside_shell[1] = shell_point_xyz[1] + (-1*small_step*normal_vec[1]);
+	small_step_inside_shell[2] = shell_point_xyz[2] + (-1*small_step*normal_vec[2]);
+
+	double test_to_inside_point = GetEuclidean(test_point, small_step_inside_shell); 
+	double test_to_outside_point = GetEuclidean(test_point, small_step_outside_shell);
+
+	if (test_to_inside_point < test_to_outside_point)
+	{
+		// inside point is closer to test point 
+		return -1; 
+	}
+	else if (test_to_inside_point >= test_to_outside_point)
+	{
+		return 1; 
+	}
+	
+}
 
 void LaShellShellDisplacement::ReadShellComputeDisplacement(string poly_data_fn)
 {
@@ -110,7 +142,17 @@ void LaShellShellDisplacement::ReadShellComputeDisplacement(string poly_data_fn)
 	Target_Poly_PointLocator->AutomaticOn();
 	Target_Poly_PointLocator->BuildLocator();
 
+	// compute normals for finding direction of displacement 
+	vtkSmartPointer<vtkPolyDataNormals> Source_Poly_Normals = vtkSmartPointer<vtkPolyDataNormals>::New();
+	Source_Poly_Normals->ComputeCellNormalsOn();
+	Source_Poly_Normals->SetInputData(_SourcePolyData);
+	Source_Poly_Normals->Update();
+
+	_SourcePolyNormals = vtkFloatArray::SafeDownCast(_SourcePolyData->GetPointData()->GetNormals());
+
 	_displacements.resize(_SourcePolyData->GetNumberOfPoints(), vector<double>(_total_targets));
+
+	//_displacement_direction.resize(_SourcePolyData->GetNumberOfPoints(), vector<double>(_total_targets));
 
 	double source_vertex[3], target_vertex[3];
 	
@@ -125,7 +167,10 @@ void LaShellShellDisplacement::ReadShellComputeDisplacement(string poly_data_fn)
 
 		if (i < _displacements.size() && _num_targets_read < _displacements[i].size())
 		{
-			_displacements[i][_num_targets_read] = displacement; 
+			
+			// check direction of displacement 
+			int displacement_direction = IsPointOutsideOrInsideShell(i, target_vertex);
+			_displacements[i][_num_targets_read] = displacement_direction*displacement;
 		}
 		
 	}

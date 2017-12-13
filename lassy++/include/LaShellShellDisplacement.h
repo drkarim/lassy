@@ -46,18 +46,23 @@ protected:
 	string _multiple_target_fn; 
 	vector<string> _filename_list; 
 	vector<vector< double> > _displacements; 
+
+	//vector<vector< double> > _displacement_direction; 
+
 	int _num_targets;		
 	int _num_targets_read;
 	int _aggregate_method;		// default is median
 	int _total_targets; 
 
 	vtkSmartPointer<vtkPolyData> _SourcePolyData; 
+	vtkSmartPointer<vtkFloatArray> _SourcePolyNormals;
 
 	double GetEuclidean(double*, double*);
 	bool ReadShellNameList(const char* fn);
 	void PrepareDisplacementContainer(string first_file, vector<vector< double> >& scalar_container);
 	void ReadShellComputeDisplacement(string); 
 	void AggregateAllDisplacements();
+	int IsPointOutsideOrInsideShell(vtkIdType shell_point, double* test_point);
 
 public:
 		
