@@ -170,6 +170,7 @@ void LaShellShellDisplacement::ReadShellComputeDisplacement(string poly_data_fn)
 			
 			// check direction of displacement 
 			int displacement_direction = IsPointOutsideOrInsideShell(i, target_vertex);
+			//int displacement_direction = 1;
 			_displacements[i][_num_targets_read] = displacement_direction*displacement;
 		}
 		
@@ -244,7 +245,7 @@ void LaShellShellDisplacement::Update() {
 	{
 		ReadShellNameList(_multiple_target_fn.c_str());
 		
-		for (int i = 1; i < _filename_list.size(); i++)
+		for (int i = 0; i < _filename_list.size(); i++)
 		{
 			ReadShellComputeDisplacement(_filename_list[i]);
 		}
