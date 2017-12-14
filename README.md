@@ -34,10 +34,13 @@ The ```applications``` folder contains several examples of command-line tools th
 <p>
 The list of applications continue to grow: 
   
-  1. Image intensity interrogation around object of interest
-  2. Distance to an adjacent object using interrogating normals (INTERN)
-  3. Distance within a convex object using INTERNs 
-  4. Copying data from an adjcent object using INTERNs
+  1. Image intensity interrogation around object of interest ```applications\surf.cxx```
+  2. Distance to an adjacent mesh using interrogating normals (INTERN) ```applications\wallthickness.cxx```
+  3. Distance within a convex object mesh using INTERNs ```applications\shellenclosethickness.cxx```
+  4. Copying data from an adjcent mesh using INTERNs ```applications\target2source.cxx```
+  5. Ordinary statistics (Median and mean) on scalars of mesh vertices  ```applications\shellstats.cxx```
+  6. Boolean operations on scalars of two meshes ```applications\boolmask.cxx```
+  7. Compute vertex displacements to a deformed mesh ```applications\displacement.cxx```
  
 </p>
 
