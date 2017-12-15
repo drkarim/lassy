@@ -18,6 +18,7 @@ SET(LASSY_INCLUDES
 	"../include/LaMaskBoolOperations.h"
 	"../include/LaShellAtlas.h"
 	"../include/LaShellStatistics.h"
+	"../include/LaShellDeformationWithField.h"
 )
 
 SET(LASSY_SRCS 
@@ -39,6 +40,7 @@ SET(LASSY_SRCS
 	LaMaskBoolOperations.cxx
 	LaShellAtlas.cxx
 	LaShellStatistics.cxx
+	LaShellDeformationWithField.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})

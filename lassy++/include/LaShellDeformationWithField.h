@@ -24,8 +24,14 @@
 #include <vtkPolyDataNormals.h>
 #include <vtkModifiedBSPTree.h>
 #include <vtkPointLocator.h>
+#include <vtkSurfaceReconstructionFilter.h>
+#include <vtkContourFilter.h>
+#include <vtkReverseSense.h>
 #include <string>
 #include <sstream>
+#include <vtkTransformPolyDataFilter.h>
+#include <vtkTransform.h>
+#include <vtkMath.h>
 
 #include "LaShellAlgorithms.h"
 #include "LaShell.h"
@@ -40,6 +46,8 @@ protected:
     vtkSmartPointer<vtkPolyData> _SourcePolyData; 
 	vtkSmartPointer<vtkFloatArray> _SourcePolyNormals;
 
+	vtkSmartPointer<vtkPoints> _vertexPostDeformation; 
+	vtkSmartPointer<vtkPolyData> _DeformedMesh;
     
 public: 
 
@@ -54,6 +62,8 @@ public:
 	LaShellDeformationWithField();
 	~LaShellDeformationWithField();
 
-    
+private: 
+	void ReconstructSurface(vtkSmartPointer<vtkPoints> points);
+	vtkSmartPointer<vtkPolyData> transform_back(vtkSmartPointer<vtkPoints> pt, vtkSmartPointer<vtkPolyData> pd);
 
 };
