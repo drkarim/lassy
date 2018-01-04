@@ -8,7 +8,7 @@ A simple example application of this library would be to interrograte the image 
 
 <img align="right" src="http://catlikecoding.com/unity/tutorials/noise-derivatives/05-mesh-normals.png" width="250">
 
-The project is undergoing continuous iteration and so this library now has several new additional functionalities. These are listed below. 
+The project is undergoing continuous iteration and so this library now has several new additional functionalities. These can be found in the growing list of applications below. 
 
 The 3D images are expected to be in the medical image formats: NifTII, NRRD, Analyze and GIPL. The meshes can be in [VTK](https://www.vtk.org/) format. 
 
