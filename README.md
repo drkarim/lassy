@@ -4,11 +4,11 @@ Lassy is a C++ library useful for interrogating the image around an object of in
   
 In a typical use case, a surface of the 3D object of interest is generated. The surface normal intensity profiles are then used for interrogating the 3D image around the object of interest. 
 
-A simple example application of this library would be to interrograte the image around an organ or anatomical structure in a medical 3D image. There are special applications in cardiac imaging for which this library was built, especially to interrogate the image around chambers of the heart. 
+A simple example application of this library would be to interrograte the image around an organ or anatomical structure in a medical 3D image. There are special applications in cardiac imaging for which this library was built, especially to interrogate the image around chambers of the heart. Interrogating normals (INTERN) can be used in other applications such as finding point distances to an adjacent object, copying data from an adjacent oject, finding thickness of a convex object. 
 
 <img align="right" src="http://catlikecoding.com/unity/tutorials/noise-derivatives/05-mesh-normals.png" width="250">
 
-The project is undergoing continuous iteration and this means that the library has now several more functionalities apart from interrogating intensities around an object an interest. The interrogating normals (INTERN) can be used in other applications such as finding point distances to an adjacent object, copying data from an adjacent oject, finding thickness of a convex object. 
+The project is undergoing continuous iteration and so this library now has several new additional functionalities. These are listed below. 
 
 The 3D images are expected to be in the medical image formats: NifTII, NRRD, Analyze and GIPL. The meshes can be in [VTK](https://www.vtk.org/) format. 
 
