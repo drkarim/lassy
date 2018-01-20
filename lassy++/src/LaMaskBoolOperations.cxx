@@ -17,7 +17,12 @@ LaMaskBoolOperations::LaMaskBoolOperations()
 	_which_operation = BOOL_AND;
 }
 
-LaMaskBoolOperations::~LaMaskBoolOperations() {}
+LaMaskBoolOperations::~LaMaskBoolOperations() {
+
+	delete _mask_img1; 
+	delete _mask_img2; 
+	delete _output_img; 
+}
 
 
 void LaMaskBoolOperations::SetInputData(LaImage* img) {

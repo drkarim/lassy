@@ -21,7 +21,9 @@ LaShellShellDisplacement::LaShellShellDisplacement()
 }
 
 LaShellShellDisplacement::~LaShellShellDisplacement() {
-	
+	delete _source_la; 
+	delete _target_la; 
+	delete _output_la;
 }
 
 void LaShellShellDisplacement::SetInputMultipleTargets(char* name_list)
