@@ -293,14 +293,14 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 	
 	LaShellGapsInBinary* this_class_obj = (LaShellGapsInBinary*)obj; 
 	
-	//vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::SafeDownCast(obj); 	// you need the pointer to the interactor, without this you cannot access your 3D scene 
-	vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->GetWindowInteractor();
-	vtkSmartPointer<vtkRenderWindow> renderWin = iren->GetRenderWindow();			// and from there you get your renderer and your renderwindow 
+	
+	//vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->GetWindowInteractor();
+	vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->_InteractorRenderWindow;
+	vtkSmartPointer<vtkRenderWindow> renderWin = this_class_obj->_RenderWindow;			// and from there you get your renderer and your renderwindow 
 	vtkSmartPointer<vtkRendererCollection> rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-	renderer = rendererCollection->GetFirstRenderer();			// you finally get your renderer from the renderwindow intaractor, this is on what you will put the 
-																// the point (mark it using a sphere) and add it as an actor just as you added your mesh 
-	//vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+	renderer = rendererCollection->GetFirstRenderer();			
+	
 	
 	vtkSmartPointer<vtkPolyData> poly_data = this_class_obj->GetSourcePolyData(); 
 
@@ -308,7 +308,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 	
 	if (iren->GetKeyCode()=='x')
 	{
-			
+			/*
 		screenX = iren->GetEventPosition()[0];			// get the x and y co-ordinates on the screen where you have hit 'x'
 		screenY = iren->GetEventPosition()[1];
 
@@ -319,15 +319,16 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 		// 2d point was picked 
 		cellID = cell_picker->GetCellId();			// Picking has finished after call to Pick(), now you need to find which polygon the casted ray has intersected (in your line of sight)
 		pick_position = cell_picker->GetPickPosition();		// from cellID that was picked, get the (x,y,z) co-ordinates of the mesh polygon to put your sphere 
+		cout << "Point id picked = " << pointID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";
 
 		pointID = LaShellGapsInBinary::GetFirstCellVertex(poly_data, cellID, pick_position);		// you are seeking the position of the picked cell's vertex and also its ID. 
-		cout << "Point id picked = " << pointID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";
+		
 		
 		this_class_obj->_cellidarray.push_back(pointID);
 	
 		LaShellGapsInBinary::CreateSphere(renderer, 0.5, pick_position);		// now draw the sphere
 		iren->Render();
-		
+		*/
 	}
 	else if (iren->GetKeyCode()=='l' || iren->GetKeyCode()=='k') { 
 
