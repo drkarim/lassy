@@ -67,7 +67,8 @@ protected:
 	LaShell* _source_la;
 	LaShell* _target_la;
     LaShell* _output_la;
-    
+
+public:  
      int _neighbourhood_size;
     double _fill_threshold;
     vector<int> _GlobalPointContainer;
@@ -77,9 +78,11 @@ protected:
     // static variables 
 	vector<vtkActor*> _actors;				// actors representing shortest path betwee points 
     vector<vtkPolyData*> _paths;
-    vtkCellPicker *_cell_picker;
+    vtkSmartPointer<vtkCellPicker> _cell_picker;
     vtkSmartPointer<vtkPolyData> _SourcePolyData; 
     vtkSmartPointer<vtkRenderWindow> _RenderWindow;
+    vtkSmartPointer<vtkRenderWindowInteractor> _InteractorRenderWindow;
+
     vector<vtkDijkstraGraphGeodesicPath*> _shortestPaths; 
     vector<int> _cellidarray; 
     vector<vtkPolyDataMapper*> _pathMappers;			// container to store shortest paths between points selected by user
@@ -92,20 +95,24 @@ protected:
 
     bool IsThisNeighbourhoodCompletelyFilled(vector<int>);
     
-    double ComputePercentageEncirclement(vector<vtkDijkstraGraphGeodesicPath*> allShortestPaths);
+    
     void GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order);
-
-    // Static functions
-    void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);
-    vtkIdType GetFirstCellVertex(vtkPolyData* poly, vtkIdType cellID, double* point_xyz);
-    void CreateSphere(vtkRenderer* renderer, double radius, double* position3D);;
     void StatsInNeighbourhood(vector<int> points, double& mean, double& variance);
-public:
-		
 	void SetInputData(LaShell* shell);
     void SetNeighbourhoodSize(int s);
     void SetFillThreshold(double s);
     
+    
+    // Static functions
+    static void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);    
+    static vtkIdType GetFirstCellVertex(vtkPolyData* poly, vtkIdType cellID, double* point_xyz);
+    static void CreateSphere(vtkRenderer* renderer, double radius, double* position3D);;
+    double ComputePercentageEncirclement(vector<vtkDijkstraGraphGeodesicPath*> allShortestPaths);
+    
+    vtkSmartPointer<vtkPolyData> GetSourcePolyData();
+    vtkSmartPointer<vtkRenderWindowInteractor> GetWindowInteractor();
+    vtkSmartPointer<vtkCellPicker> GetCellPicker();
+
     //void Update();
     
     void Run();

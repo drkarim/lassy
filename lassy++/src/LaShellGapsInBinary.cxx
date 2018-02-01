@@ -43,6 +43,21 @@ void LaShellGapsInBinary::SetFillThreshold(double s)
 	_fill_threshold = s; 
 }
 
+vtkSmartPointer<vtkRenderWindowInteractor> LaShellGapsInBinary::GetWindowInteractor()
+{
+	return _InteractorRenderWindow;
+}
+
+vtkSmartPointer<vtkPolyData> LaShellGapsInBinary::GetSourcePolyData()
+{
+	return _SourcePolyData;
+}
+
+
+vtkSmartPointer<vtkCellPicker> LaShellGapsInBinary::GetCellPicker()
+{
+	return _cell_picker;
+}
 
 
 
@@ -276,9 +291,10 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 	vtkIdType cellID, pointID=-1;		// to store cellID of the picked cell
 	double *pick_position = new double[3];
 	
+	LaShellGapsInBinary* this_class_obj = (LaShellGapsInBinary*)obj; 
 	
-	
-	vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::SafeDownCast(obj); 	// you need the pointer to the interactor, without this you cannot access your 3D scene 
+	//vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::SafeDownCast(obj); 	// you need the pointer to the interactor, without this you cannot access your 3D scene 
+	vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->GetWindowInteractor();
 	vtkSmartPointer<vtkRenderWindow> renderWin = iren->GetRenderWindow();			// and from there you get your renderer and your renderwindow 
 	vtkSmartPointer<vtkRendererCollection> rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -286,6 +302,8 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 																// the point (mark it using a sphere) and add it as an actor just as you added your mesh 
 	//vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
 	
+	vtkSmartPointer<vtkPolyData> poly_data = this_class_obj->GetSourcePolyData(); 
+
 	
 	
 	if (iren->GetKeyCode()=='x')
@@ -294,19 +312,20 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 		screenX = iren->GetEventPosition()[0];			// get the x and y co-ordinates on the screen where you have hit 'x'
 		screenY = iren->GetEventPosition()[1];
 
-		_cell_picker->Pick(screenX,screenY,0.0, renderer);			// tell the picker where user has pressed 'x' on the screen, a ray is then sent through the scene 
+		vtkSmartPointer<vtkCellPicker> cell_picker = this_class_obj->GetCellPicker();
+		cell_picker->Pick(screenX,screenY,0.0, renderer);			// tell the picker where user has pressed 'x' on the screen, a ray is then sent through the scene 
 
 
 		// 2d point was picked 
-		cellID = _cell_picker->GetCellId();			// Picking has finished after call to Pick(), now you need to find which polygon the casted ray has intersected (in your line of sight)
-		pick_position = _cell_picker->GetPickPosition();		// from cellID that was picked, get the (x,y,z) co-ordinates of the mesh polygon to put your sphere 
+		cellID = cell_picker->GetCellId();			// Picking has finished after call to Pick(), now you need to find which polygon the casted ray has intersected (in your line of sight)
+		pick_position = cell_picker->GetPickPosition();		// from cellID that was picked, get the (x,y,z) co-ordinates of the mesh polygon to put your sphere 
 
-		pointID = GetFirstCellVertex(_SourcePolyData, cellID, pick_position);		// you are seeking the position of the picked cell's vertex and also its ID. 
+		pointID = LaShellGapsInBinary::GetFirstCellVertex(poly_data, cellID, pick_position);		// you are seeking the position of the picked cell's vertex and also its ID. 
 		cout << "Point id picked = " << pointID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";
 		
-		_cellidarray.push_back(pointID);
+		this_class_obj->_cellidarray.push_back(pointID);
 	
-		CreateSphere(renderer, 0.5, pick_position);		// now draw the sphere
+		LaShellGapsInBinary::CreateSphere(renderer, 0.5, pick_position);		// now draw the sphere
 		iren->Render();
 		
 	}
@@ -316,50 +335,50 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 				
 				//dijkstra->SetInputConnection(reader->GetOutputPort());
 				
-				int lim = _cellidarray.size();
+				int lim = this_class_obj->_cellidarray.size();
 				for(int i=0; i<lim; i++){
 					vtkSmartPointer<vtkDijkstraGraphGeodesicPath> dijkstra = vtkSmartPointer<vtkDijkstraGraphGeodesicPath>::New();
-					dijkstra->SetInputData(_SourcePolyData);
+					dijkstra->SetInputData(poly_data);
 					if(i<lim-1){	
-						dijkstra->SetStartVertex(_cellidarray[i]);
-						dijkstra->SetEndVertex(_cellidarray[i+1]);
-						cout << "Computing shortest paths between points " << _cellidarray[i] << " and  " << _cellidarray[i+1]  << endl;
+						dijkstra->SetStartVertex(this_class_obj->_cellidarray[i]);
+						dijkstra->SetEndVertex(this_class_obj->_cellidarray[i+1]);
+						cout << "Computing shortest paths between points " << this_class_obj->_cellidarray[i] << " and  " << this_class_obj->_cellidarray[i+1]  << endl;
 					}
 					else if(iren->GetKeyCode()=='l' && i == lim-1){
-						dijkstra->SetStartVertex(_cellidarray[i]);
-						dijkstra->SetEndVertex(_cellidarray[0]);
-						cout << "Computing shortest paths between points " << _cellidarray[i] << " and  " << _cellidarray[0]  << endl;
+						dijkstra->SetStartVertex(this_class_obj->_cellidarray[i]);
+						dijkstra->SetEndVertex(this_class_obj->_cellidarray[0]);
+						cout << "Computing shortest paths between points " << this_class_obj->_cellidarray[i] << " and  " << this_class_obj->_cellidarray[0]  << endl;
 					}
 					
 					dijkstra->Update();
 					vtkSmartPointer<vtkPolyDataMapper> pathMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 					pathMapper->SetInputConnection(dijkstra->GetOutputPort());
 					
-					_shortestPaths.push_back(dijkstra);
-					_pathMappers.push_back(pathMapper);			// store all the shortest paths 
-					_paths.push_back(dijkstra->GetOutput());	// and the path as polygonal data
+					this_class_obj->_shortestPaths.push_back(dijkstra);
+					this_class_obj->_pathMappers.push_back(pathMapper);			// store all the shortest paths 
+					this_class_obj->_paths.push_back(dijkstra->GetOutput());	// and the path as polygonal data
 				}
 				
 				
 				// now draw all the paths 
-				for (int i=0;i<_paths.size();i++){
+				for (int i=0;i<this_class_obj->_paths.size();i++){
 					vtkSmartPointer<vtkActor> pathActor = vtkSmartPointer<vtkActor>::New();
-					pathActor->SetMapper(_pathMappers[i]);
+					pathActor->SetMapper(this_class_obj->_pathMappers[i]);
 					pathActor->GetProperty()->SetColor(1,0,0); // Red
 					pathActor->GetProperty()->SetLineWidth(4);
 		
 					///////////////////////////////////////////////Dijkstra///////////////////////////////////////////////////////////////////
-					_actors.push_back(pathActor);
+					this_class_obj->_actors.push_back(pathActor);
 				}
 
-				for (int i=0;i<_actors.size();i++)
-					renderer->AddActor(_actors[i]);
+				for (int i=0;i<this_class_obj->_actors.size();i++)
+					renderer->AddActor(this_class_obj->_actors[i]);
 
 				renderWin->AddRenderer(renderer); 
 				iren->Render();
 
 				// compute percentage encirlcement
-				cout << "Percentage encirclement = " << ComputePercentageEncirclement(_shortestPaths) << " %" << endl;
+				cout << "Percentage encirclement = " << this_class_obj->ComputePercentageEncirclement(this_class_obj->_shortestPaths) << " %" << endl;
 
 	}
 
@@ -434,8 +453,7 @@ void LaShellGapsInBinary::Run()
 	lut->SetHueRange(0.3, 0.0);  // this is the way you tell which colors you want to be displayed.
 	lut->Build();     // this is important 
 	mapper->SetLookupTable(lut); 
-	/////////////////////////////////////////Code for Hue-Color Values/////////////////////////////////////////////////////////////
-	// These are the lines to initialize your cell picker - this will allow you to pick points on the mesh 
+	
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New(); 
 	actor->SetMapper(mapper); 
 
@@ -443,27 +461,27 @@ void LaShellGapsInBinary::Run()
 	_RenderWindow = vtkSmartPointer<vtkRenderWindow>::New(); 
 	
 	renderer->AddActor(actor); 
-//	renderer->AddActor(pathActor);
+
 	_RenderWindow->AddRenderer(renderer); 
 
-	vtkSmartPointer<vtkRenderWindowInteractor> iren = vtkSmartPointer<vtkRenderWindowInteractor>::New(); 
-	iren->SetRenderWindow(_RenderWindow); 
+	_InteractorRenderWindow = vtkSmartPointer<vtkRenderWindowInteractor>::New(); 
+	_InteractorRenderWindow->SetRenderWindow(_RenderWindow); 
 	vtkSmartPointer<vtkInteractorStyleTrackballCamera> interactorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-	iren->SetInteractorStyle(interactorStyle);
+	_InteractorRenderWindow->SetInteractorStyle(interactorStyle);
 
-	/*vtkCallbackCommand *callback = vtkCallbackCommand::New();			// A new callback - callback is bascially an event handler 
+	vtkCallbackCommand *callback = vtkCallbackCommand::New();			
 	
-    callback->SetCallback(KeyPressEventHandler);		// you are telling what function will do the event handling 
-	callback->SetClientData(_SourcePolyData);			// you are sending the mesh to the event handler (it is the void* last parameter in the function signature) 
-    iren->AddObserver(vtkCommand::KeyPressEvent, callback);		// invoke callback when key is pressed*/
+    callback->SetCallback(LaShellGapsInBinary::KeyPressEventHandler);		
+	callback->SetClientData(this);		
+    _InteractorRenderWindow->AddObserver(vtkCommand::KeyPressEvent, callback);		// invoke callback when key is pressed
 
 	_RenderWindow->Render();
 
-	_cell_picker = vtkCellPicker::New();
+	_cell_picker = vtkSmartPointer<vtkCellPicker>::New();
 	_cell_picker->SetTolerance(0.0005);	// You set a tolerance meaning to what degree of accuracy it is able to select points 
-	iren->SetPicker(_cell_picker);		// and you tell which interactor this cell picker is part of (you only have one interactor) 
+	_InteractorRenderWindow->SetPicker(_cell_picker);		// and you tell which interactor this cell picker is part of (you only have one interactor) 
 	
-	iren->Start();
+	_InteractorRenderWindow->Start();
 
 	
 }
