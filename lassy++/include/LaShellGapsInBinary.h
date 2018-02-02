@@ -54,6 +54,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <string>
 #include <sstream>
+#include <vtkPointPicker.h>
 
 #include "LaShellAlgorithms.h"
 #include "LaShell.h"
@@ -76,16 +77,20 @@ public:
     
 
     // static variables 
-	vector<vtkActor*> _actors;				// actors representing shortest path betwee points 
-    vector<vtkPolyData*> _paths;
+	vector<vtkSmartPointer<vtkActor> > _actors;				// actors representing shortest path betwee points 
+    vector<vtkSmartPointer<vtkPolyData> > _paths;
+
     vtkSmartPointer<vtkCellPicker> _cell_picker;
+	vtkSmartPointer<vtkPointPicker> _point_picker; 
     vtkSmartPointer<vtkPolyData> _SourcePolyData; 
     vtkSmartPointer<vtkRenderWindow> _RenderWindow;
     vtkSmartPointer<vtkRenderWindowInteractor> _InteractorRenderWindow;
 
-    vector<vtkDijkstraGraphGeodesicPath*> _shortestPaths; 
-    vector<int> _cellidarray; 
-    vector<vtkPolyDataMapper*> _pathMappers;			// container to store shortest paths between points selected by user
+    vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > _shortestPaths; 
+    vector<int> _pointidarray; 
+    vector<vtkSmartPointer<vtkPolyDataMapper> > _pathMappers;			// container to store shortest paths between points selected by user
+
+
 
     // Functions
     void GetConnectedVertices(vtkSmartPointer<vtkPolyData> mesh, int seed, vtkSmartPointer<vtkIdList> connectedVertices);
@@ -105,9 +110,9 @@ public:
     
     // Static functions
     static void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);    
-    static vtkIdType GetFirstCellVertex(vtkPolyData* poly, vtkIdType cellID, double* point_xyz);
-    static void CreateSphere(vtkRenderer* renderer, double radius, double* position3D);;
-    double ComputePercentageEncirclement(vector<vtkDijkstraGraphGeodesicPath*> allShortestPaths);
+    
+    static void CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[]);;
+	double ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
     
     vtkSmartPointer<vtkPolyData> GetSourcePolyData();
     vtkSmartPointer<vtkRenderWindowInteractor> GetWindowInteractor();

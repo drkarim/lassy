@@ -227,7 +227,7 @@ void LaShellGapsInBinary::StatsInNeighbourhood(vector<int> points, double& mean,
 }
 
 
-double LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkDijkstraGraphGeodesicPath*> allShortestPaths)
+double LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths)
 {
 	double xyz[3];
 	bool ret; 
@@ -291,21 +291,16 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 	*/
 	double screenX, screenY;		// where in the screen you wil be clicking 
 	vtkIdType cellID, pointID=-1;		// to store cellID of the picked cell
-	double *pick_position = new double[3];
 	
 	LaShellGapsInBinary* this_class_obj = reinterpret_cast<LaShellGapsInBinary*>(clientdata); 
 	
 	
-	vtkSmartPointer<vtkRenderWindowInteractor> iren  = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-	vtkSmartPointer<vtkRenderWindow> renderWin = vtkSmartPointer<vtkRenderWindow>::New();
-	vtkSmartPointer<vtkRendererCollection> rendererCollection = vtkSmartPointer<vtkRendererCollection>::New(); 
-	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
 
-	iren = this_class_obj->GetWindowInteractor();
+	vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->GetWindowInteractor();
 	//iren = this_class_obj->_InteractorRenderWindow;
-	renderWin = this_class_obj->_RenderWindow;			// and from there you get your renderer and your renderwindow 
-	rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
-	renderer = rendererCollection->GetFirstRenderer();			
+	vtkSmartPointer<vtkRenderWindow> renderWin = this_class_obj->_RenderWindow;			// and from there you get your renderer and your renderwindow 
+	vtkSmartPointer<vtkRendererCollection> rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
+	vtkSmartPointer<vtkRenderer> renderer = rendererCollection->GetFirstRenderer();
 	
 	vtkSmartPointer<vtkPolyData> poly_data = vtkSmartPointer<vtkPolyData>::New();
 	poly_data = this_class_obj->GetSourcePolyData(); 
@@ -314,26 +309,33 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 	
 	if (iren->GetKeyCode()=='x')
 	{
-			
+		
+		double *pick_position = new double[3]; 
+		double *pick_position_vertex = new double[3]; 
+
 		screenX = iren->GetEventPosition()[0];			// get the x and y co-ordinates on the screen where you have hit 'x'
 		screenY = iren->GetEventPosition()[1];
 
-		vtkSmartPointer<vtkCellPicker> cell_picker = this_class_obj->GetCellPicker();
-		cell_picker->Pick(screenX,screenY,0.0, renderer);			// tell the picker where user has pressed 'x' on the screen, a ray is then sent through the scene 
+		//vtkSmartPointer<vtkPointPicker> cell_picker = this_class_obj->GetCellPicker();
+		//cell_picker->Pick(screenX,screenY,0.0, renderer);			// tell the picker where user has pressed 'x' on the screen, a ray is then sent through the scene 
 
-
-		// 2d point was picked 
-		cellID = cell_picker->GetCellId();			// Picking has finished after call to Pick(), now you need to find which polygon the casted ray has intersected (in your line of sight)
-		pick_position = cell_picker->GetPickPosition();		// from cellID that was picked, get the (x,y,z) co-ordinates of the mesh polygon to put your sphere 
-		cout << "Point id picked = " << cellID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";
-
-		pointID = LaShellGapsInBinary::GetFirstCellVertex(poly_data, cellID, pick_position);		// you are seeking the position of the picked cell's vertex and also its ID. 
+		vtkSmartPointer<vtkPointPicker> point_picker = vtkSmartPointer<vtkPointPicker>::New();
+		point_picker = this_class_obj->_point_picker; 
+		point_picker->Pick(screenX, screenY, 0.0, renderer);
+		point_picker->GetPickPosition(pick_position);
+		pointID = point_picker->GetPointId();
 		
+
+		cout << "Point id picked = " << cellID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";				
 		
-		this_class_obj->_cellidarray.push_back(pointID);
-	
-		LaShellGapsInBinary::CreateSphere(renderer, 1.0, pick_position);		// now draw the sphere
-		iren->Render();
+		this_class_obj->_pointidarray.push_back(pointID);
+		
+		poly_data->GetPoint(pointID, pick_position_vertex);
+		LaShellGapsInBinary::CreateSphere(renderer, 10.0, pick_position_vertex);		// now draw the sphere
+		renderWin->Render();
+		
+		delete[] pick_position; 
+		delete[] pick_position_vertex; 
 		
 	}
 	else if (iren->GetKeyCode()=='l' || iren->GetKeyCode()=='k') { 
@@ -342,19 +344,19 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 				
 				//dijkstra->SetInputConnection(reader->GetOutputPort());
 				
-				int lim = this_class_obj->_cellidarray.size();
+				int lim = this_class_obj->_pointidarray.size();
 				for(int i=0; i<lim; i++){
 					vtkSmartPointer<vtkDijkstraGraphGeodesicPath> dijkstra = vtkSmartPointer<vtkDijkstraGraphGeodesicPath>::New();
 					dijkstra->SetInputData(poly_data);
 					if(i<lim-1){	
-						dijkstra->SetStartVertex(this_class_obj->_cellidarray[i]);
-						dijkstra->SetEndVertex(this_class_obj->_cellidarray[i+1]);
-						cout << "Computing shortest paths between points " << this_class_obj->_cellidarray[i] << " and  " << this_class_obj->_cellidarray[i+1]  << endl;
+						dijkstra->SetStartVertex(this_class_obj->_pointidarray[i]);
+						dijkstra->SetEndVertex(this_class_obj->_pointidarray[i+1]);
+						cout << "Computing shortest paths between points " << this_class_obj->_pointidarray[i] << " and  " << this_class_obj->_pointidarray[i+1]  << endl;
 					}
 					else if(iren->GetKeyCode()=='l' && i == lim-1){
-						dijkstra->SetStartVertex(this_class_obj->_cellidarray[i]);
-						dijkstra->SetEndVertex(this_class_obj->_cellidarray[0]);
-						cout << "Computing shortest paths between points " << this_class_obj->_cellidarray[i] << " and  " << this_class_obj->_cellidarray[0]  << endl;
+						dijkstra->SetStartVertex(this_class_obj->_pointidarray[i]);
+						dijkstra->SetEndVertex(this_class_obj->_pointidarray[0]);
+						cout << "Computing shortest paths between points " << this_class_obj->_pointidarray[i] << " and  " << this_class_obj->_pointidarray[0]  << endl;
 					}
 					
 					dijkstra->Update();
@@ -386,6 +388,11 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 
 				// compute percentage encirlcement
 				cout << "Percentage encirclement = " << this_class_obj->ComputePercentageEncirclement(this_class_obj->_shortestPaths) << " %" << endl;
+				
+				this_class_obj->_pointidarray.clear();
+				this_class_obj->_paths.clear();
+				this_class_obj->_shortestPaths.clear();
+				this_class_obj->_pathMappers.clear();
 
 	}
 
@@ -394,25 +401,8 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 }
 
 
-// A cell has three vertex. Cell is a polygon within a mesh. You input the mesh, the id of the cell/polygon 
-// and this function returns the 3D position of one of the cell's vertex (as point_xyz)
-// and the point ID (as function return) 
-vtkIdType LaShellGapsInBinary::GetFirstCellVertex(vtkPolyData* poly, vtkIdType cellID, double* point_xyz)
-{
-	vtkIdType vertID;
-	vtkCell* cell; 
-	cell = poly->GetCell(cellID); 
-
-	vtkSmartPointer<vtkIdList> cell_vert = vtkSmartPointer<vtkIdList>::New();
-	poly->GetCellPoints(cellID, cell_vert); 
-	
-	vertID = cell_vert->GetId(0);
-	poly->GetPoint(vertID,  point_xyz);
-	return vertID;
-}
-
 // this wil draw a sphere of a given radus to the renderer
-void LaShellGapsInBinary::CreateSphere(vtkRenderer* renderer, double radius, double* position3D)
+void LaShellGapsInBinary::CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[])
 {
 	vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New(); 
 	sphere->SetThetaResolution(8);
@@ -480,9 +470,15 @@ void LaShellGapsInBinary::Run()
 	
 	_RenderWindow->Render();
 
+	/*
 	_cell_picker = vtkSmartPointer<vtkCellPicker>::New();
 	_cell_picker->SetTolerance(0.0005);	// You set a tolerance meaning to what degree of accuracy it is able to select points 
 	_InteractorRenderWindow->SetPicker(_cell_picker);		// and you tell which interactor this cell picker is part of (you only have one interactor) 
+	*/
+	// point pickers
+	_point_picker = vtkSmartPointer<vtkPointPicker>::New();
+	_point_picker->SetTolerance(0.005);
+	_InteractorRenderWindow->SetPicker(_point_picker);
 
 	vtkCallbackCommand *callback = vtkCallbackCommand::New();			
     callback->SetCallback(LaShellGapsInBinary::KeyPressEventHandler);		
