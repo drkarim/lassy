@@ -282,7 +282,9 @@ double LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkDijkstraGrap
 /*
 *	This will handle the event when a user presses the 'x' on the keyboard 
 */
-void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v)
+void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsigned long eventId,
+                                      void* clientdata, 
+                                      void* vtkNotUsed(calldata))
 {
 	/* Remember you are marking your pick position with sphere. First step is to pick and then to place a sphere in the cell you have picked
 		The code below picks a cell, and you mark one of the cell's vertex with a sphere
@@ -291,24 +293,28 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 	vtkIdType cellID, pointID=-1;		// to store cellID of the picked cell
 	double *pick_position = new double[3];
 	
-	LaShellGapsInBinary* this_class_obj = (LaShellGapsInBinary*)obj; 
+	LaShellGapsInBinary* this_class_obj = reinterpret_cast<LaShellGapsInBinary*>(clientdata); 
 	
 	
-	//vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->GetWindowInteractor();
-	vtkSmartPointer<vtkRenderWindowInteractor> iren = this_class_obj->_InteractorRenderWindow;
-	vtkSmartPointer<vtkRenderWindow> renderWin = this_class_obj->_RenderWindow;			// and from there you get your renderer and your renderwindow 
-	vtkSmartPointer<vtkRendererCollection> rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
+	vtkSmartPointer<vtkRenderWindowInteractor> iren  = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	vtkSmartPointer<vtkRenderWindow> renderWin = vtkSmartPointer<vtkRenderWindow>::New();
+	vtkSmartPointer<vtkRendererCollection> rendererCollection = vtkSmartPointer<vtkRendererCollection>::New(); 
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+
+	iren = this_class_obj->GetWindowInteractor();
+	//iren = this_class_obj->_InteractorRenderWindow;
+	renderWin = this_class_obj->_RenderWindow;			// and from there you get your renderer and your renderwindow 
+	rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
 	renderer = rendererCollection->GetFirstRenderer();			
 	
-	
-	vtkSmartPointer<vtkPolyData> poly_data = this_class_obj->GetSourcePolyData(); 
+	vtkSmartPointer<vtkPolyData> poly_data = vtkSmartPointer<vtkPolyData>::New();
+	poly_data = this_class_obj->GetSourcePolyData(); 
 
 	
 	
 	if (iren->GetKeyCode()=='x')
 	{
-			/*
+			
 		screenX = iren->GetEventPosition()[0];			// get the x and y co-ordinates on the screen where you have hit 'x'
 		screenY = iren->GetEventPosition()[1];
 
@@ -319,16 +325,16 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 		// 2d point was picked 
 		cellID = cell_picker->GetCellId();			// Picking has finished after call to Pick(), now you need to find which polygon the casted ray has intersected (in your line of sight)
 		pick_position = cell_picker->GetPickPosition();		// from cellID that was picked, get the (x,y,z) co-ordinates of the mesh polygon to put your sphere 
-		cout << "Point id picked = " << pointID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";
+		cout << "Point id picked = " << cellID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";
 
 		pointID = LaShellGapsInBinary::GetFirstCellVertex(poly_data, cellID, pick_position);		// you are seeking the position of the picked cell's vertex and also its ID. 
 		
 		
 		this_class_obj->_cellidarray.push_back(pointID);
 	
-		LaShellGapsInBinary::CreateSphere(renderer, 0.5, pick_position);		// now draw the sphere
+		LaShellGapsInBinary::CreateSphere(renderer, 1.0, pick_position);		// now draw the sphere
 		iren->Render();
-		*/
+		
 	}
 	else if (iren->GetKeyCode()=='l' || iren->GetKeyCode()=='k') { 
 
@@ -383,6 +389,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* obj, unsigned long,voi
 
 	}
 
+	//delete [] pick_position;
 	
 }
 
@@ -470,18 +477,18 @@ void LaShellGapsInBinary::Run()
 	vtkSmartPointer<vtkInteractorStyleTrackballCamera> interactorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
 	_InteractorRenderWindow->SetInteractorStyle(interactorStyle);
 
-	vtkCallbackCommand *callback = vtkCallbackCommand::New();			
 	
-    callback->SetCallback(LaShellGapsInBinary::KeyPressEventHandler);		
-	callback->SetClientData(this);		
-    _InteractorRenderWindow->AddObserver(vtkCommand::KeyPressEvent, callback);		// invoke callback when key is pressed
-
 	_RenderWindow->Render();
 
 	_cell_picker = vtkSmartPointer<vtkCellPicker>::New();
 	_cell_picker->SetTolerance(0.0005);	// You set a tolerance meaning to what degree of accuracy it is able to select points 
 	_InteractorRenderWindow->SetPicker(_cell_picker);		// and you tell which interactor this cell picker is part of (you only have one interactor) 
-	
+
+	vtkCallbackCommand *callback = vtkCallbackCommand::New();			
+    callback->SetCallback(LaShellGapsInBinary::KeyPressEventHandler);		
+	callback->SetClientData(this);		
+    _InteractorRenderWindow->AddObserver(vtkCommand::KeyPressEvent, callback);		// invoke callback when key is pressed
+
 	_InteractorRenderWindow->Start();
 
 	
