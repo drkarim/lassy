@@ -12,7 +12,7 @@ The project is undergoing continuous iteration and so this library now has sever
 
 The 3D images are expected to be in the medical image formats: NifTII, NRRD, Analyze and GIPL. The meshes can be in [VTK](https://www.vtk.org/) format. 
 
-It is being currently developed for visualising pixel enhancments in MRI imaging in [cardiac imaging research](https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/index.php?title=Research_Wiki)
+It was first developed for visualising pixel enhancments in MRI imaging. For further reading, refer to [Karim et al.](http://ieeexplore.ieee.org/document/6774956/?reload=true&tp=&arnumber=6774956&searchWithin%3Dp_First_Names:rashed%26searchWithin%3Dp_Last_Names:karim%26matchBoolean%3Dtrue%26queryText%3D(p_Authors:karim,%20rashed)) and [Knowles et al.](http://ieeexplore.ieee.org/document/5415610/). Also, visit my wiki to read further on our [cardiac imaging research projects](https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/index.php?title=Research_Wiki)
 </p>
 
 ## Dependencies 
