@@ -70,11 +70,13 @@ protected:
     LaShell* _output_la;
 
 public:  
-     int _neighbourhood_size;
+    int _neighbourhood_size;
+    int _run_count; 
     double _fill_threshold;
     vector<int> _GlobalPointContainer;
-    vector<int> _visited_point_list;		// stores the neighbours around a point
-    
+    //vector<int> _visited_point_list;		// stores the neighbours around a point
+    vector<pair<int, int> > _visited_point_list;		// stores the neighbours around a point
+    string _fileOutName;
 
     // static variables 
 	vector<vtkSmartPointer<vtkActor> > _actors;				// actors representing shortest path betwee points 
@@ -101,18 +103,21 @@ public:
     bool IsThisNeighbourhoodCompletelyFilled(vector<int>);
     
     
-    void GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order);
+    //void GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order);
+    void GetNeighboursAroundPoint2(int pointID, vector<pair<int, int> >& pointNeighbourAndOrder, int max_order);
     void StatsInNeighbourhood(vector<int> points, double& mean, double& variance);
 	void SetInputData(LaShell* shell);
     void SetNeighbourhoodSize(int s);
     void SetFillThreshold(double s);
+
+    bool InsertPointIntoVisitedList2(vtkIdType id, int order);
     
     
     // Static functions
     static void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);    
     
     static void CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[]);;
-	double ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
+	void ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
     
     vtkSmartPointer<vtkPolyData> GetSourcePolyData();
     vtkSmartPointer<vtkRenderWindowInteractor> GetWindowInteractor();

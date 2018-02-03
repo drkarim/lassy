@@ -18,7 +18,8 @@ LaShellGapsInBinary::LaShellGapsInBinary()
 
 	_neighbourhood_size = 3; 
 	_fill_threshold = 0.5;
-	
+	_run_count = 0;
+	_fileOutName = "encircle_data_r";
 }
 
 LaShellGapsInBinary::~LaShellGapsInBinary() {
@@ -129,7 +130,7 @@ void LaShellGapsInBinary::RetainPointsInGlobalContainer(vector<int> p)
 	}
 }
 
-bool LaShellGapsInBinary::InsertPointIntoVisitedList(vtkIdType id)
+/*bool LaShellGapsInBinary::InsertPointIntoVisitedList(vtkIdType id)
 {
 	for (int i=0;i<_visited_point_list.size();i++)
 	{
@@ -137,6 +138,17 @@ bool LaShellGapsInBinary::InsertPointIntoVisitedList(vtkIdType id)
 			return false; 
 	}
 	_visited_point_list.push_back(id);
+	return true; 
+}*/
+
+bool LaShellGapsInBinary::InsertPointIntoVisitedList2(vtkIdType id, int order)
+{
+	for (int i=0;i<_visited_point_list.size();i++)
+	{
+		if (_visited_point_list[i].first == id)
+			return false; 
+	}
+	_visited_point_list.push_back(std::make_pair(id, order));
 	return true; 
 }
 
@@ -148,7 +160,7 @@ int LaShellGapsInBinary::RecursivePointNeighbours(vtkIdType pointId, int order)
 	else
 	{
 		
-		if (!InsertPointIntoVisitedList(pointId)) 
+		if (!InsertPointIntoVisitedList2(pointId, order)) 
 			return 0;			// already visited, no need to look further down this route
 		else
 		{	
@@ -168,8 +180,24 @@ int LaShellGapsInBinary::RecursivePointNeighbours(vtkIdType pointId, int order)
 	}
 }
 
+void LaShellGapsInBinary::GetNeighboursAroundPoint2(int pointID, vector<pair<int, int> >& pointNeighbourAndOrder, int max_order)
+{
+	_visited_point_list.clear();			// container that stores neighbours (vertex ids) 
+											// during recursive lookup around a mesh vertex
+											// 'order' levels deep
+										
+	RecursivePointNeighbours(pointID, max_order);
 
-void LaShellGapsInBinary::GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order)
+	for (int i=0;i<_visited_point_list.size();i++) { 
+		//pointNeighbours.push_back(_visited_point_list[i]);
+		pointNeighbourAndOrder.push_back(std::make_pair(_visited_point_list[i].first,_visited_point_list[i].second));
+
+	}
+	cout << "This point has (recursive order n = " << max_order << ") = " << pointNeighbourAndOrder.size() << " neighbours";
+	cout << "\n";
+}
+
+/*void LaShellGapsInBinary::GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order)
 {
 	_visited_point_list.clear();			// container that stores neighbours (vertex ids) 
 											// during recursive lookup around a mesh vertex
@@ -184,7 +212,7 @@ void LaShellGapsInBinary::GetNeighboursAroundPoint(int pointID, vector<int>& poi
 	cout << "This point has (recursive order n = " << order << ") = " << pointNeighbours.size() << " neighbours";
 	cout << "\n";
 
-}
+}*/
 
 bool LaShellGapsInBinary::IsThisNeighbourhoodCompletelyFilled(vector<int> points)
 {
@@ -227,7 +255,7 @@ void LaShellGapsInBinary::StatsInNeighbourhood(vector<int> points, double& mean,
 }
 
 
-double LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths)
+void LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths)
 {
 	double xyz[3];
 	bool ret; 
@@ -235,14 +263,21 @@ double LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer
 	typedef map<vtkIdType, int>::iterator it_type; 
 	map<vtkIdType, int> vertex_ids; 
 	int closestPointID=-1;
-	vector<int> pointNeighbours; 
+	vector<pair<int, int> > pointNeighbours; 
 	double pathSegmentHasScar=0;
 	int count=0;
 	ofstream out; 
-	out.open("stats.txt", std::ios_base::app); 
+	xyz[0]-1e-10; xyz[1]=1e-10; xyz[2]=1e-10;
+	
+	stringstream ss; 
+	ss << _fileOutName << _run_count << ".txt";
+	out.open(ss.str().c_str(), std::ios_base::app); 
 	// the recursive order - how many levels deep around a point do you want to explore?
 	// default is 3 levels deep, meaning neighbours neighbours neighbour.
 	int order = _neighbourhood_size;		
+
+	vtkSmartPointer<vtkFloatArray> scalars = vtkSmartPointer<vtkFloatArray>::New();
+	scalars = vtkFloatArray::SafeDownCast(_SourcePolyData->GetPointData()->GetScalars());  // bring al lthe scalars to an array 
 	
 
 	// collect all vertex ids lying in shortest path 
@@ -260,22 +295,44 @@ double LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer
 	
 	cout << "There were a total of " << vertex_ids.size() << " vertices in the shortest path you have selected\n" << endl;
 
+	
+
 	for (it_type iterator = vertex_ids.begin(); iterator != vertex_ids.end(); iterator++)
 	{
 		cout << "Exploring around vertex with id = " << iterator->first << "\n============================\n";
-		GetNeighboursAroundPoint(iterator->first, pointNeighbours, order);			// the key is the vertex id
+		
+		if (iterator->first > 0 && iterator->first < _SourcePolyData->GetNumberOfPoints())
+		{
+			_SourcePolyData->GetPoint(iterator->first, xyz);
+		}
+		out <<  count << "," << iterator->first << "," << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << order-order << scalars->GetTuple(iterator->first) << endl;
+		GetNeighboursAroundPoint2(iterator->first, pointNeighbours, order);			// the key is the vertex id
 		//RetainPointsInGlobalContainer(pointNeighbours);
 		//pointNeighbours.clear();
 		
-		StatsInNeighbourhood(pointNeighbours, mean, variance); 
-		if (count > 0)			// `I am not sure why the first point returns incorect mean and variance, so skipping first point
-			out << setprecision(2) << count << "\t" << mean << "\t" << sqrt(variance) << endl;
+		//StatsInNeighbourhood(pointNeighbours, mean, variance); 
+		
+		for (int j=0;j<pointNeighbours.size();j++)
+		{
+			int pointNeighborID = pointNeighbours[j].first; 
+			int pointNeighborOrder = pointNeighbours[j].second;
+			double scalar = -1;
+			// simple sanity check 
+			if (pointNeighborID > 0 && pointNeighborID < _SourcePolyData->GetNumberOfPoints())
+			{	
+				 scalar = scalars->GetTuple1(pointNeighborID); 
+				 _SourcePolyData->GetPoint(pointNeighborID, xyz);
+			}
+			out <<  count << "," << pointNeighborID << "," << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << pointNeighborOrder << "," << scalar << endl;
+		}
+			
 		pointNeighbours.clear();
 		count++; 
 	}
 
-	double tot_paths = vertex_ids.size();
-	return (100*(pathSegmentHasScar/tot_paths));
+	
+	out.close();
+	
 }
 
 
@@ -387,12 +444,13 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 				iren->Render();
 
 				// compute percentage encirlcement
-				cout << "Percentage encirclement = " << this_class_obj->ComputePercentageEncirclement(this_class_obj->_shortestPaths) << " %" << endl;
+				this_class_obj->ComputePercentageEncirclement(this_class_obj->_shortestPaths);
 				
 				this_class_obj->_pointidarray.clear();
 				this_class_obj->_paths.clear();
 				this_class_obj->_shortestPaths.clear();
 				this_class_obj->_pathMappers.clear();
+				this_class_obj->_run_count++;
 
 	}
 
