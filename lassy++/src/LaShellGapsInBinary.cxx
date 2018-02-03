@@ -255,7 +255,7 @@ void LaShellGapsInBinary::StatsInNeighbourhood(vector<int> points, double& mean,
 }
 
 
-void LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths)
+void LaShellGapsInBinary::ExtractImageDataAlongTrajectory(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths)
 {
 	double xyz[3];
 	bool ret; 
@@ -267,11 +267,12 @@ void LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<v
 	double pathSegmentHasScar=0;
 	int count=0;
 	ofstream out; 
-	xyz[0]-1e-10; xyz[1]=1e-10; xyz[2]=1e-10;
+	xyz[0]=1e-10; xyz[1]=1e-10; xyz[2]=1e-10;
 	
 	stringstream ss; 
 	ss << _fileOutName << _run_count << ".txt";
 	out.open(ss.str().c_str(), std::ios_base::app); 
+	out << "MainVertexSeq,VertexID,X,Y,Z,VertexDepth,MeshScalar" << endl;
 	// the recursive order - how many levels deep around a point do you want to explore?
 	// default is 3 levels deep, meaning neighbours neighbours neighbour.
 	int order = _neighbourhood_size;		
@@ -300,12 +301,14 @@ void LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<v
 	for (it_type iterator = vertex_ids.begin(); iterator != vertex_ids.end(); iterator++)
 	{
 		cout << "Exploring around vertex with id = " << iterator->first << "\n============================\n";
-		
+		double scalar = -1;
+
 		if (iterator->first > 0 && iterator->first < _SourcePolyData->GetNumberOfPoints())
 		{
 			_SourcePolyData->GetPoint(iterator->first, xyz);
+			scalar = scalars->GetTuple1(iterator->first);
 		}
-		out <<  count << "," << iterator->first << "," << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << order-order << scalars->GetTuple(iterator->first) << endl;
+		out <<  count << "," << iterator->first << "," << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << 0 << "," << scalar << endl;
 		GetNeighboursAroundPoint2(iterator->first, pointNeighbours, order);			// the key is the vertex id
 		//RetainPointsInGlobalContainer(pointNeighbours);
 		//pointNeighbours.clear();
@@ -316,7 +319,7 @@ void LaShellGapsInBinary::ComputePercentageEncirclement(vector<vtkSmartPointer<v
 		{
 			int pointNeighborID = pointNeighbours[j].first; 
 			int pointNeighborOrder = pointNeighbours[j].second;
-			double scalar = -1;
+			scalar = -1;
 			// simple sanity check 
 			if (pointNeighborID > 0 && pointNeighborID < _SourcePolyData->GetNumberOfPoints())
 			{	
@@ -363,7 +366,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 	poly_data = this_class_obj->GetSourcePolyData(); 
 
 	
-	
+	// x is for picking points 
 	if (iren->GetKeyCode()=='x')
 	{
 		
@@ -383,7 +386,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 		pointID = point_picker->GetPointId();
 		
 
-		cout << "Point id picked = " << cellID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";				
+		cout << "Point id picked = " << pointID << " and co-ordinates of its position = " << pick_position[0] << ", " << pick_position[1] << "," << pick_position[2] << ")\n";				
 		
 		this_class_obj->_pointidarray.push_back(pointID);
 		
@@ -395,7 +398,10 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 		delete[] pick_position_vertex; 
 		
 	}
-	else if (iren->GetKeyCode()=='l' || iren->GetKeyCode()=='k') { 
+	/*
+	*	l for line, c for compeleting the circle from picked points
+	*/
+	else if (iren->GetKeyCode()=='l' || iren->GetKeyCode()=='c') { 
 
 				///////////////////////////////////////////////Dijkstra////////////////////////////////////////////////////////////////
 				
@@ -410,7 +416,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 						dijkstra->SetEndVertex(this_class_obj->_pointidarray[i+1]);
 						cout << "Computing shortest paths between points " << this_class_obj->_pointidarray[i] << " and  " << this_class_obj->_pointidarray[i+1]  << endl;
 					}
-					else if(iren->GetKeyCode()=='l' && i == lim-1){
+					else if(iren->GetKeyCode()=='c' && i == lim-1){
 						dijkstra->SetStartVertex(this_class_obj->_pointidarray[i]);
 						dijkstra->SetEndVertex(this_class_obj->_pointidarray[0]);
 						cout << "Computing shortest paths between points " << this_class_obj->_pointidarray[i] << " and  " << this_class_obj->_pointidarray[0]  << endl;
@@ -444,7 +450,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 				iren->Render();
 
 				// compute percentage encirlcement
-				this_class_obj->ComputePercentageEncirclement(this_class_obj->_shortestPaths);
+				this_class_obj->ExtractImageDataAlongTrajectory(this_class_obj->_shortestPaths);
 				
 				this_class_obj->_pointidarray.clear();
 				this_class_obj->_paths.clear();

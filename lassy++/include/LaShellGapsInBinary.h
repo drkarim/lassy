@@ -117,7 +117,7 @@ public:
     static void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);    
     
     static void CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[]);;
-	void ComputePercentageEncirclement(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
+	void ExtractImageDataAlongTrajectory(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
     
     vtkSmartPointer<vtkPolyData> GetSourcePolyData();
     vtkSmartPointer<vtkRenderWindowInteractor> GetWindowInteractor();

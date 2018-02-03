@@ -47,7 +47,7 @@ int main(int argc, char * argv[])
 	if (!(foundArgs1))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
-			"\nCalculates the coverage of data or encirclement along a user-defined path on a shell "
+			"\nExtracts mesh data from a user-defined trajectory on mesh. Mesh data should be Point Scalars (VTK)"
 			"\n(Mandatory)\n\t-i <source_mesh_vtk>"
 			"\n\n(optional)\n\t-t <the threshold value for determining filling>" << endl; 
 			
@@ -60,7 +60,8 @@ int main(int argc, char * argv[])
 		LaShellGapsInBinary* application = new LaShellGapsInBinary();
 		application->SetInputData(source); 
 		
-
+		cout << "Waiting for you to pick points on the mesh to draw a line, \nor I could complete a circle from your picked points" 
+		"\n - Press x on keyboard for picking points on the mesh\n - Press l for drawing a line between your points and extract data\n - Press c to draw circle between points and extract data\n\n";
 		application->Run();
 		
 
