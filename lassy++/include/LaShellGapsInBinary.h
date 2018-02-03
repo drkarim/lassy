@@ -64,7 +64,6 @@ class LaShellGapsInBinary : public LaShellAlgorithms {
 
 protected: 
 
-    // Non-static variables 
 	LaShell* _source_la;
 	LaShell* _target_la;
     LaShell* _output_la;
@@ -74,11 +73,11 @@ public:
     int _run_count; 
     double _fill_threshold;
     vector<int> _GlobalPointContainer;
-    //vector<int> _visited_point_list;		// stores the neighbours around a point
+    
     vector<pair<int, int> > _visited_point_list;		// stores the neighbours around a point
     string _fileOutName;
 
-    // static variables 
+    
 	vector<vtkSmartPointer<vtkActor> > _actors;				// actors representing shortest path betwee points 
     vector<vtkSmartPointer<vtkPolyData> > _paths;
 
@@ -92,33 +91,26 @@ public:
     vector<int> _pointidarray; 
     vector<vtkSmartPointer<vtkPolyDataMapper> > _pathMappers;			// container to store shortest paths between points selected by user
 
-
-
-    // Functions
-    void GetConnectedVertices(vtkSmartPointer<vtkPolyData> mesh, int seed, vtkSmartPointer<vtkIdList> connectedVertices);
+    // Helper Functions
     int RecursivePointNeighbours(vtkIdType pointId, int order);
     bool InsertPointIntoVisitedList(vtkIdType id);
     void RetainPointsInGlobalContainer(vector<int> p);
-
     bool IsThisNeighbourhoodCompletelyFilled(vector<int>);
-    
-    
-    //void GetNeighboursAroundPoint(int pointID, vector<int>& pointNeighbours, int order);
     void GetNeighboursAroundPoint2(int pointID, vector<pair<int, int> >& pointNeighbourAndOrder, int max_order);
     void StatsInNeighbourhood(vector<int> points, double& mean, double& variance);
 	void SetInputData(LaShell* shell);
     void SetNeighbourhoodSize(int s);
     void SetFillThreshold(double s);
-
+    void ExtractImageDataAlongTrajectory(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
     bool InsertPointIntoVisitedList2(vtkIdType id, int order);
     
     
     // Static functions
     static void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);    
-    
     static void CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[]);;
-	void ExtractImageDataAlongTrajectory(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
     
+    // Get functions 
+    void GetConnectedVertices(vtkSmartPointer<vtkPolyData> mesh, int seed, vtkSmartPointer<vtkIdList> connectedVertices);
     vtkSmartPointer<vtkPolyData> GetSourcePolyData();
     vtkSmartPointer<vtkRenderWindowInteractor> GetWindowInteractor();
     vtkSmartPointer<vtkCellPicker> GetCellPicker();
