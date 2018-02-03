@@ -15,7 +15,10 @@ LaShellEnclosureDistance::LaShellEnclosureDistance()
 	_do_logging = false;
 }
 
-LaShellEnclosureDistance::~LaShellEnclosureDistance() {}
+LaShellEnclosureDistance::~LaShellEnclosureDistance() {
+	delete _output_shell; 
+
+}
 
 
 void LaShellEnclosureDistance::SetInputData(LaShell* shell)

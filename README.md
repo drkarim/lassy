@@ -1,18 +1,18 @@
 # Lassy
 <p>
-Lassy is a C++ library useful for interrogating the image around an object of interest using surface normal analysis. This is performed using point or vertex normal profiles of the surface mesh.
+Lassy is a C++ library useful for mining imaging data, especially around an object of interest. It is compatible with VTK meshes and NIFTII or NRRD images. 
   
-In a typical use case, a surface of the 3D object of interest is generated. The surface normal intensity profiles are then used for interrogating the 3D image around the object of interest. 
-
-A simple example application of this library would be to interrograte the image around an organ or anatomical structure in a medical 3D image. There are special applications in cardiac imaging for which this library was built, especially to interrogate the image around chambers of the heart. Interrogating normals (INTERN) can be used in other applications such as finding vertex distances to an adjacent object, copying data from an adjacent oject, finding thickness of a convex object, etc. 
+Image data mining is performed using surface normal analysis. The image intensity of surface normal profiles is returned. The library is also capable of mining data from surface meshes. Please see full list of applications, or get in touch if you need a functionality which this library can provide. 
+  
+This library was built for mining medical imaging data. A simple example application would be to interrograte the image around an organ or anatomical structure in a medical 3D image. Regions around an organ's medical image are usually interesting. In cardiac imaging, the region around the heart's chamber could show areas of damage sustained from cardiac arrest. 
 
 <img align="right" src="http://catlikecoding.com/unity/tutorials/noise-derivatives/05-mesh-normals.png" width="250">
 
-The project is undergoing continuous iteration and so this library now has several new additional functionalities. These can be found in the growing list of applications below. 
+The project is undergoing continuous iteration with new functionalities added from time to time. If you would like to see a new functionality, please get in touch. The growing list of functionalities can be found below. 
 
-The 3D images are expected to be in the medical image formats: NifTII, NRRD, Analyze and GIPL. The meshes can be in [VTK](https://www.vtk.org/) format. 
+There are unfortunately some pre-requisities for the images this library can process. The 3D images are expected to be in the medical image formats: NifTII, NRRD, Analyze and GIPL. The meshes can be in [VTK](https://www.vtk.org/) format. 
 
-It was first developed for visualising pixel enhancments in MRI imaging. For further reading, refer to [Karim et al.](http://ieeexplore.ieee.org/document/6774956/?reload=true&tp=&arnumber=6774956&searchWithin%3Dp_First_Names:rashed%26searchWithin%3Dp_Last_Names:karim%26matchBoolean%3Dtrue%26queryText%3D(p_Authors:karim,%20rashed)) and [Knowles et al.](http://ieeexplore.ieee.org/document/5415610/). Also, visit my wiki to read further on our [cardiac imaging research projects](https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/index.php?title=Research_Wiki)
+If you use this for research, we would appreciate if you could reference our work [Karim et al.](http://ieeexplore.ieee.org/document/6774956/?reload=true&tp=&arnumber=6774956&searchWithin%3Dp_First_Names:rashed%26searchWithin%3Dp_Last_Names:karim%26matchBoolean%3Dtrue%26queryText%3D(p_Authors:karim,%20rashed)) and [Knowles et al.](http://ieeexplore.ieee.org/document/5415610/). Also, visit my wiki to read further on our [cardiac imaging research projects](https://wwwhomes.doc.ic.ac.uk/~rkarim/mediawiki/index.php?title=Research_Wiki)
 </p>
 
 ## Dependencies 
@@ -41,6 +41,7 @@ The list of applications continue to grow:
   5. Ordinary statistics (Median and mean) on scalars of mesh vertices  ```applications\shellstats.cxx```
   6. Boolean operations on scalars of two meshes ```applications\boolmask.cxx```
   7. Compute vertex displacements to a deformed mesh ```applications\displacement.cxx```
+  8. Mining image data along a user-defined trajectory on a mesh ```applications\encirclement.cxx```
  
 </p>
 

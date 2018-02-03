@@ -14,7 +14,11 @@ LaShellExtractArray::LaShellExtractArray()
 	_output_la = new LaShell(); 
 }
 
-LaShellExtractArray::~LaShellExtractArray() {}
+LaShellExtractArray::~LaShellExtractArray() {
+
+	delete _source_la; 
+	delete _output_la; 
+}
 
 
 void LaShellExtractArray::SetInputData(LaShell* shell) 

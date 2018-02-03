@@ -16,7 +16,7 @@ LaShellShellArithmetic::LaShellShellArithmetic()
 }
 
 LaShellShellArithmetic::~LaShellShellArithmetic() {
-	
+	delete _output_la; 
 }
 
 

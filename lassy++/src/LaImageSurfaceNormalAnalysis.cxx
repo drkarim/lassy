@@ -24,7 +24,7 @@ LaImageSurfaceNormalAnalysis::LaImageSurfaceNormalAnalysis()
 }
 
 LaImageSurfaceNormalAnalysis::~LaImageSurfaceNormalAnalysis() {
-
+	delete _la_shell;
 }
 
 void LaImageSurfaceNormalAnalysis::SetStepSize(double steps)

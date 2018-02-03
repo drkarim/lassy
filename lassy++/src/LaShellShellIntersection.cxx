@@ -19,7 +19,7 @@ LaShellShellIntersection::LaShellShellIntersection()
 
 LaShellShellIntersection::~LaShellShellIntersection()
 {
-
+	delete _output_la; 
 }
 
 void LaShellShellIntersection::SetInputData(LaShell* shell)
