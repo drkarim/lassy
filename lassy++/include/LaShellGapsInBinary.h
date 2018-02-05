@@ -107,15 +107,13 @@ public:
     
     // Static functions
     static void KeyPressEventHandler(vtkObject* obj, unsigned long,void *sr, void *v);    
-    static void CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[]);;
+    static void CreateSphere(vtkSmartPointer<vtkRenderWindowInteractor> iren, double radius, double position3D[]);
     
     // Get functions 
     void GetConnectedVertices(vtkSmartPointer<vtkPolyData> mesh, int seed, vtkSmartPointer<vtkIdList> connectedVertices);
     vtkSmartPointer<vtkPolyData> GetSourcePolyData();
     vtkSmartPointer<vtkRenderWindowInteractor> GetWindowInteractor();
     vtkSmartPointer<vtkCellPicker> GetCellPicker();
-
-    //void Update();
     
     void Run();
 

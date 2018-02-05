@@ -391,8 +391,8 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 		this_class_obj->_pointidarray.push_back(pointID);
 		
 		poly_data->GetPoint(pointID, pick_position_vertex);
-		LaShellGapsInBinary::CreateSphere(renderer, 10.0, pick_position_vertex);		// now draw the sphere
-		renderWin->Render();
+		LaShellGapsInBinary::CreateSphere(iren, 10.0, pick_position_vertex);		// now draw the sphere
+		
 		
 		delete[] pick_position; 
 		delete[] pick_position_vertex; 
@@ -466,7 +466,7 @@ void LaShellGapsInBinary::KeyPressEventHandler(vtkObject* vtkNotUsed(obj), unsig
 
 
 // this wil draw a sphere of a given radus to the renderer
-void LaShellGapsInBinary::CreateSphere(vtkSmartPointer<vtkRenderer> renderer, double radius, double position3D[])
+void LaShellGapsInBinary::CreateSphere(vtkSmartPointer<vtkRenderWindowInteractor> iren, double radius, double position3D[])
 {
 	vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New(); 
 	sphere->SetThetaResolution(8);
@@ -477,11 +477,21 @@ void LaShellGapsInBinary::CreateSphere(vtkSmartPointer<vtkRenderer> renderer, do
 	sphereMapper->ScalarVisibilityOff();
 	sphereMapper->SetInputData(sphere->GetOutput());
 
+	vtkSmartPointer<vtkRenderWindow> renderWin = vtkSmartPointer<vtkRenderWindow>::New(); 
+	vtkSmartPointer<vtkRendererCollection> rendererCollection = vtkSmartPointer<vtkRendererCollection>::New();
+	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+
+	renderWin = iren->GetRenderWindow();
+	rendererCollection = renderWin->GetRenderers();		// a render collection is a collection of your renderers but you only have one 
+	renderer = rendererCollection->GetFirstRenderer();
+	
+
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 	actor->SetMapper(sphereMapper); 
-	actor->GetProperty()->SetColor(1,0,1); 
+	actor->GetProperty()->SetColor(0,0,1); 
 	actor->SetPosition(position3D); 
 	renderer->AddActor(actor);
+	renderWin->Render();
 	
 }
 
