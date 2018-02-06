@@ -19,6 +19,7 @@ SET(LASSY_INCLUDES
 	"../include/LaShellAtlas.h"
 	"../include/LaShellStatistics.h"
 	"../include/LaShellGapsInBinary.h"
+	"../include/LaImageFeatures.h"
 )
 
 SET(LASSY_SRCS 
@@ -41,6 +42,7 @@ SET(LASSY_SRCS
 	LaShellAtlas.cxx
 	LaShellStatistics.cxx
 	LaShellGapsInBinary.cxx
+	LaImageFeatures.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})
