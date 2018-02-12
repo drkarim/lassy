@@ -12,15 +12,23 @@
 *
 */
 #pragma once
-
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include <itkImageIterator.h>
 #include "itkRescaleIntensityImageFilter.h"
 #include <itkSmartPointer.h>
 #include "itkVTKImageIO.h"
-#include "itkImage.h"
 #include <itkMinimumMaximumImageCalculator.h>
+
+#include <itkDenseFrequencyContainer2.h>
+#include "itkHistogramToTextureFeaturesFilter.h"
+#include "itkScalarImageToCooccurrenceMatrixFilter.h"
+#include "itkVectorContainer.h"
+#include "itkAddImageFilter.h"
+#include "itkMultiplyImageFilter.h"
+#include "itkRegionOfInterestImageFilter.h"
+
 
 
 // Lassy++ includes 
@@ -48,7 +56,8 @@ public:
 	void SetInputData2(LaImage* mask_img); 		// label image
 	void SetOutputFile(const char* output);
 	
-	
+	void Update(); 
+
 	// constructors and desctructors
 	LaImageFeatures();
 	~LaImageFeatures();
