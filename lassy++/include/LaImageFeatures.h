@@ -48,13 +48,14 @@ private:
 	LaImage* _image; 
 	LaImage* _mask_image;
 	string _csv_filename; 
-
+	short _which_value;
 	
 public:
 	
 	void SetInputData(LaImage* image); 			// intensity image 
 	void SetInputData2(LaImage* mask_img); 		// label image
 	void SetOutputFile(const char* output);
+	void SetPixelValue(short p); 
 	
 	void Update(); 
 
