@@ -47,8 +47,21 @@ private:
 	
 	LaImage* _image; 
 	LaImage* _mask_image;
+	
 	string _csv_filename; 
 	short _which_value;
+	int _max_features; 
+	vector<vector<int> > _image_features;
+	
+	typedef unsigned int PixelTypeInt;
+	typedef itk::Image< PixelTypeInt, 3 >  ImageTypeInt;
+
+	/*
+	*	_Feature_index_map is the 3D input image with pixels that contain 
+	*	index to the _image_features vector that store a maximum of _max_features (default=10)
+	*	features for each pixel
+	*/
+	itk::SmartPointer<ImageTypeInt>  _feature_index_map;
 	
 public:
 	
@@ -56,6 +69,7 @@ public:
 	void SetInputData2(LaImage* mask_img); 		// label image
 	void SetOutputFile(const char* output);
 	void SetPixelValue(short p); 
+	void SetMaxFeatures(int max);
 	
 	void Update(); 
 

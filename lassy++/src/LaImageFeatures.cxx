@@ -6,22 +6,67 @@ using namespace std;
 LaImageFeatures::LaImageFeatures()
 {
 	
-	
+	_feature_index_map = ImageTypeInt::New();
+	_max_features = 10;
 
 }
 
 LaImageFeatures::~LaImageFeatures() {
 
 	// Remove memory allocated on heap
+	//delete _index_image; 
 }
 
 
 void LaImageFeatures::SetInputData(LaImage* img) {
 	_image = img; 
+
+	int max_x, max_y, max_z; 
+	 _image->GetImageSize(max_x,max_y,max_z);
+	long total_size = max_x*max_y*max_z;
+	 /*int _default_feature_value = -1;
+	 _image_features = vector<vector<vector<vector<int> > > >( _max_features, vector<vector<vector<int> > >(max_z, vector<vector<int> >(max_y, vector<int>(max_x, _default_feature_value))));*/
+	
+	 // copy structure for index image 
+ 	ImageTypeInt::RegionType region;
+  	ImageTypeInt::IndexType start;
+	start[0] = 0; start[1] = 0; start[2] = 0;
+	ImageTypeInt::SizeType size;
+	size[0] = max_x; size[1] = max_y; size[2] = max_z; 
+	region.SetSize(size);
+	region.SetIndex(start);
+
+  	_feature_index_map->SetRegions(region);
+  	_feature_index_map->Allocate();
+
+	// reset index image values
+	int index=0;
+	// Set pixels in a square to one value
+	for(int x = 0; x < max_x; x++)
+	{
+		for(int y = 0; y < max_y; y++)
+		{
+			for(int z = 0; z < max_z; z++) { 
+				
+				ImageTypeInt::IndexType pixelIndex;
+				pixelIndex[0] = x; pixelIndex[1] = y; pixelIndex[2] = z;
+		
+				_feature_index_map->SetPixel(pixelIndex, index++);
+			}
+		}
+	}
+
+	// set feature vector 
+	_image_features = vector<vector<int> >(total_size, vector<int>(_max_features));
 }
 
 void LaImageFeatures::SetInputData2(LaImage* img) {
 	_mask_image = img;
+}
+
+void LaImageFeatures::SetMaxFeatures(int max)
+{
+	_max_features = max;
 }
 
 void LaImageFeatures::SetPixelValue(short pixel_value) {
