@@ -151,18 +151,70 @@ void LaImageFeatures::ExtractFeature_Intensity_Pos()
 }
 
 
+void LaImageFeatures::ExtractFeature_GradientMagnitude()
+{
+	// Setup types
+	int max_x, max_y, max_z; 
+	short mask_value;
+
+	typedef itk::Image< float, 3 >   FloatImageType;
+	typedef itk::Image< unsigned short, 3 >    InputImageType;
+	
+	// First compute gradient magnitude of entire image 
+	typedef itk::GradientMagnitudeImageFilter<InputImageType, FloatImageType >  filterType;
+	filterType::Pointer gradientFilter = filterType::New();
+	gradientFilter->SetInput(_image->GetImage()); 
+	gradientFilter->Update();
+
+	FloatImageType::Pointer gradient_image = gradientFilter->GetOutput(); 
+	FloatImageType::IndexType pixelIndex;
+
+	_image->GetImageSize(max_x, max_y, max_z);
+
+	// Now store magnitude for pixels in mask
+	for (int x = 0; x < max_x; x++)
+	{
+		for (int y = 0; y < max_y; y++)
+		{
+			for (int z = 0; z < max_z; z++) {
+
+				_mask_image->GetIntensityAt(x, y, z, mask_value);
+
+				if (mask_value > 0) {
+				
+					pixelIndex[0] = x;      // x position of the pixel
+					pixelIndex[1] = y;      // y position of the pixel
+					pixelIndex[2] = z;
+
+					FloatImageType::PixelType pixelValue = gradient_image->GetPixel(pixelIndex);
+					int index_pos = LaImageFeatures::grad_mag;
+					this->SetFeatureValue(x, y, z, index_pos, pixelValue);
+				}
+
+			}
+		}
+	}
+	
+	
+
+
+}
+
 
 void LaImageFeatures::Update()
 {
 
 	// First Extract features 
 	ExtractFeature_Intensity_Pos();
+	ExtractFeature_GradientMagnitude();
 
 	// Write Features to File 
 	ofstream out;
 	out.open(_csv_filename, std::fstream::out | std::fstream::trunc);
-	out << "Intensity,X,Y,Z,Class" << endl;
+	out << "Seq,Intensity,X,Y,Z,GradMag,Class" << endl;
 	stringstream ss; 
+	
+	int icount = 0;
 
 	for (int i = 0; i < _total_size; i++)
 	{
@@ -181,15 +233,16 @@ void LaImageFeatures::Update()
 				if (feature_value != _my_nan)
 				{
 					if (k == 0)
-						ss << feature_value;
+						ss << icount++ << "," << feature_value;
 					else 
-						ss << "," << feature_value; 
+						ss << "," << setprecision(4) << feature_value;
 				}
 
 			}
 			ss << endl; 
 			out << ss.str().c_str(); 
 			ss.str(std::string());
+			
 		}
 	}
 	out.close();

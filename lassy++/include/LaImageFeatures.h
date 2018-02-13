@@ -29,12 +29,16 @@
 #include "itkMultiplyImageFilter.h"
 #include "itkRegionOfInterestImageFilter.h"
 
+#include "itkRescaleIntensityImageFilter.h"
+#include "itkGradientMagnitudeImageFilter.h"
+
 
 
 // Lassy++ includes 
 #include "MathBox.h"
 
 #include <string>
+#include <iomanip>
 
 #include "LaImage.h"
 #include "LaImageAlgorithms.h"
@@ -68,7 +72,8 @@ private:
 		pos_x = 1,	/* The xyz 3D co-ordinate of pixel is not a very useful feature but still needed for calculations */
 		pos_y = 2, 
 		pos_z = 3,
-		which_class=4,
+		grad_mag = 4,
+		which_class=5,
 		Last		    /* keep it as the last feature in the list for iterating: https://goo.gl/rWSYBj */
 	};
 
@@ -89,6 +94,7 @@ public:
 
 	void SetFeatureValue(int x, int y, int z, int feature_index, double feature_value);
 	void ExtractFeature_Intensity_Pos();
+	void ExtractFeature_GradientMagnitude();
 	
 	void Update();
 	void Update_OLD(); 
