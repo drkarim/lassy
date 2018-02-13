@@ -32,7 +32,8 @@
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkGradientMagnitudeImageFilter.h"
 
-
+#include "itkSignedMaurerDistanceMapImageFilter.h"
+#include "itkImageDuplicator.h"
 
 // Lassy++ includes 
 #include "MathBox.h"
@@ -54,6 +55,7 @@ private:
 	
 	string _csv_filename; 
 	short _which_value;
+	short _mask_val_SMD; /* which mask value for Signed Maurer Distance Filter */
 	int _max_features; 
 	long _total_size;
 	double _my_nan;			/* Our own NaN, just a large number telling us there is no number present */
@@ -74,6 +76,7 @@ private:
 		pos_z = 3,
 		grad_mag = 4,
 		which_class=5,
+		maurer_distance=6,
 		Last		    /* keep it as the last feature in the list for iterating: https://goo.gl/rWSYBj */
 	};
 
@@ -95,6 +98,7 @@ public:
 	void SetFeatureValue(int x, int y, int z, int feature_index, double feature_value);
 	void ExtractFeature_Intensity_Pos();
 	void ExtractFeature_GradientMagnitude();
+	void ExtractFeature_SignedMaurerDistance();
 	
 	void Update();
 	void Update_OLD(); 

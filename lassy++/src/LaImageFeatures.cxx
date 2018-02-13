@@ -10,6 +10,7 @@ LaImageFeatures::LaImageFeatures()
 	_max_features = 15;
 	_total_size = 0;
 	_my_nan = -1e9;
+	_mask_val_SMD = 1; 
 }
 
 LaImageFeatures::~LaImageFeatures() {
@@ -25,8 +26,6 @@ void LaImageFeatures::SetInputData(LaImage* img) {
 	int max_x, max_y, max_z; 
 	 _image->GetImageSize(max_x,max_y,max_z);
 	_total_size = max_x*max_y*max_z;
-	 /*int _default_feature_value = -1;
-	 _image_features = vector<vector<vector<vector<int> > > >( _max_features, vector<vector<vector<int> > >(max_z, vector<vector<int> >(max_y, vector<int>(max_x, _default_feature_value))));*/
 	
 	 // copy structure for index image 
  	ImageTypeInt::RegionType region;
@@ -42,6 +41,8 @@ void LaImageFeatures::SetInputData(LaImage* img) {
 
 	// reset index image values
 	int index=0;
+
+
 	// Set pixels in a square to one value
 	for(int x = 0; x < max_x; x++)
 	{
@@ -194,9 +195,92 @@ void LaImageFeatures::ExtractFeature_GradientMagnitude()
 			}
 		}
 	}
+}
+
+void LaImageFeatures::ExtractFeature_SignedMaurerDistance()
+{
+	typedef itk::Image< unsigned short, 3 >    InputImageType;
+	typedef itk::Image< float, 3 >   FloatImageType;
+	typedef  itk::SignedMaurerDistanceMapImageFilter< InputImageType, FloatImageType  > SignedMaurerDistanceMapImageFilterType;
+
 	
+	
+	int max_x, max_y, max_z; 
+	short mask_value;
+	_mask_image->GetImageSize(max_x, max_y, max_z); 
+
+	// create a copy of mask image 
+	/*InputImageType::Pointer mask_copy = InputImageType::New();
+	InputImageType::IndexType start;
+	start[0] = 0;  start[1] = 0;  start[2] = 0;
+	InputImageType::SizeType  size;
+	size[0] = max_y;  size[1] = max_x;  size[2] = max_z;  // size along Z
+	InputImageType::RegionType region;
+	region.SetSize(size);
+	region.SetIndex(start);
+	mask_copy->SetRegions(region);
+	mask_copy->Allocate();*/
+
+	typedef itk::ImageDuplicator< InputImageType > DuplicatorType;
+	DuplicatorType::Pointer duplicator = DuplicatorType::New();
+	duplicator->SetInputImage(_mask_image->GetImage());
+	duplicator->Update();
+	InputImageType::Pointer mask_copy = duplicator->GetOutput();
 	
 
+	for (int x = 0; x < max_x; x++)
+	{
+		for (int y = 0; y < max_y; y++)
+		{
+			for (int z = 0; z < max_z; z++) {
+				
+				ImageTypeInt::IndexType pixelIndex;
+				pixelIndex[0] = x; pixelIndex[1] = y; pixelIndex[2] = z; 
+				
+				if (mask_copy->GetPixel(pixelIndex) != _mask_val_SMD)
+					mask_copy->SetPixel(pixelIndex, 0);
+
+			}
+		}
+	}
+
+	
+	SignedMaurerDistanceMapImageFilterType::Pointer distanceMapImageFilter = SignedMaurerDistanceMapImageFilterType::New();
+	distanceMapImageFilter->SetInput(mask_copy);
+	distanceMapImageFilter->Update(); 
+	FloatImageType::Pointer distance_image = distanceMapImageFilter->GetOutput();
+	FloatImageType::IndexType pixelIndex;
+	
+	// Now store magnitude for pixels in mask
+	for (int x = 0; x < max_x; x++)
+	{
+		for (int y = 0; y < max_y; y++)
+		{
+			for (int z = 0; z < max_z; z++) {
+
+				_mask_image->GetIntensityAt(x, y, z, mask_value);
+
+				if (mask_value > 0) {
+
+					pixelIndex[0] = x;      // x position of the pixel
+					pixelIndex[1] = y;      // y position of the pixel
+					pixelIndex[2] = z;
+
+					FloatImageType::PixelType pixelValue = distance_image->GetPixel(pixelIndex);
+					int index_pos = LaImageFeatures::maurer_distance;
+
+					if (pixelValue < 0)
+						pixelValue = 0;			// regularize
+					
+					this->SetFeatureValue(x, y, z, index_pos, pixelValue);
+					
+				}
+
+			}
+		}
+	}
+
+	
 
 }
 
@@ -207,11 +291,12 @@ void LaImageFeatures::Update()
 	// First Extract features 
 	ExtractFeature_Intensity_Pos();
 	ExtractFeature_GradientMagnitude();
+	ExtractFeature_SignedMaurerDistance();
 
 	// Write Features to File 
 	ofstream out;
 	out.open(_csv_filename, std::fstream::out | std::fstream::trunc);
-	out << "Seq,Intensity,X,Y,Z,GradMag,Class" << endl;
+	out << "Seq,Intensity,X,Y,Z,GradMag,MaurerDist,Class" << endl;
 	stringstream ss; 
 	
 	int icount = 0;
@@ -235,7 +320,7 @@ void LaImageFeatures::Update()
 					if (k == 0)
 						ss << icount++ << "," << feature_value;
 					else 
-						ss << "," << setprecision(4) << feature_value;
+						ss << "," <<  setprecision(4) << feature_value;
 				}
 
 			}
