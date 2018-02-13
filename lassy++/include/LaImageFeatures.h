@@ -51,10 +51,26 @@ private:
 	string _csv_filename; 
 	short _which_value;
 	int _max_features; 
-	vector<vector<int> > _image_features;
+	long _total_size;
+	double _my_nan;			/* Our own NaN, just a large number telling us there is no number present */
+	vector<vector<double> > _image_features;
 	
 	typedef unsigned int PixelTypeInt;
 	typedef itk::Image< PixelTypeInt, 3 >  ImageTypeInt;
+
+	/*
+	*	The index location in _image_features storing this feature
+	*	Note this enumeration should not exceed _max_features (default is 15) unless set by SetMaxFeatures
+	*/
+	enum _feature_list
+	{
+		intensity = 0,		/* at index 0 in _image_features, and so on */
+		pos_x = 1,	/* The xyz 3D co-ordinate of pixel is not a very useful feature but still needed for calculations */
+		pos_y = 2, 
+		pos_z = 3,
+		which_class=4,
+		Last		    /* keep it as the last feature in the list for iterating: https://goo.gl/rWSYBj */
+	};
 
 	/*
 	*	_Feature_index_map is the 3D input image with pixels that contain 
@@ -70,8 +86,12 @@ public:
 	void SetOutputFile(const char* output);
 	void SetPixelValue(short p); 
 	void SetMaxFeatures(int max);
+
+	void SetFeatureValue(int x, int y, int z, int feature_index, double feature_value);
+	void ExtractFeature_Intensity_Pos();
 	
-	void Update(); 
+	void Update();
+	void Update_OLD(); 
 
 	// constructors and desctructors
 	LaImageFeatures();
