@@ -42,6 +42,7 @@ The list of applications continue to grow:
   6. Boolean operations on scalars of two meshes ```applications\boolmask.cxx```
   7. Compute vertex displacements to a deformed mesh ```applications\displacement.cxx```
   8. Mining image data along a user-defined trajectory on a mesh ```applications\encirclement.cxx```
+  9. Extracting image features as CSV for on-ward pixel classification  ```applications\imagefeature.cxx```
  
 </p>
 
