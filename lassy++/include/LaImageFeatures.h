@@ -75,8 +75,8 @@ private:
 		pos_y = 2, 
 		pos_z = 3,
 		grad_mag = 4,
-		which_class=5,
-		maurer_distance=6,
+		maurer_distance = 5,
+		which_class=6,
 		Last		    /* keep it as the last feature in the list for iterating: https://goo.gl/rWSYBj */
 	};
 
