@@ -42,17 +42,26 @@ LaImage* LaMaskBoolOperations::GetOutput() {
 
 void LaMaskBoolOperations::SetBooleanOperationToAND() 
 {
+	cout << "\n\ntPerforming AND ...\n";
 	_which_operation = BOOL_AND; 
 }
 
 void LaMaskBoolOperations::SetBooleanOperationToOR() 
 {
+	cout << "\n\ntPerforming OR ...\n";
 	_which_operation = BOOL_OR; 
 }
 
 void LaMaskBoolOperations::SetBooleanOperationToXOR() 
 {
+	cout << "\n\ntPerforming XOR ...\n";
 	_which_operation = BOOL_XOR; 
+}
+
+void LaMaskBoolOperations::SetBooleanOperationToANOTB() 
+{
+	cout << "\n\ntPerforming A not B ...\n";
+	_which_operation = BOOL_ANOTB; 
 }
 
 
@@ -112,6 +121,20 @@ void LaMaskBoolOperations::Update() {
 				++mask_img2_it;
 				++output_it;
 			break;
+
+			case BOOL_ANOTB:
+				if (mask_img1_it.Get() > 0 && mask_img2_it.Get() > 0)
+					output_it.Set(0);
+				else if (mask_img1_it.Get() > 0 && mask_img2_it.Get() == 0)
+					output_it.Set(1);			
+				else if (mask_img2_it.Get() > 0)
+					output_it.Set(0);
+
+				++mask_img1_it;
+				++mask_img2_it;
+				++output_it;
+			break;
+
 		}
 	}
 	
