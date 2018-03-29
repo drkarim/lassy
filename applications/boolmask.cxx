@@ -3,6 +3,7 @@
 #define DO_AND 1
 #define DO_OR 2
 #define DO_XOR 3
+#define DO_ANOTB 4
 
 #include "LaMaskBoolOperations.h"
 #include <numeric> 
@@ -57,7 +58,9 @@ int main(int argc, char * argv[])
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nPerforms boolean operations on two masks"
-			"\n(Mandatory)\n\t-i1 <mask1> \n\t-i2 <mask2>\n\t-o <output filename>\n== Optional ==\n\t-m <which operation> (1=AND, 2=OR, 3-XOR)" << endl; 
+			"\n(Mandatory)\n\t-i1 <mask1> \n\t-i2 <mask2>\n\t-o <output filename>\n"
+			"== Optional =="
+			"\n\t-m <which operation> (1=AND, 2=OR, 3-XOR, 4-A_NOT_B)" << endl; 
 			
 		exit(1);
 	}
@@ -82,6 +85,9 @@ int main(int argc, char * argv[])
 			case DO_XOR: 
 				algorithm->SetBooleanOperationToXOR();
 				break; 
+			case DO_ANOTB: 
+				algorithm->SetBooleanOperationToANOTB();
+				break;
 		}
 		
 

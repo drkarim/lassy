@@ -14,6 +14,7 @@
 #define BOOL_OR 1 
 #define BOOL_AND 2 
 #define BOOL_XOR 3
+#define BOOL_ANOTB 4 
 
 #include "LaImageAlgorithms.h"
 
@@ -42,7 +43,7 @@ public:
 	void SetBooleanOperationToOR();
 	void SetBooleanOperationToAND();
 	void SetBooleanOperationToXOR();
-	
+	void SetBooleanOperationToANOTB();
 
 
 	LaMaskBoolOperations();
