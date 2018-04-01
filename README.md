@@ -43,6 +43,7 @@ The list of applications continue to grow:
   7. Compute vertex displacements to a deformed mesh ```applications\displacement.cxx```
   8. Mining image data along a user-defined trajectory on a mesh ```applications\encirclement.cxx```
   9. Extracting image features as CSV for on-ward pixel classification  ```applications\imagefeature.cxx```
+  10. Aggregate scalars inside a mask ```applications\maskshell.cxx```
  
 </p>
 
