@@ -64,7 +64,7 @@ void LaImage::FileToPixel(const char* input_fn)
 			else if (j==2) z = num ;
 			else if (j==3) pixel = num;
 		}
-		cout << "read line:  " << x << ","  << y << "," << z << "," << pixel << endl;
+		//cout << "read line:  " << x << ","  << y << "," << z << "," << pixel << endl;
 		if (x >= 0 && x < size_x && y >= 0 && y < size_y && z >=0 && z < size_z && pixel >= 0)
 		{
 			ImageType::IndexType pixelIndex;
