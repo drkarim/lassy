@@ -75,6 +75,10 @@ public:
 	
 	void PixelToFile(const char* output_fn); 
 
+	/*
+	* Expects a CSV file with x,y,z,pixel_value in each new line 
+	*/
+	void FileToPixel(const char* input_fn);
 
 	// Returns the pixel value at an image location (x,y,z), returns false if position is out of bounds. 
 	bool GetIntensityAt(int x, int  y, int z, short& pixelValue);
@@ -89,6 +93,11 @@ public:
 	void ConvertToVTKImage(const char* vtk_fn);
 
 
+	/*
+	* Sets all pixels to 0 
+	*/ 
+	void EmptyImage();
+	
 	/*
 	*	Returns the minimum and maximum intensity in an image 
 	*/
