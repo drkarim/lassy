@@ -10,7 +10,14 @@
 *      Email: rashed 'dot' karim @kcl.ac.uk
 *      Copyright (c) 2017
 *
-*	   This application reads a binary pixel values from a CSV text file
+*	   This application reads binary pixel values from a CSV text file
+* 	   Here is an example of a file's contents 
+* 	    X,Y,Z,pixel_value
+*		107,143,64,1
+*		107,143,64,1
+*		107,143,64,1
+*
+*		Note the header is not required  
 */
 int main(int argc, char * argv[])
 {
