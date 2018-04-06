@@ -74,7 +74,8 @@ int main(int argc, char * argv[])
 		    case MEAN:
                 algorithm->SetOperationToMean();
                 algorithm->Update();
-                cout << "Mean = " << algorithm->GetOutputValue() << endl;
+                //cout << "Mean = " << algorithm->GetOutputValue() << endl;
+                cout << setprecision (2) << fixed << algorithm->GetOutputValue();
                 break;
 
 		}

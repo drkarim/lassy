@@ -47,11 +47,9 @@ LaShell* LaMaskDataShellOperations::GetOutput() {
 
 void LaMaskDataShellOperations::SetOperationToMean() 
 {
-	cout << "\n\ntPerforming Mean ...\n";
+	//cout << "\n\ntPerforming Mean ...\n";
 	_which_operation = MEAN; 
 }
-
-
 
 
 
