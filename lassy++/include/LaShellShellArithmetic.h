@@ -31,6 +31,8 @@ class LaShellShellArithmetic : public LaShellAlgorithms {
 
 	int _operation; 
 	double _factor;
+	double 	_single_shell_value;
+	bool _single_shell; 
 
 public:
 		
@@ -42,6 +44,8 @@ public:
 	void SetArithmetricOperationToSubtract();
 	void SetArithmetricOperationToMultiply();
 	void SetArithmetricOperationToDivide();
+	void SetToSingleShellMode();
+	void SetSingleShellModeValue(double val);
 	void SetFactor(double factor); 
 
 	void Update();

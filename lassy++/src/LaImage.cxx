@@ -4,6 +4,7 @@
 #include <string>      // using string
 
 #include "../include/LaImage.h"
+#include "../include/CSVReader.h"
 using namespace std;
 
 
@@ -33,6 +34,66 @@ void LaImage::PixelToFile(const char* output_fn)
 		++it;
 	}
 	out.close();
+}
+
+void LaImage::FileToPixel(const char* input_fn)
+{
+	ifstream infile(input_fn); 
+	double x,y,z,pixel; 
+	typedef unsigned short PixelType;
+	typedef itk::Image< PixelType, 3 >  ImageType;
+	ImageType::RegionType region = _image->GetLargestPossibleRegion();
+
+	int size_x = region.GetSize()[0];
+	int size_y = region.GetSize()[1];
+	int size_z = region.GetSize()[2];
+
+	vector<vector<string> > csv_content = CSVReader::readCSV(infile);
+
+	// The CSV iterator is from here: 
+	// https://stackoverflow.com/questions/1120140/how-can-i-read-and-parse-csv-files-in-c
+	for (int i=0;i<csv_content.size();i++)
+    {
+		x=-1; y=-1; z=-1; pixel=-1;
+		vector<string> line = csv_content[i]; 
+		for (int j=0;j<line.size();j++)
+		{
+			int num = atoi(line[j].c_str()); 
+			if (j==0) x = num ;
+			else if (j==1) y = num ;
+			else if (j==2) z = num ;
+			else if (j==3) pixel = num;
+		}
+		//cout << "read line:  " << x << ","  << y << "," << z << "," << pixel << endl;
+		if (x >= 0 && x < size_x && y >= 0 && y < size_y && z >=0 && z < size_z && pixel >= 0)
+		{
+			ImageType::IndexType pixelIndex;
+			pixelIndex[0] = x;
+			pixelIndex[1] = y;
+			pixelIndex[2] = z;
+
+			_image->SetPixel(pixelIndex, pixel);
+		}
+		else {
+			cout << "\nOut of bounds while reading line: " << x << ","  << y << "," << z << "," << pixel << ", carrying on ...";
+		}
+		
+	}
+}
+
+void LaImage::EmptyImage()
+{
+	typedef itk::ImageRegionIterator<InputImageType>       IteratorType;
+
+	IteratorType  it(_image, _image->GetRequestedRegion());
+	it.GoToBegin();
+
+	while (!it.IsAtEnd())
+	{
+		it.Set(0);
+		++it;
+	}
+	
 }
 
 /*
