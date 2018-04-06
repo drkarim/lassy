@@ -51,7 +51,9 @@ public:
 		_image = InputImageType::New();
 	}
 
-
+	/*
+	*	Needs an existing image NifTII, GIPL or NRRD 
+	*/
 	LaImage(const char* img_fn)
 	{
 		typedef itk::ImageFileReader< InputImageType  >  ReaderType;
@@ -66,13 +68,17 @@ public:
 
 	}
 
-
+	/*
+	*	Returns pointer to the ITK image
+	*/
 	itk::SmartPointer<InputImageType> GetImage()
 	{
 		return _image;
 	}
 
-	
+	/*
+	*	Outputs intensity only. For something more elaborate, check out LaImageFeatures
+	*/
 	void PixelToFile(const char* output_fn); 
 
 	/*
