@@ -101,7 +101,7 @@ public:
 	void ExtractFeature_SignedMaurerDistance();
 	
 	void Update();
-	void Update_OLD(); 
+	void Update_Haralick(); 
 
 	// constructors and desctructors
 	LaImageFeatures();

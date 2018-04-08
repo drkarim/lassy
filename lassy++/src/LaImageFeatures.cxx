@@ -335,7 +335,7 @@ void LaImageFeatures::Update()
 }
 
 
-void LaImageFeatures::Update_OLD()
+void LaImageFeatures::Update_Haralick()
 {
 	typedef itk::Image< unsigned short, 3 >    InputImageType;
 	typedef itk::Neighborhood<unsigned short, 3> NeighborhoodType;

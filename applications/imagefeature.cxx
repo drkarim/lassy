@@ -22,7 +22,7 @@ int main(int argc, char * argv[])
 	short pixel_value=1; 
 	
 	bool foundArgs1 = false, foundArgs2 = false, foundArgs3 = false;
-
+	bool isHaralick = false;
 	int method = DO_OR; 
 	
 	if (argc >= 1)
@@ -49,7 +49,10 @@ int main(int argc, char * argv[])
 					
 				}
 
-
+			
+			}
+			else if (string(argv[i]) == "--haralick") {
+				isHaralick = true;
 			}
 			
 		}
@@ -59,7 +62,8 @@ int main(int argc, char * argv[])
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nExtract image features"
-			"\n(Mandatory)\n\t-i <img> \n\t-m <binary mask>\n\t-o <new csv filename>\n\t-p pixel value to read\n\n" << endl; 
+			"\n(Mandatory)\n\t-i <img> \n\t-m <binary mask>\n\t-o <new csv filename>\n\t-p pixel value to read\n\n"
+			"(Optional)\n\t--haralick - For Haralick feature output" << endl;
 			
 		exit(1);
 	}
@@ -76,8 +80,10 @@ int main(int argc, char * argv[])
 		algorithm->SetOutputFile(output_f);
 		
 		
-
-		algorithm->Update();
+		if (isHaralick)
+			algorithm->Update_Haralick();
+		else 
+			algorithm->Update();
 
 		
 	}
