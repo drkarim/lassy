@@ -13,6 +13,8 @@
 #pragma once
 
 #define MEAN 1 
+#define MEDIAN 2 
+#define STDEV 3
 
 #include "LaShellAlgorithms.h"
 #include "vtkPointLocator.h"
@@ -44,6 +46,8 @@ public:
 	LaShell* GetOutput();
 	
 	void SetOperationToMean();
+	void SetOperationToMedian();
+	void SetOperationToStdev();
 	
 
 	LaMaskDataShellOperations();

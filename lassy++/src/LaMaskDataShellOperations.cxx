@@ -51,6 +51,18 @@ void LaMaskDataShellOperations::SetOperationToMean()
 	_which_operation = MEAN; 
 }
 
+void LaMaskDataShellOperations::SetOperationToMedian() 
+{
+	//cout << "\n\ntPerforming Mean ...\n";
+	_which_operation = MEDIAN; 
+}
+
+void LaMaskDataShellOperations::SetOperationToStdev() 
+{
+	//cout << "\n\ntPerforming Mean ...\n";
+	_which_operation = STDEV; 
+}
+
 
 
 void LaMaskDataShellOperations::Update() {
@@ -118,9 +130,22 @@ void LaMaskDataShellOperations::Update() {
 
 	switch (_which_operation)
 	{
+		double mean, median, stdev; 
+
 		case MEAN: 
-			double mean = MathBox::CalcMean(data_in_mask);
+			mean = MathBox::CalcMean(data_in_mask);
 			_scalar_aggregate = mean;
+			break;
+		
+		case MEDIAN: 
+			median = MathBox::CalcMedian(data_in_mask);
+			_scalar_aggregate = median;
+			break;
+
+		case STDEV: 
+			mean = MathBox::CalcMean(data_in_mask);
+			stdev = MathBox::CalcStd(data_in_mask, mean);
+			_scalar_aggregate = stdev;
 			break;
 		
 

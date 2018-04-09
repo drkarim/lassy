@@ -18,7 +18,7 @@ int main(int argc, char * argv[])
 	char* input_f1, *input_f2, *output_f;
 	int operation = MEAN;
 	bool foundArgs1 = false, foundArgs2 = false, foundArgs3 = false, foundArgs4=false;
-
+	bool isSuppress = false; 
 
 	if (argc >= 1)
 	{
@@ -43,6 +43,9 @@ int main(int argc, char * argv[])
 				}
 
 			}
+			else if (string(argv[i]) == "--sup") {
+				isSuppress = true; 
+			}
 			
 		}
 	}
@@ -51,9 +54,10 @@ int main(int argc, char * argv[])
 	{
 		cerr << "Aggregates scalars masked in VTK mesh\nCheck your parameters\n\nUsage:"
 			"\n(Mandatory)\n\t-d <1st Scalar data VTK mesh> \n\t-m <Mask data VTK mesh>"
-			"\n\t-a <which aggregate method: 1-MEAN, more soon>\n"
+			"\n\t-a <which aggregate method: 1-MEAN, 2-MEDIAN, 3-STDEV>\n"
 			"\n\n(Optional)"
             "\n\t-o <output_vtk>\n";
+			"\n\t--sup <suppress text decoration, one line output>\n";
 			
 
 
@@ -74,8 +78,25 @@ int main(int argc, char * argv[])
 		    case MEAN:
                 algorithm->SetOperationToMean();
                 algorithm->Update();
-                //cout << "Mean = " << algorithm->GetOutputValue() << endl;
+                if (!isSuppress) cout << "\n\nMean = ";
                 cout << setprecision (2) << fixed << algorithm->GetOutputValue();
+				if (!isSuppress) cout << endl;
+                break;
+			
+			case MEDIAN:
+                algorithm->SetOperationToMedian();
+                algorithm->Update();
+                if (!isSuppress) cout << "\n\nMedian = "; 
+                cout << setprecision (2) << fixed << algorithm->GetOutputValue();
+				if (!isSuppress) cout << endl;
+                break;
+
+			case STDEV:
+                algorithm->SetOperationToStdev();
+                algorithm->Update();
+                if (!isSuppress) cout << "\n\nStdev = ";
+                cout << setprecision (2) << fixed << algorithm->GetOutputValue();
+				if (!isSuppress) cout << endl;
                 break;
 
 		}
