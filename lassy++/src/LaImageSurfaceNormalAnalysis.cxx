@@ -86,6 +86,7 @@ void LaImageSurfaceNormalAnalysis::SurfaceProjectionOnPoints()
 	// clear intensity log file
 	std::ofstream ofs;
 	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::trunc);
+	ofs << "Please note: Pixels on the normal are printed below, but the aggregate (mean, max, integral, etc.) is obtained from 3x3x3 neighbourhood around each pixel " << endl;
 	ofs << "NormalStep,CentrePixel_X,CentrePixelY,CentrePixelZ,PixelValue" << endl;
 	ofs.close();
 
