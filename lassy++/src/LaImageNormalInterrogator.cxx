@@ -10,20 +10,21 @@ using namespace std;
 
 LaImageNormalInterrogator::LaImageNormalInterrogator()
 {
-	
-	_direction[0] = -1; 
-	_direction[1] = 1; 
 
-	_steps = 4; 
+	_direction[0] = -1;
+	_direction[1] = 1;
 
-	_doLogging = false; 
+	_steps = 4;
+
+	_doLoggingLevel1 = false;
+	_doLoggingLevel2 = false;
 
 	_aggregate_scalar = 0;
 
 	_aggregation_method = MAX;
 
-	_zscore_mean = 0; 
-	_zscore_std = 1; 
+	_zscore_mean = 0;
+	_zscore_std = 1;
 
 }
 
@@ -31,7 +32,7 @@ LaImageNormalInterrogator::~LaImageNormalInterrogator() {}
 
 
 void LaImageNormalInterrogator::SetInputData(LaImage* img) {
-	_image = img; 
+	_image = img;
 }
 
 void LaImageNormalInterrogator::SetInputData2(LaImage* img) {
@@ -56,7 +57,7 @@ void LaImageNormalInterrogator::SetLineOrigin(double* origin)
 void LaImageNormalInterrogator::SetInterrogationDirections(int* direction)
 {
 	_direction[0] = direction[0];
-	_direction[1] = direction[1]; 
+	_direction[1] = direction[1];
 }
 
 void LaImageNormalInterrogator::SetStepSize(double size)
@@ -64,14 +65,19 @@ void LaImageNormalInterrogator::SetStepSize(double size)
 	_steps = size;
 }
 
-void LaImageNormalInterrogator::SetLoggingToTrue()
+void LaImageNormalInterrogator::SetLoggingLevel1ToTrue()
 {
-	_doLogging = true; 
+	_doLoggingLevel1 = true;
+}
+
+void LaImageNormalInterrogator::SetLoggingLevel2ToTrue()
+{
+	_doLoggingLevel2 = true;
 }
 
 void LaImageNormalInterrogator::SetZScoreMean(double mean)
 {
-	_zscore_mean = mean; 
+	_zscore_mean = mean;
 }
 
 void LaImageNormalInterrogator::SetZScoreStd(double std)
@@ -83,13 +89,13 @@ void LaImageNormalInterrogator::SetZScoreStd(double std)
 void LaImageNormalInterrogator::ZScoreAggregator()
 {
 	_aggregate_scalar = (_aggregate_scalar - _zscore_mean) / _zscore_std;
-	
+
 }
 
 double LaImageNormalInterrogator::GetIntensity()
 {
 	ZScoreAggregator();
-	return _aggregate_scalar; 
+	return _aggregate_scalar;
 }
 
 void LaImageNormalInterrogator::SetAggregationMethodToMean()
@@ -123,7 +129,7 @@ void LaImageNormalInterrogator::Update() {
 	ImageType::PointType point;
 
 	double scar_step_min, scar_step_max, scar_step_size = 1;
-	
+
 	scar_step_min = _direction[0] * _steps;
 	scar_step_max = _direction[1] * _steps;
 
@@ -131,7 +137,7 @@ void LaImageNormalInterrogator::Update() {
 	vector<Point3> pointsOnAndAroundNormal;
 
 	std::ofstream ofs;
-	if (_doLogging) {
+	if (_doLoggingLevel1) {
 		ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
 
 		//ofs << "NormalStep,CentrePixel_X,CentrePixelY,CentrePixelZ,PixelVaue" << endl;
@@ -152,7 +158,7 @@ void LaImageNormalInterrogator::Update() {
 		x = floor(x); y = floor(y); z = floor(z);
 
 		// by default look around a normal, except if there is a mask image involved
-		// Explore only inside mask 
+		// Explore only inside mask
 		if (_mask_image != NULL)
 		{
 			short maskValue;
@@ -181,27 +187,27 @@ void LaImageNormalInterrogator::Update() {
 				}
 			}
 		}
-		else 
-		{	
+		else
+		{
 			// In integral, only consider points exactly on the normal
 			pointsOnAndAroundNormal.push_back(Point3(x, y, z));
 		}
 
-		// Some intensity logging to CSV file 
-		if (isExplore && _doLogging) {
+		// Some intensity logging to CSV file
+		if (isExplore && _doLoggingLevel1) {
 			short pixelValue = -1;
 			_image->GetIntensityAt(x, y, z, pixelValue);
 
 			ofs << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
 		}
 
-	}		// end for 
-	
-	
+	}		// end for
+
+
 
 	if (pointsOnAndAroundNormal.size() > 0) {
-		GetStatisticalMeasure(pointsOnAndAroundNormal, _aggregation_method, insty);			// statistical measure 2 returns max 
-		if (_doLogging) {
+		GetStatisticalMeasure(pointsOnAndAroundNormal, _aggregation_method, insty);			// statistical measure 2 returns max
+		if (_doLoggingLevel2) {
 			ofs << ",,,aggregate=,"<<insty<<endl;
 		}
 	}
@@ -212,7 +218,7 @@ void LaImageNormalInterrogator::Update() {
 
 	_aggregate_scalar = insty;
 
-	if (_doLogging) {
+	if (_doLoggingLevel2) {
 		ofs.close();
 	}
 }
@@ -226,7 +232,7 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 	int size = vals.size();
 	short pixelValue;
 
-	if (measure == MEAN)			// reutrn mean 
+	if (measure == MEAN)			// reutrn mean
 	{
 		for (int i = 0; i<size; i++)
 		{
@@ -235,7 +241,7 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 		}
 		returnVal = sum / size;
 	}
-	else if (measure == MAX)			// return max 
+	else if (measure == MAX)			// return max
 	{
 
 		for (int i = 0; i < size; i++)
@@ -245,7 +251,7 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 				max = pixelValue;
 			}
 		}
-		
+
 		if (max == -1)
 			returnVal = 0;
 		else {

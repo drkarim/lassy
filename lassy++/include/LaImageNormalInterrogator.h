@@ -13,8 +13,8 @@
 */
 #pragma once
 
-#define MEAN 1 
-#define MEDIAN 2 
+#define MEAN 1
+#define MEDIAN 2
 #define MAX 3
 #define INTEGRAL 4
 
@@ -25,53 +25,55 @@
 
 class LaImageNormalInterrogator : public LaImageAlgorithms {
 
-	double _dirvec_line[3]; 
-	double _origin_line[3];	
-	LaImage* _image; 
+	double _dirvec_line[3];
+	double _origin_line[3];
+	LaImage* _image;
 	LaImage* _mask_image;
-	double _aggregate_scalar; 
-	double _steps; 
-	
+	double _aggregate_scalar;
+	double _steps;
+
 	int _direction[2];
 
-	bool _doLogging; 
+	bool _doLoggingLevel1;
+	bool _doLoggingLevel2;
 
-	int _aggregation_method; 
+	int _aggregation_method;
 
-	double _zscore_mean; 
+	double _zscore_mean;
 	double _zscore_std;
 
 	void GetStatisticalMeasure(vector<Point3> vals, int measure, double& returnVal);
 	void ZScoreAggregator();
-	
+
 public:
 	// Constructor with default values for data members
 	/*static LaShellAlgorithms *New();*/
-	
-	void SetInputData(LaImage* image); 
-	void SetInputData2(LaImage* mask_img); 
-	
-	void Update(); 
 
-	void SetLineOrigin(double*); 
+	void SetInputData(LaImage* image);
+	void SetInputData2(LaImage* mask_img);
+
+	void Update();
+
+	void SetLineOrigin(double*);
 	void SetDirectionVector(double*);
 	void SetInterrogationDirections(int*);
 	void SetStepSize(double);
-	
-	void SetZScoreMean(double); 
+
+	void SetZScoreMean(double);
 	void SetZScoreStd(double);
 
-	void SetLoggingToTrue();
+	void SetLoggingLevel1ToTrue();
+	void SetLoggingLevel2ToTrue();
 
 	double GetIntensity();
 
 
-	void SetAggregationMethodToMax(); 
-	void SetAggregationMethodToMean(); 
+	void SetAggregationMethodToMax();
+	void SetAggregationMethodToMean();
 	void SetAggregationMethodToMedian();
 	void SetAggregationMethodToIntegral();
 
 	LaImageNormalInterrogator();
 	~LaImageNormalInterrogator();
-	
-}; 
+
+};
