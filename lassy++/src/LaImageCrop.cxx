@@ -38,7 +38,7 @@ void LaImageCrop::SetInputData(LaImage* img) {
 	_image = img; 
 
 	int max_x, max_y, max_z; 
-	 _image->GetImageSize(max_x,max_y,max_z);
+	 _image->GetImageSize(max_x, max_y, max_z);
 	
     _size_x = max_x; 
     _size_y = max_y; 
@@ -47,11 +47,6 @@ void LaImageCrop::SetInputData(LaImage* img) {
   
 }
 
-
-void LaImageCrop::SetOutputFile(const char* filename)
-{
-	_csv_filename = std::string(csv_filename);
-}
 
 LaImage* LaImageCrop::GetOutput(){
     return _image_cropped;
@@ -76,7 +71,7 @@ void LaImageCrop::Update()
 
     FilterType::Pointer filter = FilterType::New();
     filter->SetExtractionRegion(region);
-    filter->SetInput(_image);
+    filter->SetInput(_image->GetImage());
     #if ITK_VERSION_MAJOR >= 4
     filter->SetDirectionCollapseToIdentity(); // This is required.
     #endif
