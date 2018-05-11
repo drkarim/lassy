@@ -19,6 +19,7 @@ int main(int argc, char * argv[])
 {
 	char* input_f1, *output_f;
 	double fill_threshold = 0.5; 
+	int neighbourhood_size = 3;
 
 	bool foundArgs1 = false, foundArgs2 = false;
 	
@@ -30,10 +31,14 @@ int main(int argc, char * argv[])
 					input_f1 = argv[i + 1];
 					foundArgs1 = true;
 				}
-				
-				
+
 				else if (string(argv[i]) == "-t") {
 					fill_threshold = atof(argv[i + 1]);
+					foundArgs2 = true;
+				}
+
+				else if (string(argv[i]) == "-n") {
+					neighbourhood_size = atoi(argv[i + 1]);
 					foundArgs2 = true;
 				}
 
@@ -49,7 +54,9 @@ int main(int argc, char * argv[])
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nExtracts mesh data from a user-defined trajectory on mesh. Mesh data should be Point Scalars (VTK)"
 			"\n(Mandatory)\n\t-i <source_mesh_vtk>"
-			"\n\n(optional)\n\t-t <the threshold value for determining filling>" << endl; 
+			"\n\n(optional)\n\t-t <the threshold value for determining filling>" 
+			"\n\t-n <neighbourhood size, default = 3>" 
+			"\n\nNote the neighbourhood size n is the n-th order neighbours that are included, adjacent vertices are 1-order neighbours"<< endl; 
 			
 		exit(1);
 	}
@@ -58,6 +65,11 @@ int main(int argc, char * argv[])
 		LaShell* source = new LaShell(input_f1);
 		
 		LaShellGapsInBinary* application = new LaShellGapsInBinary();
+
+		if (neighbourhood_size > 0)
+		{
+			application->SetNeighbourhoodSize(neighbourhood_size);
+		}
 		application->SetInputData(source); 
 		
 		cout << "Waiting for you to pick points on the mesh to draw a line, \nor I could complete a circle from your picked points" 
