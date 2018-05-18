@@ -51,6 +51,10 @@ protected:
     vector<vector<int> > _neighbour_point_set;  // points on shell neighbour to csv points
 
     int _neighbour_radius;
+    const char* _new_scalar_array_name;
+    double _insert_scalar_value;
+    bool _containers_set;
+    vector<int> _earmark_point;
  
 public:
 		
@@ -60,14 +64,18 @@ public:
     void SetCopyMethodToNeighbourCopy();
     void SetCopyMethodToPointCopy();
     void SetNeighbourRadius(int);
+    void SetArrayName(const char* array_name);
+    void SetInsertScalarValue(double val);
 
     void LocateNeighboursOfPoints();
+
+    void InsertScalarData();
 
     void VisualisePoints();
 	void Update();
 	//LaShell* GetOutput();
     
-    
+    LaShell* GetOutput();
 
 	LaShellPointsCSV();
 	~LaShellPointsCSV();

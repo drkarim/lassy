@@ -10,7 +10,10 @@ LaShellPointsCSV::LaShellPointsCSV() {
     _source_la = new LaShell(); 
     _output_la = new LaShell();
     _copy_method = POINT_COPY;
-    _neighbour_radius = 5;      
+    _neighbour_radius = 5;     
+    _new_scalar_array_name = "new_scalar";
+    _insert_scalar_value = 1;
+    _containers_set = false;
 }
 
 void LaShellPointsCSV::SetInputData(LaShell* shell) {
@@ -32,6 +35,16 @@ void LaShellPointsCSV::SetCopyMethodToNeighbourCopy()
 void LaShellPointsCSV::SetNeighbourRadius(int radius)
 {
     _neighbour_radius = radius;
+}
+
+void LaShellPointsCSV::SetArrayName(const char* array_name)
+{
+    _new_scalar_array_name = array_name;
+}
+
+void LaShellPointsCSV::SetInsertScalarValue(double val)
+{
+    _insert_scalar_value = val;
 }
 
 
@@ -66,19 +79,32 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
         if (scalar > -1e10)
         {
-            _scalars.push_back(scalar);
+            _scalars.push_back(scalar);         // _scalars correspond to points in _point_set
         }
     }   
 
 }
 
-void LaShellPointsCSV::
+
 
 void LaShellPointsCSV::InitNeighbourPointListingContainer()
 {
-    int num_points = _point_set->GetNumberOfPoints(); 
+    if (!_containers_set) 
+    {
+        int num_points = _point_set->GetNumberOfPoints(); 
 
-    _neighbour_point_set.resize(num_points);
+        _neighbour_point_set.resize(num_points);
+
+        vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
+        _source_la->GetMesh3D(mesh);
+
+        int num_vertices = mesh->GetNumberOfPoints(); 
+
+        for (int i=0;i<num_vertices;i++)
+            _earmark_point.push_back(0);
+        
+        _containers_set = true;
+    }
 
 }
 
@@ -88,13 +114,14 @@ void LaShellPointsCSV::LocateNeighboursOfPoints()
     double xyz[3], m_xyz[3]; 
     vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
     _source_la->GetMesh3D(mesh);
-
+    
     InitNeighbourPointListingContainer();
-
+   
     // for every point in _point_set, find closest point on mesh, lets call it p 
     for (int i=0;i<_point_set->GetNumberOfPoints();i++)
     {
         _point_set->GetPoint(i, xyz); 
+        
         
         for (int j=0;j<mesh->GetNumberOfPoints();j++)
         {
@@ -103,6 +130,11 @@ void LaShellPointsCSV::LocateNeighboursOfPoints()
             if (MathBox::EuclideanDistance(xyz, m_xyz) < _neighbour_radius)
             {
                 _neighbour_point_set[i].push_back(j);
+                
+                if (i<_scalars.size())
+                    _earmark_point[j] = _scalars[i];
+                else 
+                    _earmark_point[j] = 1;
             }
         }
     }
@@ -125,6 +157,7 @@ void LaShellPointsCSV::LocatePoints() {
 	point_locator->BuildLocator();
     mesh->BuildLinks();
 
+    InitNeighbourPointListingContainer();
 
     // for every point in _point_set, find closest point on mesh, lets call it p 
     for (int i=0;i<_point_set->GetNumberOfPoints();i++)
@@ -133,6 +166,11 @@ void LaShellPointsCSV::LocatePoints() {
         closestPointID = point_locator->FindClosestPoint(xyz); 
 
         _closest_point_ids.push_back(closestPointID);
+
+        if (closestPointID < _scalars.size() && closestPointID < _earmark_point.size()) 
+            _earmark_point[closestPointID] = _scalars[i];
+        else if (closestPointID < _earmark_point.size())
+            _earmark_point[closestPointID] = 1;
 		
     }
 
@@ -141,6 +179,26 @@ void LaShellPointsCSV::LocatePoints() {
 }
 
 void LaShellPointsCSV::InsertScalarData() { 
+
+    vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
+    _source_la->GetMesh3D(mesh);
+
+    vtkSmartPointer<vtkFloatArray> new_scalar = vtkSmartPointer<vtkFloatArray>::New();
+    new_scalar->SetNumberOfComponents(1);
+    new_scalar->SetName(_new_scalar_array_name);
+
+    for (int i=0;i<mesh->GetNumberOfPoints();i++)
+    {
+        if (_earmark_point[i] > 0)              // _earmark_point stores the scalar value to write for this point
+            new_scalar->InsertNextValue(_earmark_point[i]); 
+        else 
+            new_scalar->InsertNextValue(0); 
+    }
+
+    mesh->GetPointData()->SetScalars(new_scalar);
+
+    // a new mesh is created 
+    _output_la->SetMesh3D(mesh);
     
 }
 
@@ -166,6 +224,10 @@ void LaShellPointsCSV::VisualisePoints() {
     writer->Update();
 }
 
+LaShell* LaShellPointsCSV::GetOutput() {
+    
+    return _output_la;
+}
 
 
 void LaShellPointsCSV::Update() 

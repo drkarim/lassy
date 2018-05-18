@@ -16,7 +16,7 @@
 */
 int main(int argc, char * argv[])
 {
-	char* input_img, *input_csv, *input_f2;
+	char* input_img, *input_csv, *input_f2, *output_vtk;
     int nn = 5;     // locate mesh vertex neighbours within a certain radius
 
 	bool foundArgs1 = false;
@@ -36,6 +36,11 @@ int main(int argc, char * argv[])
 				else if (string(argv[i]) == "-csv") {
 					input_csv = argv[i + 1];
                     foundArgs2 = true; 
+
+				}
+                else if (string(argv[i]) == "-out") {
+					output_vtk = argv[i + 1];
+                    
 
 				}
 
@@ -67,6 +72,7 @@ int main(int argc, char * argv[])
 	else
 	{
 		LaShell* la_mesh = new LaShell(input_img);
+        LaShell* mesh_out = new LaShell();
 		
 		LaShellPointsCSV* algorithm = new LaShellPointsCSV();
 		
@@ -78,6 +84,7 @@ int main(int argc, char * argv[])
 		{
 			case POINT_COPY:
 				algorithm->SetCopyMethodToPointCopy();
+                algorithm->InsertScalarData();
                 cout << "\nPoint copy method: copies scalars to individual points" << endl; 
 				break;
 
@@ -85,6 +92,7 @@ int main(int argc, char * argv[])
                 algorithm->SetCopyMethodToPointCopy();
                 algorithm->SetNeighbourRadius(nn);
                 algorithm->LocateNeighboursOfPoints();
+                algorithm->InsertScalarData();
                 cout << "\nPoint copy method: copies scalars to neighbouring points around matched point" << endl; 
                 break; 
 			
@@ -92,6 +100,10 @@ int main(int argc, char * argv[])
 
 		algorithm->Update();
         algorithm->VisualisePoints();
+
+        mesh_out = algorithm->GetOutput();
+		
+		mesh_out->ExportVTK(output_vtk);
         
        
 	}
