@@ -2,12 +2,15 @@
 #include <iostream>    // using IO functions
 #include <string>      // using string
 #include "../include/LaShellPointsCSV.h"
+#include "../include/MathBox.h"
 using namespace std;
 
 
 LaShellPointsCSV::LaShellPointsCSV() {
     _source_la = new LaShell(); 
+    _output_la = new LaShell();
     _copy_method = POINT_COPY;
+    _neighbour_radius = 5;      
 }
 
 void LaShellPointsCSV::SetInputData(LaShell* shell) {
@@ -24,6 +27,11 @@ void LaShellPointsCSV::SetCopyMethodToPointCopy()
 void LaShellPointsCSV::SetCopyMethodToNeighbourCopy()
 {
     _copy_method = NEIGHBOUR_COPY;
+}
+
+void LaShellPointsCSV::SetNeighbourRadius(int radius)
+{
+    _neighbour_radius = radius;
 }
 
 
@@ -51,7 +59,7 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
         if (x>-1e10 && y>-1e10 && z>-1e10)
         {
-            p[0] = x; p[1] = y; p[2] = z;
+            p[0] = 1000*x; p[1] = 1000*y; p[2] = 1000*z;
             _point_set->InsertNextPoint(p);
 
         }   
@@ -64,6 +72,44 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
 }
 
+void LaShellPointsCSV::
+
+void LaShellPointsCSV::InitNeighbourPointListingContainer()
+{
+    int num_points = _point_set->GetNumberOfPoints(); 
+
+    _neighbour_point_set.resize(num_points);
+
+}
+
+void LaShellPointsCSV::LocateNeighboursOfPoints()
+{
+
+    double xyz[3], m_xyz[3]; 
+    vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
+    _source_la->GetMesh3D(mesh);
+
+    InitNeighbourPointListingContainer();
+
+    // for every point in _point_set, find closest point on mesh, lets call it p 
+    for (int i=0;i<_point_set->GetNumberOfPoints();i++)
+    {
+        _point_set->GetPoint(i, xyz); 
+        
+        for (int j=0;j<mesh->GetNumberOfPoints();j++)
+        {
+            mesh->GetPoint(j, m_xyz);
+
+            if (MathBox::EuclideanDistance(xyz, m_xyz) < _neighbour_radius)
+            {
+                _neighbour_point_set[i].push_back(j);
+            }
+        }
+    }
+
+    cout << "Neigbbour point size = " << _neighbour_point_set.size() << endl;
+
+}
 
 void LaShellPointsCSV::LocatePoints() {
 
@@ -94,6 +140,11 @@ void LaShellPointsCSV::LocatePoints() {
     
 }
 
+void LaShellPointsCSV::InsertScalarData() { 
+    
+}
+
+
 
 void LaShellPointsCSV::VisualisePoints() {
 
@@ -115,6 +166,8 @@ void LaShellPointsCSV::VisualisePoints() {
     writer->Update();
 }
 
+
+
 void LaShellPointsCSV::Update() 
 {
     LocatePoints();
@@ -125,13 +178,25 @@ void LaShellPointsCSV::Update()
 
     out << "x,y,z,point_id\n"; 
     
+   
     for (int i=0;i<_point_set->GetNumberOfPoints();i++)
     {
         _point_set->GetPoint(i, xyz); 
 
         if (i < _closest_point_ids.size())
         {
-            out << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << _closest_point_ids[i] << endl; 
+            out << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << _closest_point_ids[i]; 
+            
+            if (_neighbour_point_set.size() > 0 && i < _neighbour_point_set.size())
+            {
+                for (int j=0;j<_neighbour_point_set[i].size();j++)
+                {
+                    out << "," << _neighbour_point_set[i][j];
+                }
+                out << endl;
+            }
+            else 
+                out << endl;
         }
         
     }

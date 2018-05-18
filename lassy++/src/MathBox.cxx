@@ -18,6 +18,13 @@ void MathBox::normalizeVector(double &a, double &b, double &c)
 }
 
 
+double MathBox::EuclideanDistance(double *p1, double *p2)
+{
+	double s  = pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2); 
+	return sqrt(s);
+}
+
+
 double MathBox::CalcMedian(vector<double> scores)
 {
 	double median;
@@ -67,4 +74,6 @@ double MathBox::CalcStd(vector<double> scores, double mean)
 
 	return sqrt(sum / n);
 }
+
+
 

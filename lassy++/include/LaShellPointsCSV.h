@@ -28,24 +28,29 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "CSVReader.h"
 #include "LaShellAlgorithms.h"
 #include "LaShell.h"
 
+using namespace std;
 
 class LaShellPointsCSV : public LaShellAlgorithms {
 
 protected: 
 
 	LaShell* _source_la;
-	LaShell* _target_la;
+	
     LaShell* _output_la;
     ifstream _csvfilestream;
-    vtkSmartPointer<vtkPoints> _point_set; 
-    vector<double> _scalars;
-    vector<int> _closest_point_ids; 
+    vtkSmartPointer<vtkPoints> _point_set;  // csv points - points listed in csv file
+    vector<double> _scalars;                
+    vector<int> _closest_point_ids;         // stores the  closest point's id to each xyz point listed on csv
     int _copy_method;
+    vector<vector<int> > _neighbour_point_set;  // points on shell neighbour to csv points
+
+    int _neighbour_radius;
  
 public:
 		
@@ -54,6 +59,9 @@ public:
 
     void SetCopyMethodToNeighbourCopy();
     void SetCopyMethodToPointCopy();
+    void SetNeighbourRadius(int);
+
+    void LocateNeighboursOfPoints();
 
     void VisualisePoints();
 	void Update();
@@ -66,6 +74,7 @@ public:
 
 private: 
 	void LocatePoints();
+    void InitNeighbourPointListingContainer();
 	
 	
 }; 

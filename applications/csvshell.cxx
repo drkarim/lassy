@@ -17,6 +17,7 @@
 int main(int argc, char * argv[])
 {
 	char* input_img, *input_csv, *input_f2;
+    int nn = 5;     // locate mesh vertex neighbours within a certain radius
 
 	bool foundArgs1 = false;
     bool foundArgs2 = false;
@@ -43,6 +44,11 @@ int main(int argc, char * argv[])
                     foundArgs3 = true; 
 
 				}
+
+                else if (string(argv[i]) == "-nn") {
+					nn = atoi(argv[i + 1]);
+
+				}
 				
 			}
 
@@ -53,9 +59,9 @@ int main(int argc, char * argv[])
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nReads a CSV file containing 3D points and scalar values. The scalars are appplied at these 3D locations on a LA mesh "
-			"\n(Mandatory)\n\t-vtk <input shell> \n\t-csv <csv file>\n\n(Optional)\n\t-method <1=Point copy, 2=Neighbour copy>\n" << endl;
+			"\n(Mandatory)\n\t-vtk <input shell> \n\t-csv <csv file>\n\n(Optional)\n\t-method <1=Point copy, 2=Neighbour copy>" 
+            "\n\t-nn <neighbours within a certain radius default 5 mm> " << endl;
 			
-
 		exit(1);
 	}
 	else
@@ -76,7 +82,9 @@ int main(int argc, char * argv[])
 				break;
 
             case NEIGHBOUR_COPY: 
-                algorithm->SetCopyMethodToNeighbourCopy();
+                algorithm->SetCopyMethodToPointCopy();
+                algorithm->SetNeighbourRadius(nn);
+                algorithm->LocateNeighboursOfPoints();
                 cout << "\nPoint copy method: copies scalars to neighbouring points around matched point" << endl; 
                 break; 
 			

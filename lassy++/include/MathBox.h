@@ -17,6 +17,7 @@ public:
 	static double CalcMean(vector<double> d);
 	static double CalcMedian(vector<double> d);
 	static double CalcStd(vector<double> scores, double mean);
+	static double EuclideanDistance(double *p1, double *p2);
 }; 
 
 
