@@ -14,6 +14,7 @@ LaShellPointsCSV::LaShellPointsCSV() {
     _new_scalar_array_name = "new_scalar";
     _insert_scalar_value = 1;
     _containers_set = false;
+    _scaling_factor = 1;
 }
 
 void LaShellPointsCSV::SetInputData(LaShell* shell) {
@@ -47,6 +48,12 @@ void LaShellPointsCSV::SetInsertScalarValue(double val)
     _insert_scalar_value = val;
 }
 
+void LaShellPointsCSV::SetScalingFactor(int scale)
+{
+    _scaling_factor = scale;
+}
+
+
 
 void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
@@ -63,7 +70,7 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 		
         for (int j=0;j<line.size();j++)
 		{
-			double num = atof(line[j].c_str()); 
+			float num = atof(line[j].c_str()); 
 			if (j==0) x = num ;
 			else if (j==1) y = num ;
 			else if (j==2) z = num ;
@@ -72,7 +79,8 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
         if (x>-1e10 && y>-1e10 && z>-1e10)
         {
-            p[0] = 1000*x; p[1] = 1000*y; p[2] = 1000*z;
+            p[0] = _scaling_factor*x; p[1] = _scaling_factor*y; p[2] = _scaling_factor*z;
+            //cout << "reading point " << x << "," << y << "," << z << "," << scalar << endl;
             _point_set->InsertNextPoint(p);
 
         }   
@@ -239,8 +247,7 @@ void LaShellPointsCSV::Update()
     out.open("LaShellPointsCSV_output.csv"); 
 
     out << "x,y,z,point_id\n"; 
-    
-   
+       
     for (int i=0;i<_point_set->GetNumberOfPoints();i++)
     {
         _point_set->GetPoint(i, xyz); 

@@ -55,7 +55,8 @@ protected:
     double _insert_scalar_value;
     bool _containers_set;
     vector<int> _earmark_point;
- 
+    int _scaling_factor;
+    
 public:
 		
 	void SetInputData(LaShell* shell);
@@ -66,6 +67,7 @@ public:
     void SetNeighbourRadius(int);
     void SetArrayName(const char* array_name);
     void SetInsertScalarValue(double val);
+    void SetScalingFactor(int scale);
 
     void LocateNeighboursOfPoints();
 

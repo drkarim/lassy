@@ -17,7 +17,9 @@
 int main(int argc, char * argv[])
 {
 	char* input_img, *input_csv, *input_f2, *output_vtk;
+    char* scalar_array_name = "new_scalar";
     int nn = 5;     // locate mesh vertex neighbours within a certain radius
+    int scaling_factor = 1;
 
 	bool foundArgs1 = false;
     bool foundArgs2 = false;
@@ -54,7 +56,16 @@ int main(int argc, char * argv[])
 					nn = atoi(argv[i + 1]);
 
 				}
-				
+
+                else if (string(argv[i]) == "-scaling") {
+					scaling_factor = atoi(argv[i + 1]);
+
+				}
+
+                else if (string(argv[i]) == "-scalarname") {
+					scalar_array_name = argv[i + 1];
+
+				}
 			}
 
 		}
@@ -77,7 +88,9 @@ int main(int argc, char * argv[])
 		LaShellPointsCSV* algorithm = new LaShellPointsCSV();
 		
         algorithm->SetInputData(la_mesh);
+        algorithm->SetScalingFactor(scaling_factor);
 		algorithm->ReadCSVFile(input_csv);
+        algorithm->SetArrayName(scalar_array_name);
         
 
 		switch (method)
@@ -85,6 +98,7 @@ int main(int argc, char * argv[])
 			case POINT_COPY:
 				algorithm->SetCopyMethodToPointCopy();
                 algorithm->InsertScalarData();
+            
                 cout << "\nPoint copy method: copies scalars to individual points" << endl; 
 				break;
 
