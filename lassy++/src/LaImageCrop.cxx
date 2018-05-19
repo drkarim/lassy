@@ -49,7 +49,7 @@ void LaImageCrop::SetInputData(LaImage* img) {
 
 
 LaImage* LaImageCrop::GetOutput(){
-    return _image_cropped;
+    //return _image_cropped;
 }
 
 void LaImageCrop::Update()
@@ -69,7 +69,7 @@ void LaImageCrop::Update()
     region.SetSize(size);
 	region.SetIndex(start);
 
-    FilterType::Pointer filter = FilterType::New();
+    /*FilterType::Pointer filter = FilterType::New();
     filter->SetExtractionRegion(region);
     filter->SetInput(_image->GetImage());
     #if ITK_VERSION_MAJOR >= 4
@@ -78,6 +78,6 @@ void LaImageCrop::Update()
     filter->Update();
 
     _image_cropped = filter->GetOutput();
-
+*/
 	
 }
