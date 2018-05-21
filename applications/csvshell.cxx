@@ -103,7 +103,7 @@ int main(int argc, char * argv[])
 				break;
 
             case NEIGHBOUR_COPY: 
-                algorithm->SetCopyMethodToPointCopy();
+                algorithm->SetCopyMethodToNeighbourCopy();
                 algorithm->SetNeighbourRadius(nn);
                 algorithm->LocateNeighboursOfPoints();
                 algorithm->InsertScalarData();

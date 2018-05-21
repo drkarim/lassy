@@ -7,10 +7,9 @@
 */
 
 /*
-*	The LaShellPointsCSV reads a CSV file containing 3D points 
-*	that correspond to a shell's vertices and assign scalars to these vertices 
-*   Note that the points are not required to correspond exactly to the shell vertices
-*   The code supports multi-array scalars for meshes 
+*	The LaShellPointsCSV reads a CSV file containing 3D points and scalar values
+*	For each 3D point, it finds corresponding positionss on the shell and assigns scalar values to these vertices 
+*   An example usage can be found udner applications/csvshell.cxx
 */
 #pragma once
 
@@ -41,21 +40,24 @@ class LaShellPointsCSV : public LaShellAlgorithms {
 protected: 
 
 	LaShell* _source_la;
-	
     LaShell* _output_la;
+
     ifstream _csvfilestream;
     vtkSmartPointer<vtkPoints> _point_set;  // csv points - points listed in csv file
+    
+    bool _containers_set;
+    int _copy_method;
+    int _scaling_factor;
+    int _neighbour_radius;
+    double _insert_scalar_value;
+    const char* _new_scalar_array_name;
+
+    // containers 
+    vector<vector<int> > _neighbour_point_set;  // points on shell neighbour to csv points
     vector<double> _scalars;                
     vector<int> _closest_point_ids;         // stores the  closest point's id to each xyz point listed on csv
-    int _copy_method;
-    vector<vector<int> > _neighbour_point_set;  // points on shell neighbour to csv points
-
-    int _neighbour_radius;
-    const char* _new_scalar_array_name;
-    double _insert_scalar_value;
-    bool _containers_set;
     vector<int> _earmark_point;
-    int _scaling_factor;
+    
     
 public:
 		
