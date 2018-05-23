@@ -24,6 +24,7 @@ SET(LASSY_INCLUDES
 	"../include/LaImageCrop.h"
 	"../include/LaImageCrop.h"
 	"../include/LaShellPointsCSV.h"
+	"../include/LaShellShellCombine.h"
 )
 
 SET(LASSY_SRCS 
@@ -50,6 +51,7 @@ SET(LASSY_SRCS
 	LaMaskDataShellOperations.cxx
 	LaImageCrop.cxx
 	LaShellPointsCSV.cxx
+	LaShellShellCombine.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})
