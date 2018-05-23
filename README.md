@@ -45,6 +45,8 @@ The list of applications continue to grow:
   9. Extracting image features as CSV for on-ward pixel classification  ```applications\imagefeature.cxx```
   10. Aggregate scalars inside a mask ```applications\maskshell.cxx```
   11. Reads pixel values as CSV file to update an image ```applications\createbinaryimage.cxx```
+  12. Reads 3D points and scalars from CSV and maps them to the mesh ```applications\csvshell.cxx```
+  13. Scalar union of two geometrically exact meshes ```applications\combshell.cxx```
  
 </p>
 
