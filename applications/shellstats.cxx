@@ -3,6 +3,7 @@
 
 #include "LaShellStatistics.h"
 #include <numeric> 
+#include <sstream>
 
 /*
 *      Author:
@@ -18,7 +19,7 @@ int main(int argc, char * argv[])
 {
 	char* input_f1, *output_f, *input_f2;
 
-	bool foundArgs1 = false;
+	bool foundArgs1 = false,foundArgs2 = false;
 
 	int method = DO_STANDARD_STATS;
 
@@ -33,6 +34,12 @@ int main(int argc, char * argv[])
 
 				else if (string(argv[i]) == "-m") {
 					method = atoi(argv[i + 1]);
+
+				}
+
+				else if (string(argv[i]) == "-o") {
+					output_f = argv[i + 1];
+					foundArgs2 = true;
 
 				}
 				
@@ -71,9 +78,17 @@ int main(int argc, char * argv[])
 
 		algorithm->Update();
         
-        cout << "\n\tMedian=\t\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("median") << "" 
-        "\tMean=\t\t\t" << fixed <<  setprecision(2) << algorithm->GetOutputValue("mean") << ""
-        "\n\tStandard Dev.=\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("std") << endl; 
+		if (!foundArgs2) {
+			cout << "\n\tMedian=\t\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("median") << "" 
+			"\tMean=\t\t\t" << fixed <<  setprecision(2) << algorithm->GetOutputValue("mean") << ""
+			"\n\tStandard Dev.=\t\t" << fixed << setprecision(2) << algorithm->GetOutputValue("std") << endl; 
+		}
+		else {
+			ofstream out; 
+			out.open(output_f); 
+			out << fixed << setprecision(2) << algorithm->GetOutputValue("median") << "," << fixed <<  setprecision(2) << algorithm->GetOutputValue("mean") << "," << fixed << setprecision(2) << algorithm->GetOutputValue("std") << endl;
+			out.close();
+		}
 	}
 
 }
