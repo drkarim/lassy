@@ -17,7 +17,7 @@
 */
 int main(int argc, char * argv[])
 {
-	char* input_f1, *output_f;
+	char* input_f1, *output_f="";
 	double fill_threshold = 0.5; 
 	int neighbourhood_size = 3;
 
@@ -41,7 +41,10 @@ int main(int argc, char * argv[])
 					neighbourhood_size = atoi(argv[i + 1]);
 					foundArgs2 = true;
 				}
-
+				else if (string(argv[i]) == "-o") {
+					output_f = argv[i + 1];
+					
+				}
 				
 
 			}
@@ -69,7 +72,13 @@ int main(int argc, char * argv[])
 		if (neighbourhood_size > 0)
 		{
 			application->SetNeighbourhoodSize(neighbourhood_size);
+			
 		}
+
+		if (strlen(output_f) > 0) {
+			application->SetOutputFileName(output_f);
+		}
+
 		application->SetInputData(source); 
 		
 		cout << "Waiting for you to pick points on the mesh to draw a line, \nor I could complete a circle from your picked points" 

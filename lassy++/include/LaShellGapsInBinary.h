@@ -73,6 +73,7 @@ public:
     int _run_count; 
     double _fill_threshold;
     vector<int> _GlobalPointContainer;
+    bool _fileOutNameUserDefined;
     
     vector<pair<int, int> > _visited_point_list;		// stores the neighbours around a point
     string _fileOutName;
@@ -100,6 +101,7 @@ public:
     void StatsInNeighbourhood(vector<int> points, double& mean, double& variance);
 	void SetInputData(LaShell* shell);
     void SetNeighbourhoodSize(int s);
+    void SetOutputFileName(const char* filename);
     void SetFillThreshold(double s);
     void ExtractImageDataAlongTrajectory(vector<vtkSmartPointer<vtkDijkstraGraphGeodesicPath> > allShortestPaths);
     bool InsertPointIntoVisitedList2(vtkIdType id, int order);

@@ -20,6 +20,7 @@ LaShellGapsInBinary::LaShellGapsInBinary()
 	_fill_threshold = 0.5;
 	_run_count = 0;
 	_fileOutName = "encircle_data_r";
+	_fileOutNameUserDefined = false; 
 }
 
 LaShellGapsInBinary::~LaShellGapsInBinary() {
@@ -42,6 +43,12 @@ void LaShellGapsInBinary::SetNeighbourhoodSize(int s)
 void LaShellGapsInBinary::SetFillThreshold(double s)
 {
 	_fill_threshold = s; 
+}
+
+void LaShellGapsInBinary::SetOutputFileName(const char* filename)
+{
+	_fileOutName = std::string(filename); 
+	_fileOutNameUserDefined = true; 
 }
 
 vtkSmartPointer<vtkRenderWindowInteractor> LaShellGapsInBinary::GetWindowInteractor()
@@ -270,7 +277,12 @@ void LaShellGapsInBinary::ExtractImageDataAlongTrajectory(vector<vtkSmartPointer
 	xyz[0]=1e-10; xyz[1]=1e-10; xyz[2]=1e-10;
 	
 	stringstream ss; 
-	ss << _fileOutName << _run_count << ".txt";
+	
+	if (_fileOutNameUserDefined == false)
+		ss << _fileOutName << _run_count << ".csv";
+	else 
+		ss << _fileOutName;
+
 	out.open(ss.str().c_str(), std::ios_base::app); 
 	out << "MainVertexSeq,VertexID,X,Y,Z,VertexDepth,MeshScalar" << endl;
 	// the recursive order - how many levels deep around a point do you want to explore?
