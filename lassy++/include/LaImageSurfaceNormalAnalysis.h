@@ -37,6 +37,7 @@ private:
 	LaImage* _la_image; 
 	LaImage* _mask_image;
 	bool _vtk_logging; 
+	bool _shell_only_no_mapping;
 
 	double _step_size;
 
@@ -63,6 +64,7 @@ public:
 	void SetAggregationMethodToMax();
 	void SetAggregationMethodToMean();
 	void SetAggregationMethodToMedian();
+	void SetMethodToNoMapping();
 	void SetAggregationMethodToIntegral();
 	void SetZScoreMean(double);
 	void SetZScoreStd(double);

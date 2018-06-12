@@ -14,6 +14,7 @@ LaImageSurfaceNormalAnalysis::LaImageSurfaceNormalAnalysis()
 	_la_shell = new LaShell();
 	_mesh_3d = vtkSmartPointer<vtkPolyData>::New();
 	_vtk_logging = false;
+	_shell_only_no_mapping = false;
 	_mask_image = NULL;
 	_step_size = 4;
 	_normal_step_shell = NULL;
@@ -169,17 +170,26 @@ void LaImageSurfaceNormalAnalysis::SetVTKLogging()
 	_vtk_logging = true;
 }
 
+void LaImageSurfaceNormalAnalysis::SetMethodToNoMapping() 
+{
+	_shell_only_no_mapping = true;
+}
+
 void LaImageSurfaceNormalAnalysis::Update() {
 
 	if (_la_binary != NULL) {
 		_la_shell->BinaryImageToShell(_la_binary, 0.5);
+		_la_shell->GetMesh3D(_mesh_3d);
 	}
 
-	cout << "\nConverted mask to shell, now performing surface analysis  .. " << endl;
-	_la_shell->GetMesh3D(_mesh_3d);
-	//SurfaceProjection(_vtk_logging);
-	SurfaceProjectionOnPoints();
+	if  (!_shell_only_no_mapping) 
+	{
+		cout << "\nConverted mask to shell, now performing surface analysis  .. " << endl;
+		
 
+		//SurfaceProjection(_vtk_logging);
+		SurfaceProjectionOnPoints();
+	}
 
 }
 

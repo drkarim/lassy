@@ -24,7 +24,7 @@ int main(int argc, char * argv[])
 	int direction = 1; 
 	double mean, std, step_size=4.0; 
 	int aggregate_method=1; 
-	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false, foundArgs5=false, foundArgs6=false, foundArgs7=false;
+	bool foundArgs1 = false, foundArgs2 = false, foundArgs3=false, foundArgs4=false, foundArgs5=false, foundArgs6=false, foundArgs7=false, foundArgs8=false;
 	
 	if (argc >= 1)
 	{
@@ -62,7 +62,12 @@ int main(int argc, char * argv[])
 					step_size = atof(argv[i + 1]);
 					
 				}
+				
 
+			}
+			else if (string(argv[i]) == "--nomap") {
+					foundArgs8 = true;
+					
 			}
 			
 		}
@@ -77,7 +82,9 @@ int main(int argc, char * argv[])
 			"\n\t-i3 <surface depth map for normal extent>"
 			"\n\t-m <mean for z-scoring> \n\t-s <std for z-scoring>"
 			"\n\t-t <1-max, 2-integral>"
-			"\n\t-p <size of normal>\n" << endl; 
+			"\n\t-p <size of normal>\n" 
+			"\n\t--nomap (switch to enable no intensity mapping, only mesh generation)\n" 
+			<< endl; 
 			
 		exit(1);
 	}
@@ -104,7 +111,13 @@ int main(int argc, char * argv[])
 			algorithm->SetStepSize(step_size);
 		}
 
-		if (aggregate_method == 1)
+		if (foundArgs8)
+		{
+			cout << "\nNo mapping, only mesh generation requested .. " << endl;
+			algorithm->SetMethodToNoMapping();
+		}
+
+		else if (aggregate_method == 1)
 		{
 			cout << "\nAggregate method: Max" << endl;
 			algorithm->SetAggregationMethodToMax();
@@ -114,13 +127,14 @@ int main(int argc, char * argv[])
 			cout << "\nAggregate method: Integral" << endl;
 			algorithm->SetAggregationMethodToIntegral();
 		}
+		
 
 		if (foundArgs5 && foundArgs6)
 		{
 			algorithm->SetZScoreMean(mean);
 			algorithm->SetZScoreStd(std);
 		}
-
+		
 		algorithm->Update();
 		mesh_out = algorithm->GetOutput();
 		mesh_out->ExportVTK(output_f);
