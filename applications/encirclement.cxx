@@ -59,7 +59,9 @@ int main(int argc, char * argv[])
 			"\n(Mandatory)\n\t-i <source_mesh_vtk>"
 			"\n\n(optional)\n\t-t <the threshold value for determining filling>" 
 			"\n\t-n <neighbourhood size, default = 3>" 
+			"\n\t-o <specify output CSV filename, otherwise the name defaults to encircle.csv>"
 			"\n\nNote the neighbourhood size n is the n-th order neighbours that are included, adjacent vertices are 1-order neighbours"<< endl; 
+			
 			
 		exit(1);
 	}
