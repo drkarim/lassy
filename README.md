@@ -47,6 +47,7 @@ The list of applications continue to grow:
   11. Reads pixel values as CSV file to update an image ```applications\createbinaryimage.cxx```
   12. Reads 3D points and scalars from CSV and maps them to the mesh ```applications\csvshell.cxx```
   13. Scalar union of two geometrically exact meshes ```applications\combshell.cxx```
+  14. Draws contour of binary image on greyscale image ```applications\contourbinaryimage.cxx```
  
 </p>
 
