@@ -78,8 +78,7 @@ int main(int argc, char * argv[])
             cerr << "Check your parameters: no image included with -img switch if --convert switch is on" << endl;
         }
     }
-	else
-	{
+	
         if (strlen(input_csv_fn)!=0)
 	        csvfilestream.open(input_csv_fn);
         else 
@@ -106,6 +105,7 @@ int main(int argc, char * argv[])
                 else if (j==1) y = num ;
                 else if (j==2) z = num ;
                 lines++;
+                cout << "reading point (" << x << "," << y << "," << z << ")\n";
                 
             }
 
@@ -138,22 +138,22 @@ int main(int argc, char * argv[])
 
             }   
 
-            if (lines > 0 && num_points > 0 && lines != num_points)
-            {
-                vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-                polydata->SetPoints(point_set);
-                vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New(); 
-                writer->SetFileName(output_fn);
-                writer->SetInputData(polydata);
-                writer->Update();
-            }
-            else { 
-                cerr << "Not all CSV lines could not converted to points, num_line" << lines << ", num_points=" << num_points; 
-                exit(1);
-            }
+           
         }   // end for 
 		
-		
-	} // end else 
+        if (lines > 0 && num_points > 0 && lines != num_points)
+        {
+            vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+            polydata->SetPoints(point_set);
+            vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New(); 
+            writer->SetFileName(output_fn);
+            writer->SetInputData(polydata);
+            writer->Update();
+        }
+        else { 
+            cerr << "Not all CSV lines could not converted to points, num_line" << lines << ", num_points=" << num_points; 
+            exit(1);
+        }
+	
 
 }   // end function
