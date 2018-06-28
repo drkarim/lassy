@@ -14,6 +14,7 @@ LaShellPointsCSV::LaShellPointsCSV() {
     _new_scalar_array_name = "new_scalar";
     _insert_scalar_value = 1;
     _containers_set = false;
+    _write_all_neighbours = false; 
     _scaling_factor = 1;
 }
 
@@ -53,7 +54,10 @@ void LaShellPointsCSV::SetScalingFactor(int scale)
     _scaling_factor = scale;
 }
 
-
+void LaShellPointsCSV::SetWriteAllNeighboursInCSV()
+{
+    _write_all_neighbours = true; 
+}
 
 void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
@@ -243,29 +247,38 @@ void LaShellPointsCSV::Update()
     LocatePoints();
 
     ofstream out; 
-    double xyz[3];
-    out.open("LaShellPointsCSV_output.csv"); 
+    double xyz[3], xyz_t[3];
+    vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
+    _source_la->GetMesh3D(mesh);
 
-    out << "x,y,z,point_id\n"; 
+    out.open("LaShellPointsCSV_output.csv"); 
+    out << "XYZ read from CSV and closest XYZ_t found on input shell\n";
+    out << "x,y,z,x_t,y_t,z_t\n"; 
        
     for (int i=0;i<_point_set->GetNumberOfPoints();i++)
     {
         _point_set->GetPoint(i, xyz); 
-
+    
         if (i < _closest_point_ids.size())
         {
-            out << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << _closest_point_ids[i]; 
+            mesh->GetPoint(_closest_point_ids[i], xyz_t);        
+            out << xyz[0] << "," << xyz[1] << "," << xyz[2] << "," << xyz_t[0] << "," << xyz_t[1] << "," << xyz_t[2];
             
-            if (_neighbour_point_set.size() > 0 && i < _neighbour_point_set.size())
-            {
-                for (int j=0;j<_neighbour_point_set[i].size();j++)
+            if (_write_all_neighbours) {
+                if (_neighbour_point_set.size() > 0 && i < _neighbour_point_set.size())
                 {
-                    out << "," << _neighbour_point_set[i][j];
+                    for (int j=0;j<_neighbour_point_set[i].size();j++)
+                    {
+                        out << "," << _neighbour_point_set[i][j];
+                    }
+                    out << endl;
                 }
+                else 
+                    out << endl;
+            }
+            else {
                 out << endl;
             }
-            else 
-                out << endl;
         }
         
     }

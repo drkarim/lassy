@@ -46,6 +46,7 @@ protected:
     vtkSmartPointer<vtkPoints> _point_set;  // csv points - points listed in csv file
     
     bool _containers_set;
+    bool _write_all_neighbours;
     int _copy_method;
     int _scaling_factor;
     int _neighbour_radius;
@@ -70,6 +71,7 @@ public:
     void SetArrayName(const char* array_name);
     void SetInsertScalarValue(double val);
     void SetScalingFactor(int scale);
+    void SetWriteAllNeighboursInCSV();
 
     void LocateNeighboursOfPoints();
 
