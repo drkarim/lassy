@@ -75,7 +75,7 @@ int main(int argc, char * argv[])
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nReads a CSV file containing 3D points and scalar values. The scalars are appplied at these 3D locations on a LA mesh "
-			"\n(Mandatory)\n\t-vtk <input shell> \n\t-csv <csv file>\n\n(Optional)\n\t-method <1=Point copy, 2=Neighbour copy>" 
+			"\n(Mandatory)\n\t-vtk <input shell> \n\t-csv <csv file>\n\t-out <vtk output>\n\n(Optional)\n\t-method <1=Point copy, 2=Neighbour copy>" 
             "\n\t-nn <neighbours within a certain radius default 5 mm> " << endl;
 			
 		exit(1);
@@ -98,7 +98,7 @@ int main(int argc, char * argv[])
 			case POINT_COPY:
 				algorithm->SetCopyMethodToPointCopy();
                 algorithm->InsertScalarData();
-            
+				
                 cout << "\nPoint copy method: copies scalars to individual points" << endl; 
 				break;
 
