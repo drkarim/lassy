@@ -102,21 +102,28 @@ void LaImageInPaintMask::Update()
         ++imageIterator;
     }
 
-    for (int i=_crop_x;i<_crop_x+_crop_l;i++)
+
+    int start_x = _crop_x;
+    int start_y = _crop_y;
+    int start_z = _crop_z;
+
+    for (int i=start_x;i<start_x+_crop_l;i++)
     {
-        for (int j=_crop_y;j<_crop_y+_crop_w;j++)
+        for (int j=start_y;j<start_y+_crop_w;j++)
         {
-            for (int k=_crop_z;k<_crop_z+_crop_h;k++)
+            for (int k=start_z;k<start_z+_crop_h;k++)
             {
                 pixelIndex[0] = i; 
                 pixelIndex[1] = j; 
                 pixelIndex[2] = k; 
 
-                pixelIndex2[0] = i-_crop_x; 
-                pixelIndex2[1] = j-_crop_y; 
-                pixelIndex2[2] = k-_crop_z; 
+                pixelIndex2[0] = i-start_x; 
+                pixelIndex2[1] = j-start_y; 
+                pixelIndex2[2] = k-start_z; 
 
-                output_im->SetPixel(pixelIndex, mask_pn->GetPixel(pixelIndex2));
+                if (pixelIndex[0] < max_x && pixelIndex[1] < max_y && pixelIndex[2] < max_z && pixelIndex2[0] < max_x2 
+                && pixelIndex2[1] < max_y2 && pixelIndex2[2] < max_z2)
+                    output_im->SetPixel(pixelIndex, mask_pn->GetPixel(pixelIndex2));
             }
         }
     }
