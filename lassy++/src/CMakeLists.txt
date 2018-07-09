@@ -28,11 +28,14 @@ SET(LASSY_INCLUDES
 	"../include/LaImageContour.h"
 	"../include/LaImageMarkPoints.h"
 	"../include/LaImageInPaintMask.h"
+	"../include/LaImageHoleFilling.h"
+	"../include/LaImageFloat.h"
 )
 
 SET(LASSY_SRCS 
 	LaShell.cxx
 	LaImage.cxx
+	LaImageFloat.cxx
 	MathBox.cxx
 	VizBox.cxx
 	ShellEntropy.cxx
@@ -58,6 +61,7 @@ SET(LASSY_SRCS
 	LaImageContour.cxx
 	LaImageMarkPoints.cxx
 	LaImageInPaintMask.cxx
+	LaImageHoleFilling.cxx
 ) 
 
 ADD_LIBRARY(lassy++ ${LASSY_SRCS} ${LASSY_INCLUDES})
