@@ -92,12 +92,19 @@ int main(int argc, char * argv[])
         }
 
         vector<vector<string> > csv_content = CSVReader::readCSV(csvfilestream);
-        double x,y,z, pixel_value, p[3];
+        double x,y,z, pixel_value, p[3], sp[3];
         int size_x, size_y, size_z; 
         
         LaImage* greyscale = new LaImage(input_img_fn);  // copy structure 
         InputImageType::Pointer greyscale_pn = greyscale->GetImage();
         
+        OutputImageType::SpacingType spacing_out;
+        InputImageType::SpacingType spacing_in;
+        spacing_in = greyscale_pn->GetSpacing();
+        spacing_out[0] = spacing_in[0]; 
+        spacing_out[1] = spacing_in[1];
+        spacing_out[2] = spacing_in[2];
+
         OutputImageType::RegionType region;
         OutputImageType::IndexType start;
         start[0] = 0;
@@ -115,6 +122,7 @@ int main(int argc, char * argv[])
         region.SetIndex(start);
         OutputImageType::Pointer output_im = OutputImageType::New();
         output_im->SetRegions(region);
+        output_im->SetSpacing(spacing_out);
         output_im->Allocate();
 
         // The CSV iterator is from here: 
