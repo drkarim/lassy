@@ -33,6 +33,7 @@ class LaImageSurfaceNormalAnalysis : public LaImageShellAlgorithms {
 private: 
 	LaShell* _la_shell;
 	LaShell* _normal_step_shell;	
+	
 	LaImage* _la_binary;
 	LaImage* _la_image; 
 	LaImage* _mask_image;
@@ -44,8 +45,10 @@ private:
 	vtkSmartPointer<vtkPolyData> _mesh_3d; 
 
 	LaImageNormalInterrogator* _normal_interrogate_algorithm;
+	 char* _output_fn;
 	
 public:
+	LaShell* _output_shell;
 	// Constructor with default values for data members
 	/*static LaShellAlgorithms *New();*/
 	
@@ -68,6 +71,8 @@ public:
 	void SetAggregationMethodToIntegral();
 	void SetZScoreMean(double);
 	void SetZScoreStd(double);
+
+	void SetOutputFileName( char* fn);
 
 
 	void Update(); 

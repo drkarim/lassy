@@ -81,7 +81,7 @@ int main(int argc, char * argv[])
 			"\n\n(Optional)"
 			"\n\t-i3 <surface depth map for normal extent>"
 			"\n\t-m <mean for z-scoring> \n\t-s <std for z-scoring>"
-			"\n\t-t <1-max, 2-integral>"
+			"\n\t-t <1-max, 2-integral, 3-mean>"
 			"\n\t-p <size of normal>\n" 
 			"\n\t--nomap (switch to enable no intensity mapping, only mesh generation)\n" 
 			<< endl; 
@@ -100,7 +100,8 @@ int main(int argc, char * argv[])
 		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
 		algorithm->SetInputDataImage(image);
 		algorithm->SetInputDataBinary(bin_image); 
-				
+		algorithm->SetOutputFileName(output_f); 
+
 		if (foundArgs3) {
 			cout << "Note: Using wall thickness map for traversing normals .." << endl; 
 			thickness_map = new LaShell(input_f3);
@@ -127,6 +128,11 @@ int main(int argc, char * argv[])
 			cout << "\nAggregate method: Integral" << endl;
 			algorithm->SetAggregationMethodToIntegral();
 		}
+		else if (aggregate_method == 3)	
+		{
+			cout << "\nAggregate method: Mean" << endl;
+			algorithm->SetAggregationMethodToMean();
+		}
 		
 
 		if (foundArgs5 && foundArgs6)
@@ -136,8 +142,13 @@ int main(int argc, char * argv[])
 		}
 		
 		algorithm->Update();
-		mesh_out = algorithm->GetOutput();
-		mesh_out->ExportVTK(output_f);
+
+		delete bin_image; 
+		delete image; 
+		delete mesh_out;
+		delete algorithm;
+		if (foundArgs3) delete thickness_map;
+		
 	}
 
 }

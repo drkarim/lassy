@@ -135,14 +135,14 @@ void LaImageNormalInterrogator::Update() {
 
 
 	vector<Point3> pointsOnAndAroundNormal;
-
+/*
 	std::ofstream ofs;
 	if (_doLoggingLevel1) {
 		ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::app);
 
 		//ofs << "NormalStep,CentrePixel_X,CentrePixelY,CentrePixelZ,PixelVaue" << endl;
 		//ofs << "==========,=============,===========,=============,=========" << endl;
-	}
+	}*/
 	int MaxX, MaxY, MaxZ;
 	_image->GetImageSize(MaxX, MaxY, MaxZ);
 
@@ -198,7 +198,7 @@ void LaImageNormalInterrogator::Update() {
 			short pixelValue = -1;
 			_image->GetIntensityAt(x, y, z, pixelValue);
 
-			ofs << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
+			//ofs << i << "," << x << "," << y << "," << z << "," << pixelValue << endl;
 		}
 
 	}		// end for
@@ -208,7 +208,7 @@ void LaImageNormalInterrogator::Update() {
 	if (pointsOnAndAroundNormal.size() > 0) {
 		GetStatisticalMeasure(pointsOnAndAroundNormal, _aggregation_method, insty);			// statistical measure 2 returns max
 		if (_doLoggingLevel2) {
-			ofs << ",,,aggregate=,"<<insty<<endl;
+			//ofs << ",,,aggregate=,"<<insty<<endl;
 		}
 	}
 	else {
@@ -219,7 +219,7 @@ void LaImageNormalInterrogator::Update() {
 	_aggregate_scalar = insty;
 
 	if (_doLoggingLevel2) {
-		ofs.close();
+		//ofs.close();
 	}
 }
 
@@ -237,7 +237,8 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 		for (int i = 0; i<size; i++)
 		{
 			_image->GetIntensityAt(vals[i]._x, vals[i]._y, vals[i]._z, pixelValue);
-			sum += pixelValue;
+			if (pixelValue > 0)
+				sum += pixelValue;
 		}
 		returnVal = sum / size;
 	}
@@ -247,7 +248,7 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 		for (int i = 0; i < size; i++)
 		{
 			_image->GetIntensityAt(vals[i]._x, vals[i]._y, vals[i]._z, pixelValue);
-			if (pixelValue > max) {
+			if (pixelValue > max && pixelValue > 0) {
 				max = pixelValue;
 			}
 		}
@@ -285,7 +286,8 @@ void LaImageNormalInterrogator::GetStatisticalMeasure(vector<Point3> vals, int m
 		for (int i = 0; i<size; i++)
 		{
 			_image->GetIntensityAt(vals[i]._x, vals[i]._y, vals[i]._z, pixelValue);
-			sum += pixelValue;
+			if (pixelValue > 0)
+				sum += pixelValue;
 		}
 		returnVal = sum;
 	}

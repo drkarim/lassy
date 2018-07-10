@@ -18,14 +18,18 @@ LaImageSurfaceNormalAnalysis::LaImageSurfaceNormalAnalysis()
 	_mask_image = NULL;
 	_step_size = 4;
 	_normal_step_shell = NULL;
+	_output_shell = new LaShell();
 
 	_normal_interrogate_algorithm = new LaImageNormalInterrogator();
+	
 
 
 }
 
 LaImageSurfaceNormalAnalysis::~LaImageSurfaceNormalAnalysis() {
 	delete _la_shell;
+	delete _normal_interrogate_algorithm;
+	delete _output_shell;
 }
 
 void LaImageSurfaceNormalAnalysis::SetStepSize(double steps)
@@ -62,9 +66,14 @@ void LaImageSurfaceNormalAnalysis::SetInputDataImageMask(LaImage* mask_img) {
 
 
 LaShell* LaImageSurfaceNormalAnalysis::GetOutput() {
-	LaShell* output = new LaShell();
-	output->SetMesh3D(_mesh_3d);
-	return output;
+	
+	
+	return _output_shell;
+}
+
+void LaImageSurfaceNormalAnalysis::SetOutputFileName(char* fn)
+{
+	_output_fn = fn;
 }
 
 
@@ -85,11 +94,11 @@ void LaImageSurfaceNormalAnalysis::SurfaceProjectionOnPoints()
 	}
 
 	// clear intensity log file
-	std::ofstream ofs;
+	/*std::ofstream ofs;
 	ofs.open("intensity_log.csv", std::ofstream::out | std::ofstream::trunc);
 	ofs << "Please note: Pixels on the normal are printed below, but the aggregate (mean, max, integral, etc.) is obtained from 3x3x3 neighbourhood around each pixel " << endl;
 	ofs << "NormalStep,CentrePixel_X,CentrePixelY,CentrePixelZ,PixelValue" << endl;
-	ofs.close();
+	ofs.close();*/
 
 	vtkSmartPointer<vtkFloatArray> pointNormals = vtkFloatArray::SafeDownCast(_mesh_3d->GetPointData()->GetNormals());
 
@@ -160,6 +169,8 @@ void LaImageSurfaceNormalAnalysis::SurfaceProjectionOnPoints()
 
 	}	// end for
 	_mesh_3d->GetPointData()->SetScalars(scalars);
+	_output_shell->SetMesh3D(_mesh_3d);
+	_output_shell->ExportVTK(_output_fn);
 }
 
 

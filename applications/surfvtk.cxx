@@ -57,13 +57,10 @@ int main(int argc, char * argv[])
 		LaImageSurfaceNormalAnalysis* algorithm = new LaImageSurfaceNormalAnalysis();
 		algorithm->SetInputDataImage(image);
 		algorithm->SetInputDataShell(mask); 
-
+		algorithm->SetOutputFileName(output_f);
 		
 		algorithm->Update();
 		
-		mesh_out = algorithm->GetOutput();
-		mesh_out->ConvertToPointData();
-		mesh_out->ExportVTK(output_f);
 	}
 
 }
