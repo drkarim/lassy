@@ -36,7 +36,7 @@ void LaShellPointsCSV::SetCopyMethodToNeighbourCopy()
 
 void LaShellPointsCSV::SetNeighbourRadius(int radius)
 {
-    _neighbour_radius = radius;
+    _neighbour_radius = _scaling_factor*radius;
 }
 
 void LaShellPointsCSV::SetArrayName(const char* array_name)
@@ -52,6 +52,8 @@ void LaShellPointsCSV::SetInsertScalarValue(double val)
 void LaShellPointsCSV::SetScalingFactor(int scale)
 {
     _scaling_factor = scale;
+    _neighbour_radius = _scaling_factor*_neighbour_radius; 
+    cout << "Warning: using a scaling factor of " << scale << ", and radius becomes = " << _neighbour_radius;
 }
 
 void LaShellPointsCSV::SetWriteAllNeighboursInCSV()
