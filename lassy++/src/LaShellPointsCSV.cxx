@@ -16,6 +16,7 @@ LaShellPointsCSV::LaShellPointsCSV() {
     _containers_set = false;
     _write_all_neighbours = false; 
     _scaling_factor = 1;
+    _write_to_field_data  = false; 
 }
 
 void LaShellPointsCSV::SetInputData(LaShell* shell) {
@@ -37,6 +38,7 @@ void LaShellPointsCSV::SetCopyMethodToNeighbourCopy()
 void LaShellPointsCSV::SetNeighbourRadius(int radius)
 {
     _neighbour_radius = _scaling_factor*radius;
+    cout << "Warning: using a scaling factor of " << _scaling_factor << ", hence radius becomes = " << _neighbour_radius << "\n\n";
 }
 
 void LaShellPointsCSV::SetArrayName(const char* array_name)
@@ -53,7 +55,12 @@ void LaShellPointsCSV::SetScalingFactor(int scale)
 {
     _scaling_factor = scale;
     _neighbour_radius = _scaling_factor*_neighbour_radius; 
-    cout << "Warning: using a scaling factor of " << scale << ", and radius becomes = " << _neighbour_radius;
+    
+}
+
+void LaShellPointsCSV::SetWriteDataToField()
+{
+    _write_to_field_data= true; 
 }
 
 void LaShellPointsCSV::SetWriteAllNeighboursInCSV()
@@ -66,7 +73,8 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 	_csvfilestream.open(input_fn);
 
     vector<vector<string> > csv_content = CSVReader::readCSV(_csvfilestream);
-    double x,y,z, scalar, p[3];
+    double x,y,z, p[3];
+    float scalar;
 	// The CSV iterator is from here: 
 	// https://stackoverflow.com/questions/1120140/how-can-i-read-and-parse-csv-files-in-c
 	for (int i=0;i<csv_content.size();i++)
@@ -91,9 +99,14 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
         }   
 
-        if (scalar > -1e10)
+        if (scalar > -1e9 && scalar < 1e9 )
         {
+            //cout << scalar << endl;
             _scalars.push_back(scalar);         // _scalars correspond to points in _point_set
+        }
+        else  {
+            
+            _scalars.push_back(0);         
         }
     }   
 
@@ -209,7 +222,12 @@ void LaShellPointsCSV::InsertScalarData() {
             new_scalar->InsertNextValue(0); 
     }
 
-    mesh->GetPointData()->SetScalars(new_scalar);
+    if (!_write_to_field_data)
+        mesh->GetPointData()->SetScalars(new_scalar);
+    else {
+        cout << "Warning: Writing to field data .. "; 
+        mesh->GetFieldData()->AddArray(new_scalar);
+    }
 
     // a new mesh is created 
     _output_la->SetMesh3D(mesh);

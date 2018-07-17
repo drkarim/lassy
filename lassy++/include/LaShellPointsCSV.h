@@ -47,6 +47,7 @@ protected:
     
     bool _containers_set;
     bool _write_all_neighbours;
+    bool _write_to_field_data;
     int _copy_method;
     int _scaling_factor;
     int _neighbour_radius;
@@ -55,9 +56,9 @@ protected:
 
     // containers 
     vector<vector<int> > _neighbour_point_set;  // points on shell neighbour to csv points
-    vector<double> _scalars;                
+    vector<float> _scalars;                
     vector<int> _closest_point_ids;         // stores the  closest point's id to each xyz point listed on csv
-    vector<int> _earmark_point;
+    vector<float> _earmark_point;
     
     
 public:
@@ -72,6 +73,8 @@ public:
     void SetInsertScalarValue(double val);
     void SetScalingFactor(int scale);
     void SetWriteAllNeighboursInCSV();
+    void SetWriteDataToField();
+
 
     void LocateNeighboursOfPoints();
 

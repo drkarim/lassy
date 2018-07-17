@@ -24,6 +24,7 @@ int main(int argc, char * argv[])
 	bool foundArgs1 = false;
     bool foundArgs2 = false;
     bool foundArgs3 = false;
+	bool is_field_data = false;
     int method = POINT_COPY;
 
 	if (argc >= 1)
@@ -42,8 +43,6 @@ int main(int argc, char * argv[])
 				}
                 else if (string(argv[i]) == "-out") {
 					output_vtk = argv[i + 1];
-                    
-
 				}
 
                 else if (string(argv[i]) == "-method") {
@@ -66,17 +65,23 @@ int main(int argc, char * argv[])
 					scalar_array_name = argv[i + 1];
 
 				}
+			} // end outer if 
+			else if (string(argv[i]) == "--field") {
+				is_field_data = true; 
 			}
 
-		}
+		} 
+		
 	}
 
 	if (!(foundArgs1 && foundArgs2))
 	{
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nReads a CSV file containing 3D points and scalar values. The scalars are appplied at these 3D locations on a LA mesh "
+			"\n\n(IMPORTANT) values v in csv outside the range -1e9 < v < 1e9 are set to 0"
 			"\n(Mandatory)\n\t-vtk <input shell> \n\t-csv <csv file>\n\t-out <vtk output>\n\n(Optional)\n\t-method <1=Point copy, 2=Neighbour copy>" 
-            "\n\t-nn <neighbours within a certain radius default 5 mm> " << endl;
+            "\n\t-nn <neighbours within a certain radius default 5 mm> "
+			"\n\t--field to insert into field data" << endl;
 			
 		exit(1);
 	}
@@ -91,6 +96,12 @@ int main(int argc, char * argv[])
         algorithm->SetScalingFactor(scaling_factor);
 		algorithm->ReadCSVFile(input_csv);
         algorithm->SetArrayName(scalar_array_name);
+
+		if (is_field_data)
+		{
+			cout << "\nWriting as field data" << endl;
+			algorithm->SetWriteDataToField();
+		}
         
 
 		switch (method)
