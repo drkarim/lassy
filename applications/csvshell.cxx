@@ -81,6 +81,7 @@ int main(int argc, char * argv[])
 			"\n\n(IMPORTANT) values v in csv outside the range -1e9 < v < 1e9 are set to 0"
 			"\n(Mandatory)\n\t-vtk <input shell> \n\t-csv <csv file>\n\t-out <vtk output>\n\n(Optional)\n\t-method <1=Point copy, 2=Neighbour copy>" 
             "\n\t-nn <neighbours within a certain radius default 5 mm> "
+			"\n\t-scalarname <name of the scalar>"
 			"\n\t--field to insert into field data" << endl;
 			
 		exit(1);
