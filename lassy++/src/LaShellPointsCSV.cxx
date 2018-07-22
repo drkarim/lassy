@@ -222,8 +222,10 @@ void LaShellPointsCSV::InsertScalarData() {
             new_scalar->InsertNextValue(0); 
     }
 
-    if (!_write_to_field_data)
-        mesh->GetPointData()->SetScalars(new_scalar);
+    if (!_write_to_field_data) {
+        //mesh->GetPointData()->SetScalars(new_scalar);
+        mesh->GetPointData()->AddArray(new_scalar);
+    }
     else {
         cout << "Warning: Writing to field data .. "; 
         mesh->GetFieldData()->AddArray(new_scalar);
