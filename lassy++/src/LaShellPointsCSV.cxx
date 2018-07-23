@@ -84,11 +84,15 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 		
         for (int j=0;j<line.size();j++)
 		{
-			float num = atof(line[j].c_str()); 
-			if (j==0) x = num ;
-			else if (j==1) y = num ;
-			else if (j==2) z = num ;
-			else if (j==3) scalar = num;
+            if (!isalpha(line[j].at(0))) {
+                float num = atof(line[j].c_str()); 
+                if (j==0) x = num ;
+                else if (j==1) y = num ;
+                else if (j==2) z = num ;
+                else if (j==3) scalar = num;
+            }else {
+                cout << "Not a number " << line[j] << endl;
+            }
 		}
 
         if (x>-1e10 && y>-1e10 && z>-1e10)
