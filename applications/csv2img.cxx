@@ -136,12 +136,17 @@ int main(int argc, char * argv[])
 
             for (int j=0;j<line.size();j++)
             {
-                float num = atof(line[j].c_str()); 
-                if (j==0) x = round(num) ;
-                else if (j==1) y = round(num) ;
-                else if (j==2) z = round(num);
-                else if (j==3) pixel_value = num ;
-                lines++;
+                if (!isalpha(line[j].at(0))) {      // skip headers
+                    float num = atof(line[j].c_str()); 
+                    if (j==0) x = round(num) ;
+                    else if (j==1) y = round(num) ;
+                    else if (j==2) z = round(num);
+                    else if (j==3) pixel_value = num ;
+                    lines++;
+                }
+                else {
+                    cout << "Encountered an entry that is not a number, header? " << line[j] << endl;
+                }
                 
                 
             }

@@ -100,12 +100,17 @@ int main(int argc, char * argv[])
 
             for (int j=0;j<line.size();j++)
             {
-                float num = atof(line[j].c_str()); 
-                if (j==0) x = num ;
-                else if (j==1) y = num ;
-                else if (j==2) z = num ;
-                lines++;
-                cout << "reading point (" << x << "," << y << "," << z << ")\n";
+                if (!isalpha(line[j].at(0))) {      // skip headers
+                    float num = atof(line[j].c_str()); 
+                    if (j==0) x = num ;
+                    else if (j==1) y = num ;
+                    else if (j==2) z = num ;
+                    lines++;
+                    cout << "reading point (" << x << "," << y << "," << z << ")\n";
+                }
+                else {
+                    cout << "Encountered an entry that is not a number, header? " << line[j] << endl;
+                }
                 
             }
 
