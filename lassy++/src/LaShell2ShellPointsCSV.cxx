@@ -68,7 +68,7 @@ void LaShell2ShellPointsCSV::ReadCSVFile(const char* input_fn) {
         if (x>-1e10 && y>-1e10 && z>-1e10)
         {
             p[0] = _scaling_factor*x; p[1] = _scaling_factor*y; p[2] = _scaling_factor*z;
-            //cout << "reading point " << x << "," << y << "," << z << "," << scalar << endl;
+            cout << "reading point " << p[0] << "," << p[1] << "," << p[2] << "," << scalar << endl;
             _point_set->InsertNextPoint(p);
 
         }   
