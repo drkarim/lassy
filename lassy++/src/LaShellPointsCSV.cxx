@@ -74,7 +74,7 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
 
     vector<vector<string> > csv_content = CSVReader::readCSV(_csvfilestream);
     double x,y,z, p[3];
-    float scalar;
+    double scalar;
 	// The CSV iterator is from here: 
 	// https://stackoverflow.com/questions/1120140/how-can-i-read-and-parse-csv-files-in-c
 	for (int i=0;i<csv_content.size();i++)
@@ -85,7 +85,7 @@ void LaShellPointsCSV::ReadCSVFile(const char* input_fn) {
         for (int j=0;j<line.size();j++)
 		{
             if (!isalpha(line[j].at(0))) {      // skip headers
-                float num = atof(line[j].c_str()); 
+                double num = atof(line[j].c_str()); 
                 if (j==0) x = num ;
                 else if (j==1) y = num ;
                 else if (j==2) z = num ;
@@ -214,7 +214,7 @@ void LaShellPointsCSV::InsertScalarData() {
     vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
     _source_la->GetMesh3D(mesh);
 
-    vtkSmartPointer<vtkFloatArray> new_scalar = vtkSmartPointer<vtkFloatArray>::New();
+    vtkSmartPointer<vtkDoubleArray> new_scalar = vtkSmartPointer<vtkDoubleArray>::New();
     new_scalar->SetNumberOfComponents(1);
     new_scalar->SetName(_new_scalar_array_name);
 

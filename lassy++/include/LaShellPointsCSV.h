@@ -56,9 +56,9 @@ protected:
 
     // containers 
     vector<vector<int> > _neighbour_point_set;  // points on shell neighbour to csv points
-    vector<float> _scalars;                
+    vector<double> _scalars;                
     vector<int> _closest_point_ids;         // stores the  closest point's id to each xyz point listed on csv
-    vector<float> _earmark_point;
+    vector<double> _earmark_point;
     
     
 public:

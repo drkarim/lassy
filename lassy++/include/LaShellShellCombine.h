@@ -28,9 +28,11 @@ class LaShellShellCombine : public LaShellAlgorithms {
 	LaShell* _source_la_2;
 	LaShell* _output_la;
     const char* _scalar_array_name;
+	string _output_scalar_name;
     int _scalar_array_location_in_source1; 
     int _scalar_array_location_in_source2;
 	int _overlap_preference; 
+	bool _write_to_field_data;
 	
 
 public:
@@ -41,7 +43,9 @@ public:
 
 	void SetOverlapToSource1();
 	void SetOverlapToSource2();
-    bool SetScalarArrayName(const char* array_name);
+    bool SetScalarArrayNames(const char* array_name1, const char* array_name2);
+	void SetWriteDataToField();
+	void SetOutputScalarName(string array_name);
 	
 
 	void Update();

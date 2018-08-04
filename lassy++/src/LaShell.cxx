@@ -44,11 +44,11 @@ vector<double> LaShell::GetMeshVertexValues()
 }
 
 
-void LaShell::GetMesh3D(vtkPolyData* mesh_output) {  // Member function (Getter)
+void LaShell::GetMesh3D(vtkSmartPointer<vtkPolyData> mesh_output) {  // Member function (Getter)
 	mesh_output->DeepCopy(_mesh_3d);
 }
 
-void LaShell::SetMesh3D(vtkPolyData* input) {  // Member function (Getter)
+void LaShell::SetMesh3D(vtkSmartPointer<vtkPolyData> input) {  // Member function (Getter)
 	_mesh_3d->DeepCopy(input);
 }
 

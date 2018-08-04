@@ -14,6 +14,8 @@ LaShellShellCombine::LaShellShellCombine()
 	_overlap_preference = WHEN_OVERLAP_USE_SOURCE1;
     _scalar_array_location_in_source1 = -1;
     _scalar_array_location_in_source2 = -1;
+    _write_to_field_data = false; 
+    _output_scalar_name = "comb_scalar";
 	
 }
 
@@ -42,39 +44,57 @@ void LaShellShellCombine::SetInputData2(LaShell* shell)
     _source_la_2 = shell; 
 }
 
+void LaShellShellCombine::SetWriteDataToField()
+{
+    _write_to_field_data= true; 
+}
 
 int LaShellShellCombine::FindScalarArray(LaShell* shell, const char* array_name)
 {
     int location = -1;
-    _scalar_array_name = array_name;
+    
+    vtkIdType numberOfPointArrays;
 
     vtkSmartPointer<vtkPolyData> Source_Poly1 = vtkSmartPointer<vtkPolyData>::New();
     shell->GetMesh3D(Source_Poly1);
 
-    vtkIdType numberOfPointArrays = Source_Poly1->GetPointData()->GetNumberOfArrays();
+    if (!_write_to_field_data)
+        numberOfPointArrays = Source_Poly1->GetPointData()->GetNumberOfArrays();
+    else 
+        numberOfPointArrays = Source_Poly1->GetFieldData()->GetNumberOfArrays();
 
 	for(vtkIdType i = 0; i < numberOfPointArrays; i++)
     {
 		//cout << "Array " << i << ", name = " << Source_Poly1->GetPointData()->GetArray(i)->GetName() << endl;
-		if (strcmp(Source_Poly1->GetPointData()->GetArray(i)->GetName(), array_name) == 0) {
-			//cout << "Found array at location " << i << endl;
-			location = i; 
-		}
+        if (!_write_to_field_data) {
+            if (strcmp(Source_Poly1->GetPointData()->GetArray(i)->GetName(), array_name) == 0) {
+                //cout << "Found array at location " << i << endl;
+                location = i; 
+            }
+        }
+        else {
+             if (strcmp(Source_Poly1->GetFieldData()->GetArray(i)->GetName(), array_name) == 0) {
+                //cout << "Found array at location " << i << endl;
+                location = i; 
+            }
+        }
 	}
 
     return location;
 
 }
 
-bool LaShellShellCombine::SetScalarArrayName(const char* array_name)
+bool LaShellShellCombine::SetScalarArrayNames(const char* array_name1, const char* array_name2)
 {
-    _scalar_array_name = array_name;
-    int location1 = FindScalarArray(_source_la_1, array_name); 
-    int location2 = FindScalarArray(_source_la_2, array_name); 
+    int location1 = FindScalarArray(_source_la_1, array_name1); 
+    int location2 = FindScalarArray(_source_la_2, array_name2); 
 
     if (location1 < 0 || location2 < 0)
     {
-        cerr << "The array with name: " << array_name << " does not exist" << endl;
+        if (location1 < 0)
+            cerr << "The array with name: " << array_name1 << " does not exist" << endl;
+        else 
+            cerr << "The array with name: " << array_name2 << " does not exist" << endl;
         return false;
     }
     else { 
@@ -85,6 +105,11 @@ bool LaShellShellCombine::SetScalarArrayName(const char* array_name)
     }
 
     
+}
+
+void LaShellShellCombine::SetOutputScalarName(string array_name)
+{
+    _output_scalar_name = array_name;
 }
 
 LaShell* LaShellShellCombine::GetOutput() {
@@ -110,46 +135,70 @@ void LaShellShellCombine::Update()
 	vtkSmartPointer<vtkPolyData> Source_Poly1 = vtkSmartPointer<vtkPolyData>::New();
 	vtkSmartPointer<vtkPolyData> Source_Poly2 = vtkSmartPointer<vtkPolyData>::New();
 	
-    vtkSmartPointer<vtkFloatArray> Scalars_Poly1 = vtkSmartPointer<vtkFloatArray>::New();
-	vtkSmartPointer<vtkFloatArray> Scalars_Poly2 = vtkSmartPointer<vtkFloatArray>::New();
+    vtkSmartPointer<vtkDoubleArray> Scalars_Poly1 = vtkSmartPointer<vtkDoubleArray>::New();
+	vtkSmartPointer<vtkDoubleArray> Scalars_Poly2 = vtkSmartPointer<vtkDoubleArray>::New();
 	
     _source_la_1->GetMesh3D(Source_Poly1);
     _source_la_2->GetMesh3D(Source_Poly2);
 
-	Scalars_Poly1 = vtkFloatArray::SafeDownCast(Source_Poly1->GetPointData()->GetArray(_scalar_array_location_in_source1));
-    Scalars_Poly2 = vtkFloatArray::SafeDownCast(Source_Poly2->GetPointData()->GetArray(_scalar_array_location_in_source2));
+    if (!_write_to_field_data) {
+	    Scalars_Poly1 = vtkDoubleArray::SafeDownCast(Source_Poly1->GetPointData()->GetArray(_scalar_array_location_in_source1));
+        Scalars_Poly2 = vtkDoubleArray::SafeDownCast(Source_Poly2->GetPointData()->GetArray(_scalar_array_location_in_source2));
+    }
+    else { 
+        Scalars_Poly1 = vtkDoubleArray::SafeDownCast(Source_Poly1->GetFieldData()->GetArray(_scalar_array_location_in_source1));
+        Scalars_Poly2 = vtkDoubleArray::SafeDownCast(Source_Poly2->GetFieldData()->GetArray(_scalar_array_location_in_source2));
+    }
 
-    vtkSmartPointer<vtkFloatArray> Output_Poly_Scalar = vtkSmartPointer<vtkFloatArray>::New();
+    vtkSmartPointer<vtkDoubleArray> Output_Poly_Scalar = vtkSmartPointer<vtkDoubleArray>::New();
 	//Output_Poly_Scalar->SetNumberOfComponents(1);
-    Output_Poly_Scalar->SetName(_scalar_array_name);
 
-    for(vtkIdType i = 0; i < Source_Poly1->GetNumberOfPoints(); i++)
+
+    Output_Poly_Scalar->SetName(_output_scalar_name.c_str());
+    cout << "New array name = " << _output_scalar_name << endl;
+cout << "Array size = something else" << Scalars_Poly1->GetNumberOfComponents() << endl;
+    for(vtkIdType i = 0; i < Scalars_Poly1->GetNumberOfTuples(); i++)
     {   
-        float s1 = Scalars_Poly1->GetTuple1(i); 
-        float s2 = Scalars_Poly2->GetTuple1(i); 
+        float s1, s2;
+        //cout << "s1=" << s1 << ", s2=" << s2 << endl;
+        s1 = Scalars_Poly1->GetValue(i); 
         
-        if ( s1 > 0 && s2 > 0)
-        {
-            if (_overlap_preference == WHEN_OVERLAP_USE_SOURCE1)
-                Output_Poly_Scalar->InsertNextTuple1(s1); 
-            else if (_overlap_preference == WHEN_OVERLAP_USE_SOURCE2)
-                Output_Poly_Scalar->InsertNextTuple1(s2); 
+        if ( i < Scalars_Poly2->GetNumberOfTuples()) {
+            s2 = Scalars_Poly2->GetValue(i); 
+        
+            if ( s1 > 0 && s2 > 0)
+            {
+                if (_overlap_preference == WHEN_OVERLAP_USE_SOURCE1) {
+                    Output_Poly_Scalar->InsertNextValue(s1); 
+                }
+                else if (_overlap_preference == WHEN_OVERLAP_USE_SOURCE2) {
+                    Output_Poly_Scalar->InsertNextValue(s2); 
+                }
+            }
+            else if (s1 > 0)
+            {
+                Output_Poly_Scalar->InsertNextValue(s1);
+            }
+            else if (s2 > 0)
+            {
+                Output_Poly_Scalar->InsertNextValue(s2);
+            }
+            else {
+                Output_Poly_Scalar->InsertNextValue(0);
+            }
         }
-        else if (s1 > 0)
-        {
-            Output_Poly_Scalar->InsertNextTuple1(s1);
-        }
-        else if (s2 > 0)
-        {
-            Output_Poly_Scalar->InsertNextTuple1(s2);
-        }
-        else {
-            Output_Poly_Scalar->InsertNextTuple1(0);
-        }
+        
     }
 
     Output_Poly->DeepCopy(Source_Poly1);
-    Output_Poly->GetPointData()->SetScalars(Output_Poly_Scalar);
+
+    if (!_write_to_field_data) {
+       // Output_Poly->GetPointData()->SetScalars(Output_Poly_Scalar);
+        Output_Poly->GetPointData()->AddArray(Output_Poly_Scalar);
+    }
+    else {
+        Output_Poly->GetFieldData()->AddArray(Output_Poly_Scalar);
+    }
 
     _output_la->SetMesh3D(Output_Poly);
 }

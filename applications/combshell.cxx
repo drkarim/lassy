@@ -14,9 +14,10 @@
 */
 int main(int argc, char * argv[])
 {
-	char* input_f1, *input_f2, *output_f, *scalar_array_name;
+	char* input_f1, *input_f2, *output_f, *scalar_array_name, *scalar_array_name1, *scalar_array_name2, *output_scalar_name;
 	int operation = WHEN_OVERLAP_USE_SOURCE1;
-	bool foundArgs1 = false, foundArgs2 = false, foundArgs3 = false, foundArgs4=false, foundArgs5=false;
+	bool foundArgs1 = false, foundArgs2 = false, foundArgs3 = false, foundArgs4=false, foundArgs5=false, foundArgs6=false;
+	bool is_field_data = false;
 
 
 	if (argc >= 1)
@@ -40,23 +41,38 @@ int main(int argc, char * argv[])
 					operation = atoi(argv[i + 1]);
 					foundArgs4 = true;
 				}
-                else if (string(argv[i]) == "-scalar") {
-					scalar_array_name = argv[i + 1];
+                else if (string(argv[i]) == "-scalar1") {
+					scalar_array_name1 = argv[i + 1];
 					foundArgs5 = true;
 				}
-                
+				else if (string(argv[i]) == "-scalar2") {
+					scalar_array_name2 = argv[i + 1];
+					foundArgs6 = true;
+					
+				}
+                else if (string(argv[i]) == "-scalar_out") {
+					output_scalar_name = argv[i + 1];
+					
+				}
 
+			}
+			else if (string(argv[i]) == "--field") {
+				is_field_data = true; 
 			}
 			
 		}
 	}
 
-	if (!(foundArgs1 && foundArgs2 && foundArgs3 && foundArgs5))
+	if (!(foundArgs1 && foundArgs2 && foundArgs3 && foundArgs5 && foundArgs6))
 	{
 		cerr << "Combines scalars from two meshes\nCheck your parameters\n\nUsage:"
 			"\n(Mandatory)\n\t-i1 <1st Mesh in VTK> \n\t-i2 <2nd Mesh in VTK>"
 			"\n\t-o <output_vtk>"
+			"\n\t-scalar1 <input scalar array name in mesh 1>"
+			"\n\t-scalar2 <input scalar array name in mesh 2>"
+			"\n\t-scalar_out <output scalar array name in output mesh>"
 			"\n\n(Optional)"
+			"\n\t--field (read and write as field data)"
 			"\n\t-overlap <when overlap, which scalar?: 1-Scalar of Mesh-1, 2-Scalar of Mesh-2>\n" << endl;
 
 
@@ -71,7 +87,16 @@ int main(int argc, char * argv[])
 		LaShellShellCombine* algorithm = new LaShellShellCombine();
 		algorithm->SetInputData(source1);
 		algorithm->SetInputData2(source2);
+
 		
+		
+
+		if (is_field_data)
+		{
+			cout << "\nReading and writing field data" << endl;
+			algorithm->SetWriteDataToField();
+		}
+
 		switch (operation)
 		{
             case WHEN_OVERLAP_USE_SOURCE1:
@@ -83,8 +108,10 @@ int main(int argc, char * argv[])
          
 		}
 
-		if (algorithm->SetScalarArrayName(scalar_array_name)) 
+		if (algorithm->SetScalarArrayNames(scalar_array_name1, scalar_array_name2)) 
         {
+
+			algorithm->SetOutputScalarName(output_scalar_name);
             algorithm->Update();
 
             la_out = algorithm->GetOutput();

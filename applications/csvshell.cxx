@@ -39,7 +39,6 @@ int main(int argc, char * argv[])
 				else if (string(argv[i]) == "-csv") {
 					input_csv = argv[i + 1];
                     foundArgs2 = true; 
-
 				}
                 else if (string(argv[i]) == "-out") {
 					output_vtk = argv[i + 1];
