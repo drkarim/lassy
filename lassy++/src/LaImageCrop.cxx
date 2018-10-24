@@ -47,6 +47,10 @@ void LaImageCrop::SetInputData(LaImage* img) {
   
 }
 
+LaImage* LaImageCrop::GetOutput() { 
+    return NULL;
+}
+
 
 
 void LaImageCrop::Update()
