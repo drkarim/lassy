@@ -48,9 +48,6 @@ void LaImageCrop::SetInputData(LaImage* img) {
 }
 
 
-LaImage* LaImageCrop::GetOutput(){
-    //return _image_cropped;
-}
 
 void LaImageCrop::Update()
 {
