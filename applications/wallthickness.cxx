@@ -1,6 +1,7 @@
 #define HAS_VTK 1
 
 #include "LaShellShellIntersection.h"
+#include "LaShellShellArithmetic.h"
 #include <numeric> 
 
 /*
@@ -44,6 +45,10 @@ int main(int argc, char * argv[])
 			else if (string(argv[i]) == "--reverse") {
 				direction = -1;
 			}
+
+			else if (string(argv[i]) == "--shortest") {
+				direction = 2;
+			}
 		}
 	}
 
@@ -52,7 +57,9 @@ int main(int argc, char * argv[])
 		cerr << "Cheeck your parameters\n\nUsage:"
 			"\nCalculates the thickness from the source to target"
 			"\nThe final thickness is mapped to the source"
-			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>" << endl; 
+			"\n(Mandatory)\n\t-i1 <source_mesh_vtk> \n\t-i2 <target_mesh_vtk> \n\t-o <output_vtk>"
+			"\n(Optional)\n\t--reverse <reverse direction of probing normal from source>"
+			"\n\t--shortest <shortest distance from target to source mesh>\n\n";
 			
 
 		exit(1);
@@ -72,17 +79,51 @@ int main(int argc, char * argv[])
 			cout << "\n\nImportant: Computing thickness in reverse direction to surface normals pointing outwards" << endl;
 			wt->SetDirectionToOppositeNormal();
 			
+			wt->Update(); 
+			la_out = wt->GetOutput(); 
+			la_out->ExportVTK(output_f);
+			
 		}
-		else {
+		else if (direction == 1) {
 			cout << "\n\nComputing thickness in surface normal direction (pointing outwards)" << endl; 
+			
+			wt->Update(); 
+			la_out = wt->GetOutput(); 
+			la_out->ExportVTK(output_f);
+			
+		}
+		else if (direction == 2)
+		{
+			cout << "\n\nComputing shortest distance to target surface" << endl; 
+			
+			LaShell* la_out_d1 = new LaShell(input_f2);
+			LaShell* la_out_d2 = new LaShell(input_f2);
+
+			wt->Update(); 
+			la_out_d1 = wt->GetOutput(); 
+			
+
+			// in other direction 
+			wt->SetDirectionToOppositeNormal();
+			wt->Update(); 
+			la_out_d2 = wt->GetOutput(); 
+
+			LaShellShellArithmetic* algorithm = new LaShellShellArithmetic();
+			algorithm->SetInputData(la_out_d1);
+			algorithm->SetInputData2(la_out_d2);
+
+			algorithm->SetArithmetricOperationToMinimum();
+			algorithm->Update();
+
+			la_out = algorithm->GetOutput();
+			la_out->ExportVTK(output_f);
+
+			
+
 		}
 
 		
-		wt->Update(); 
-
-		la_out = wt->GetOutput(); 
-
-		la_out->ExportVTK(output_f);
+		
 	}
 
 }

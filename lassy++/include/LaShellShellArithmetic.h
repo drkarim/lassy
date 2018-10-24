@@ -7,7 +7,7 @@
 */
 
 /*
-*	The LaShellShellArithmetic is performs simple arithmetic operations on scalars contained within two VTK meshes 
+*	The LaShellShellArithmetic is performs simple arithmetic (mostly) operations on scalars contained within two VTK meshes 
 *	
 *
 */
@@ -17,6 +17,8 @@
 #define SUBTRACT 2 
 #define MULTIPLY 3 
 #define DIVIDE 4
+#define MIN_ 5
+#define MAX_ 6
 
 
 #include "LaShellAlgorithms.h"
@@ -44,6 +46,11 @@ public:
 	void SetArithmetricOperationToSubtract();
 	void SetArithmetricOperationToMultiply();
 	void SetArithmetricOperationToDivide();
+
+	// NON-arthimetic operations 
+	void SetArithmetricOperationToMinimum();
+	void SetArithmetricOperationToMaximum();
+
 	void SetToSingleShellMode();
 	void SetSingleShellModeValue(double val);
 	void SetFactor(double factor); 
