@@ -60,14 +60,6 @@ void LaShellShellArithmetic::SetArithmetricOperationToDivide(){
 	_operation = DIVIDE; 
 }
 
-void LaShellShellArithmetic::SetArithmetricOperationToMinimum(){
-	_operation = MIN_; 
-}
-
-void LaShellShellArithmetic::SetArithmetricOperationToMaximum(){
-	_operation = MAX_; 
-}
-
 void LaShellShellArithmetic::SetFactor(double factor) {
 	_factor = factor; 
 }
@@ -136,14 +128,6 @@ void LaShellShellArithmetic::Update() {
 					result = scalar1 / scalar2;
 				else
 					result = 0; 
-				break;
-			case MIN_: 
-				result = (scalar1 < scalar2) ? scalar1 : scalar2;
-
-				break;
-			case MAX_: 
-				result = (scalar1 > scalar2) ? scalar1 : scalar2;
-
 				break;
 
 		}
