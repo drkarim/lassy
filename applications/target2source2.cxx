@@ -13,8 +13,6 @@
 *
 *		Copies scalars with multiarray support from source to target
 *       Provides two options for copy - closest point along surface normal, point id 
-*		Warning; Assumes that scalars in source mesh are as Doubles. This is the lowest common denominator 
-*		able to fit all other numeric types float, int and long. 
 */
 int main(int argc, char * argv[])
 {
